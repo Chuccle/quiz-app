@@ -21,23 +21,21 @@ async function loginUser(credentials) {
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  
 
-  
 
 
   const handleSubmit = async e => {
     e.preventDefault()
-    
-    
+
+
     if (username && password) {
 
 
-        const token = await loginUser({
-          username,
-          password
-        });
-        setToken(token);
+      const token = await loginUser({
+        username,
+        password
+      });
+      setToken(token);
     }
     else {
       console.log('Please enter Username and Password!');
