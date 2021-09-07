@@ -2,9 +2,11 @@ const connection = require('./components/Database/Database.js')
 const express = require('express');
 const cors = require('cors')
 const bodyParser = require('body-parser')
-
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt-pbkdf');
 const app = express();
+
+
 
 require('dotenv').config({ path: '../src/.env' })
 //TODO add JSON WEB TOKEN module to handle token verification? done
@@ -41,10 +43,19 @@ app.use('/login', (req, res) => {
 
   var password = req.body.password;
 
+  const saltRounds = 10;
+
+  bcrypt.hash(password, saltRounds)
+  .then(hash => {
+     console.log(hash);
+  })
+  
+    //Output: $2b$10$uuIKmW3Pvme9tH8qOn/H7u
+    //A 29 characters long random string.
 
 
 // ? characters in query represent escaped placeholders for our username and password 
-  connection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, password], function (error, results, fields) {
+  connection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, bcrypt.hash(password)], function (error, results, fields) {
     if (error) throw res.send({
       Error: error});
 
@@ -82,7 +93,7 @@ connection.query('SELECT * FROM accounts WHERE username = ?', [username], functi
 
 
   else if (!results.length > 0) {  
-connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [username, password], function (error, results, fields) {
+connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [username, bcrypt.hash(password)], function (error, results, fields) {
     // Getting the 'response' from the database and sending it to our route. This is were the data is.
     if (error) throw res.send({
       Error: error});
