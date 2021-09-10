@@ -27,10 +27,12 @@ app.use('/auth', (req, res) => {
   token = req.body.token
   try {
     var decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
     res.send({ message: decoded })
 
   } catch (err) {
-    res.send({ error: err })
+    res.sendStatus(400)
+    console.log(err)
 
   }
 
