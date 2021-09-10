@@ -24,6 +24,8 @@ app.use('/auth', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
+ 
+  //Make use of async/await as return of jwt.verify is a promise in synchronous application, try catch is unnecessary.
   token = req.body.token
   try {
     var decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -39,12 +41,14 @@ app.use('/auth', (req, res) => {
 
 })
 
+
 app.use('/login', (req, res) => {
 
   var username = req.body.username;
 
   var password = req.body.password;
 
+ 
   LoginDB(username, password)
 
   //var salt = toString(process.env.DB_PASSWORD_SALT)
@@ -66,6 +70,9 @@ app.use('/login', (req, res) => {
 
       // Getting the 'response' from the database and sending it to our route. This is were the data is.
       if (results.length > 0) {
+        
+        
+        //implement async/await here for perf benefits
         const match = bcrypt.compare(password, results[0].password)
 
         console.log(results[0].password)
@@ -75,6 +82,8 @@ app.use('/login', (req, res) => {
 
 
           //signing our token to send to client
+          
+          // translate into aync/await
           var jwtToken = jwt.sign({
             data: username
           }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
