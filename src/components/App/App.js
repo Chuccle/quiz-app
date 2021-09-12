@@ -6,6 +6,7 @@ import Login from '../Login/Login.js';
 import Preferences from '../Preferences/Preferences.js';
 import Register from '../Register/Register.js'
 import useToken from './useToken.js';
+import { render } from 'react-dom';
 
 
 
@@ -50,6 +51,7 @@ function App() {
       var response = await verifyTokenFetch({ token });
       console.log(response)
 
+    try {
       if (response.error) {
   
         SetAuthState(false)  
@@ -59,7 +61,14 @@ function App() {
         SetAuthState(true)
         
       }
+    } catch {
+
+      alert("A server error occurred")
+
+
     }
+  }
+
 
 tokenAuthoriser()
 

@@ -30,13 +30,18 @@ export default function Login({ setToken }) {
 
     if (username && password) {
 
-
+try {
       const token = await loginUser({
         username,
         password
       });
       setToken(token);
     }
+   catch
+  {
+    alert("A server error occurred")
+}
+}
     else {
       console.log('Please enter Username and Password!');
       return false;
