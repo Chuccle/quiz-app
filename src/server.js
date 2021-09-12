@@ -24,16 +24,16 @@ app.use('/auth', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
- 
-  //Make use of async/await as return of jwt.verify is a promise in synchronous application, try catch is unnecessary.
-  token = req.body.token
+
+  const token = req.body.token
+
   try {
-    var decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     res.send({ message: decoded })
 
   } catch (err) {
-    res.sendStatus(400)
+    res.send({ error: err })
     console.log(err)
 
   }
@@ -44,67 +44,49 @@ app.use('/auth', (req, res) => {
 
 app.use('/login', (req, res) => {
 
-  var username = req.body.username;
+  let username = req.body.username;
 
-  var password = req.body.password;
-
- 
-  LoginDB(username, password)
-
-  //var salt = toString(process.env.DB_PASSWORD_SALT)
-  //var Hash = bcrypt.hash(password, salt, function (err,hash) {
-
-  //    console.log(hash)
-
-  //Output: $2b$10$uuIKmW3Pvme9tH8qOn/H7u
-  //A 29 characters long random string.
-  //})
-
-  function LoginDB(username, password) {
-
-    // ? characters in query represent escaped placeholders for our username and password 
-    connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
-      if (error) throw res.send({
-        Error: error
-      });
-
-      // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      if (results.length > 0) {
-        
-        
-        //implement async/await here for perf benefits
-        const match = bcrypt.compare(password, results[0].password)
-
-        console.log(results[0].password)
-
-        if (match) {
+  let password = req.body.password;
 
 
+  // ? characters in query represent escaped placeholders for our username and password 
+  connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
 
-          //signing our token to send to client
-          
-          // translate into aync/await
-          var jwtToken = jwt.sign({
-            data: username
-          }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+    // Getting the 'response' from the database and sending it to our route. This is were the data is.
+    if (results.length > 0) {
 
-          //sending our token response back to the client
+      const match = bcrypt.compare(password, results[0].password)
 
-          res.send({
-            token: jwtToken
-          });
-        }
+      console.log(results[0].password)
+
+      if (match) {
+
+        //signing our token to send to client
+
+
+        const jwtToken = jwt.sign({
+          data: username
+        }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+
+        //sending our token response back to the client
+
+        res.send({
+          token: jwtToken
+        });
       }
-    })
-  }
+    }
+  })
 })
 
 
 app.use('/register', (req, res) => {
 
 
-  var username = req.body.username;
-  var password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
 
 
@@ -127,7 +109,6 @@ app.use('/register', (req, res) => {
           res.sendStatus(400)
 
         else {
-          //Output: A 29 characters long random string.
 
           connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [username, hash], function (error, results, fields) {
             // Getting the 'response' from the database and sending it to our route. This is were the data is.
@@ -137,7 +118,7 @@ app.use('/register', (req, res) => {
           })
 
           //signing our token to send to client
-          var jwtToken = jwt.sign({
+          const jwtToken = jwt.sign({
             data: username
           }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
 
