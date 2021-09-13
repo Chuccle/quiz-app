@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Login from '../Login/Login.js'
 import './Register.css';
 
 
@@ -25,10 +26,13 @@ export default function Register({ setToken }) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [passwordCompare, setPasswordCompare] = useState();
+    const [page, setPage] = useState()
 
+    if (page) {
 
+        return <Login setToken={setToken} />
 
-
+    }
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -67,10 +71,16 @@ export default function Register({ setToken }) {
                     <p>Retype Password</p>
                     <input type="password" onChange={e => setPasswordCompare(e.target.value)} />
                 </label>
+                <label>
                 <div>
                     <button type="submit">Submit</button>
                 </div>
-            </form>
+                </label>
+             </form>
+            <div className="loginPageButton" >
+                <button onClick={e => setPage(true)}>Login page</button>
+
+            </div>
         </div>
     )
 }

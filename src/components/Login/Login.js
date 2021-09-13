@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './Login.css';
-
-
+import Register from '../Register/Register.js'
 
 
 
@@ -21,7 +20,13 @@ async function loginUser(credentials) {
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [page, setPage] = useState()
 
+  if (page) {
+
+    return <Register setToken={setToken} />
+
+  }
 
 
   const handleSubmit = async e => {
@@ -30,18 +35,18 @@ export default function Login({ setToken }) {
 
     if (username && password) {
 
-try {
-      const token = await loginUser({
-        username,
-        password
-      });
-      setToken(token);
+      try {
+        const token = await loginUser({
+          username,
+          password
+        });
+        setToken(token);
+      }
+      catch
+      {
+        alert("A server error occurred")
+      }
     }
-   catch
-  {
-    alert("A server error occurred")
-}
-}
     else {
       console.log('Please enter Username and Password!');
       return false;
@@ -61,11 +66,17 @@ try {
           <p>Password</p>
           <input type="password" onChange={e => setPassword(e.target.value)} />
         </label>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
+        <label>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </label>
       </form>
+      <div className="registerPageButton" >
+        <button onClick={e => setPage(true)}>Register</button>
+      </div>
     </div>
+
   )
 }
 

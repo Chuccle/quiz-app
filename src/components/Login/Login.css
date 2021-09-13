@@ -2,4 +2,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+}
+
+
+.registerPageButton {
+
+    font-size: smaller;
+    
+    }
+
+button{
+
+font-size: larger;
+
+
 }

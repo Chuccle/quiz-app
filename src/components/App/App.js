@@ -4,9 +4,8 @@ import './App.css';
 import Dashboard from '../Dashboard/Dashboard.js';
 import Login from '../Login/Login.js';
 import Preferences from '../Preferences/Preferences.js';
-import Register from '../Register/Register.js'
 import useToken from './useToken.js';
-import { render } from 'react-dom';
+
 
 
 
@@ -21,7 +20,7 @@ function App() {
   if (!token) {
 
     return <Login setToken={setToken} />
-  } else {
+  } 
 
 
 
@@ -108,9 +107,6 @@ console.log(tokenAuthorised)
             <Route path="/preferences">
               <Preferences setToken={setToken} />
             </Route>
-            <Route path="/register">
-              <Register setToken={setToken} />
-            </Route>
           </Switch>
         </BrowserRouter>
       </div>
@@ -118,7 +114,7 @@ console.log(tokenAuthorised)
 
 
   }
-}
+
 
 
 export default App;
