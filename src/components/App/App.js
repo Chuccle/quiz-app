@@ -47,7 +47,7 @@ function App() {
 
     async function tokenAuthoriser() {
       var response = await verifyTokenFetch({ token });
-      console.log(response)
+ //     console.log(response)
 
     try {
       
@@ -73,7 +73,7 @@ if (!tokenAuthorised) {
 
   return <Login setToken={setToken} />
 } 
-console.log(tokenAuthorised)
+//console.log(tokenAuthorised)
 
 
 
