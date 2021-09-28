@@ -1,7 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Dashboard.css';
+import useToken from '../App/useToken';
+
+
+//TODO 
+// USE ID TOKEN DATA IN RETRIEVING USER'S RECORD FROM SQL TABLE (JWTVERIFY-->DATA)
+// FOR NOW JUST CREATE SYSTEM WHICH IMPORTS THE DATA AND DISPLAYS IT ON THIS PAGE
+
+
+async function retrieveStats(credentials) {
+
+  return fetch('http://localhost:8080/retrieveStats', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+  })
+    .then(data => data.json())
+}
+
+
+
+
+
+
 
 export default function Dashboard() {
+ 
+  const [stats, SetStats ] = useState() 
+  const {token} = useToken();
+
+  async function SetStatsfunc() {
+
+
+    console.log(token)
+    const userStats = await retrieveStats({token})
+    console.log(userStats)
+    
+    try {
+        
+      if (userStats.error) {
+  
+  alert("The server was unable to verify your session")
+          
+      }
+      else if (userStats.results) {
+        
+        //change this to quiz score stats and display it on dashboard
+        console.log(userStats.results[0].id) 
+        SetStats(true)
+         
+        
+        
+      }
+    } catch {
+  
+      alert("A server error occurred")
+  
+  
+    }
+  }
+
+  SetStatsfunc()
+
+  console.log(stats)
+
+
+
+ 
   return(
     <div>
   <meta charSet="utf-8" />
@@ -202,4 +269,6 @@ export default function Dashboard() {
   </svg>
 </div>
   );
+  
+
 }
