@@ -54,7 +54,7 @@
     justify-content: space-between;
   }
   
-  button {
+  .quizbutton {
     width: 100%;
     font-size: 16px;
     color: #ffffff;
