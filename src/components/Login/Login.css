@@ -8,13 +8,14 @@
 
 .registerPageButton {
 
-    font-size: smaller;
+    font-size: medium;
     
     }
 
 button{
 
-font-size: larger;
+font-size: medium;
+display: center;
 
 
 }
