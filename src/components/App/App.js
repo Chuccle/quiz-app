@@ -8,20 +8,19 @@ import useToken from './useToken.js';
 
 
 
+// import Settings from '../Settings/Settings.js'
 
 
-// Allow Default page to also be register on top of login
+
 function App() {
 
 
   const [ tokenAuthorised, SetAuthState ] = useState(); 
   const { token, setToken } = useToken();
- 
-  if (!token) {
 
-    return <Login setToken={setToken} />
-  } 
 
+
+  tokenAuthoriser()
 
 
 
@@ -48,9 +47,10 @@ function App() {
 
     async function tokenAuthoriser() {
       var response = await verifyTokenFetch({ token });
-      console.log(response)
+ //     console.log(response)
 
     try {
+      
       if (response.error) {
   
         SetAuthState(false)  
@@ -69,18 +69,13 @@ function App() {
   }
 
 
-tokenAuthoriser()
+if (!tokenAuthorised) {
 
-  
-console.log(tokenAuthorised)
-
-
-
+  return <Login setToken={setToken} />
+} 
+//console.log(tokenAuthorised)
 
 
-    if (!tokenAuthorised) {
-      return (<Login setToken={setToken} />)
-    }
 
     return (
       <div className="wrapper">
@@ -97,7 +92,7 @@ console.log(tokenAuthorised)
               </li>
             </ul>
             <div>
-              <hr></hr>
+              <hr/>
             </div>
           </div>
           <Switch>
@@ -118,5 +113,6 @@ console.log(tokenAuthorised)
 
 
 export default App;
+
 
 

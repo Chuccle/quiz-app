@@ -4,11 +4,6 @@ import Login from '../Login/Login.js'
 import './Register.css';
 
 
-
-
-
-
-
 async function RegisterUser(credentials) {
 
     return fetch('http://localhost:8080/register', {
