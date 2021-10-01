@@ -26,17 +26,17 @@ app.use('/auth', (req, res) => {
   const token = req.body.token
 
   try {
-    
-    
+
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded.data)
-    
-    
+
+
     res.send({ message: decoded })
 
   } catch (err) {
-    
-    
+
+
     res.send({ error: err })
     console.log(err)
 
@@ -56,16 +56,16 @@ app.use('/retrieveStats', (req, res) => {
   const token = req.body.token
 
   try {
-    
-    
+
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded.data)
 
     //We use primary key as the parameter because it guarantees a unique record without any conflicts
 
     connection.query('SELECT * FROM accounts WHERE id = ?', [decoded.data], function (error, results, fields) {
-      
-      
+
+
       if (error) throw res.send({
         error: error
 
@@ -146,10 +146,11 @@ app.use('/register', (req, res) => {
 
   // ? characters in query represent escaped placeholders for our username and password 
 
+  // first we look for any duplicate usernames with the table
   connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
     if (error) throw res.send({ Error: error });
 
-
+    // if usernames aren't conflicting, hash password and create new record with supplied data
     if (results.length === 0) {
 
       bcrypt.hash(password, 10, function (err, hash) {
@@ -160,22 +161,30 @@ app.use('/register', (req, res) => {
           // Getting the 'response' from the database and sending it to our route. This is were the data is.
           if (error) throw res.send({ Error: error });
 
-
         })
 
+        //Query again to find record ID of usuing the username
 
+        connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
+          if (error) throw res.send({ Error: error });
+
+          //signing our token to send to client using record ID as payload 
+
+          const jwtToken = jwt.sign({ data: results[0].id }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+
+
+          //sending our token response back to the client
+
+          console.log(jwtToken)
+          res.send({ token: jwtToken });
+
+       
+        })
+
+      
       })
 
-
-      //signing our token to send to client
-
-      const jwtToken = jwt.sign({ data: results[0].id }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
-
-      //sending our token response back to the client
-
-      res.send({ token: jwtToken });
-
-
+    
     } else {
 
 
