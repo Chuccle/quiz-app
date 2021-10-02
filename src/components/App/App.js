@@ -5,6 +5,7 @@ import Login from '../Login/Login.js';
 import Preferences from '../Preferences/Preferences.js';
 import useToken from './useToken.js';
 import Quiz from '../Quizzes/C++/Quiz'
+import Logout from './Logout.js';
 import './App.css';
 
 
@@ -88,9 +89,13 @@ function App() {
             <li>
               <Link to="/dashboard">Dashboard</Link>
             </li>
+            <li>
+              <Link to="/logout">Log out</Link>
+            </li>
           </ul>
         </div>
         <Switch>
+
           <Route path="/dashboard">
             <Dashboard setToken={setToken} />
           </Route>
@@ -99,6 +104,9 @@ function App() {
           </Route>
           <Route path="/quizzes/c++">
             <Quiz setToken={setToken} />
+          </Route>
+          <Route path="/logout">
+            <Logout setToken={setToken} />
           </Route>
         </Switch>
       </BrowserRouter>
