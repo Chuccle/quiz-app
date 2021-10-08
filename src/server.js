@@ -215,21 +215,21 @@ app.use('/insertquiz', (req, res) => {
     if (error) throw res.send({ Error: error });
 
     console.log(results.insertId)
-    
-    res.send({id: results.insertId})
+
+    res.send({ id: results.insertId })
     //probably not best way to return last insert but ultimately will achieve same effect
-    
 
-    
-    
-  //  connection.query('SELECT MAX(id) FROM quizzes WHERE userid = ?', [decodedtoken], function (error, results, fields) {
-    //  if (error) throw res.send({ Error: error });
- //console.log(results[0].id)
 
-      //find a way of saving this variable as a state? then calling it per each questionset entry for fk
-      //alternatively send back the id to client and have it returned for each questionset http request
 
-   // })
+
+    //connection.query('SELECT MAX(id) FROM quizzes WHERE userid = ?', [decodedtoken], function (error, results, fields) {
+    //if (error) throw res.send({ Error: error });
+    //console.log(results[0].id)
+    //})
+
+    //find a way of saving this variable as a state? then calling it per each questionset entry for fk
+    //alternatively send back the id to client and have it returned for each questionset http request
+
   })
 
 

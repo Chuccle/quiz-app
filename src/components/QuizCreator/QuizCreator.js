@@ -2,60 +2,80 @@ import React, { useState } from 'react';
 import useToken from '../App/useToken';
 
 
-async function insertquizfunction(credentials) {
 
-    return fetch('http://localhost:8080/insertquiz', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-  
-      },
-  
-      body: JSON.stringify(credentials)
-  
-    })
-  
-      .then(data => data.json())
-  
+async function insertquizfunction(quizdata) {
+
+  return fetch('http://localhost:8080/insertquiz', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+
+    },
+
+    body: JSON.stringify(quizdata)
+
+  })
+
+    .then(data => data.json())
+
+}
+
+
+
+
+export function QuizCreator() {
+
+  const { token } = useToken();
+  const [quizid, SetQuizId] = useState();
+  const [quizname, setQuizName] = useState();
+
+
+
+  async function getQuizID() {
+    var response = await insertquizfunction({ token, quizname });
+
+    try {
+
+      if (response.error) {
+
+
+        alert("there was an error inserting your quiz")
+
+
+      }
+      else if (response.id) {
+
+        SetQuizId(response.id)
+
+
+      }
+    } catch {
+
+      alert("A server communication error occurred")
+
+
+    }
   }
 
- // async function insertquestionset(credentials) {
-
-  //  return fetch('http://localhost:8080/insertquestionset', {
-  //    method: 'POST',
- //     headers: {
-    //    'Content-Type': 'application/json'
-  //
-  ////    },
-  //
-//      body: JSON.stringify(credentials)
-//  
- //   })
-  
- //     .then(data => data.json())
-  
- // }
+  console.log(quizid)
 
 
 
-  export function QuizCreator() {
-      
-    const {token} = useToken();
-    
-    var quizname="boomer"
+  return (
+    <><div>
+      <p>What will be the name of your quiz</p>
+      <input type="text" onChange={e => setQuizName(e.target.value)} />
+    </div>
+      <div className="insertQuizdatabutton">
+        <button onClick={e => getQuizID()}>slub</button>
+      </div></>
 
-    
-    return (
-    <div className="insertQuizdatabutton" >
-    <button onClick={e => insertquizfunction({token, quizname})}>Register Instead</button>
-  </div>
-    
-    
-    )
+
+  )
 
 
 
 
 
-  }
+}
 
