@@ -6,6 +6,7 @@ import Preferences from '../Preferences/Preferences.js';
 import useToken from './useToken.js';
 import Quiz from '../Quizzes/C++/Quiz'
 import Logout from './Logout.js';
+import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import './App.css';
 
 
@@ -55,10 +56,15 @@ function App() {
       if (response.error) {
 
         SetAuthState(false)
+
+        
+ 
+  
       }
       else if (response.message) {
 
         SetAuthState(true)
+        console.log(response.message)
 
       }
     } catch {
@@ -92,6 +98,9 @@ function App() {
             <li>
               <Link to="/logout">Log out</Link>
             </li>
+            <li>
+              <Link to="/quizcreator">create a quiz</Link>
+            </li>
           </ul>
         </div>
         <Switch>
@@ -107,6 +116,9 @@ function App() {
           </Route>
           <Route path="/logout">
             <Logout setToken={setToken} />
+          </Route>
+          <Route path="/quizcreator">
+            <QuizCreator setToken={setToken} />
           </Route>
         </Switch>
       </BrowserRouter>

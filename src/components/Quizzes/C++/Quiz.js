@@ -41,6 +41,8 @@ export default function Quiz() {
 		},
 	];
 
+	
+
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
@@ -53,6 +55,7 @@ export default function Quiz() {
 		const nextQuestion = currentQuestion + 1;
 		if (nextQuestion < questions.length) {
 			setCurrentQuestion(nextQuestion);
+
 		} else {
 			setShowScore(true);
 		}

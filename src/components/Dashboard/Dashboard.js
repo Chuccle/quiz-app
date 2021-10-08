@@ -40,7 +40,7 @@ async function getUserData(credentials) {
 
 export default function Dashboard() {
   // I could neaten this up to one usestate hook call but this is more readable
-  const [email, SetEmail] = useState()
+ // const [email, SetEmail] = useState()
   const [id, SetId] = useState()
   const [username, setUserName] = useState()
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
 
         //change this to quiz score stats and display it on dashboard
         //  console.log(userStats.results)
-        SetEmail(userStats.results[0].email)
+       // SetEmail(userStats.results[0].email)
         SetId(userStats.results[0].id)
         setUserName(userStats.results[0].username)
 
