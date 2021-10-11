@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { QuizCreator } from "./QuizCreator";
+
+
+
 
 async function insertquestionset(questiondata) {
 
@@ -21,19 +23,19 @@ async function insertquestionset(questiondata) {
 
 
 
-export function QuestionsetCreator() {
+export function QuestionsetCreator({quizid}) {
+    
 
-    const { quizid } = QuizCreator();
-    const [questionname, setQuestionName] = useState();
-    const [incorrect1, setIncorrect1] = useState();
-    const [Incorrect2, setIncorrect2] = useState();
-    const [Incorrect3, setIncorrect3] = useState();
-    const [Correct, setCorrect] = useState();
+    const [questionname, setQuestionName] = useState("");
+    const [incorrect1, setIncorrect1] = useState("");
+    const [incorrect2, setIncorrect2] = useState("");
+    const [incorrect3, setIncorrect3] = useState("");
+    const [correct, setCorrect] = useState("");
 
-
+ 
 
     async function insertDataClearForm() {
-        var response = await insertquestionset({ quizid, questionname, incorrect1, Incorrect2, Incorrect3, Correct });
+        var response = await insertquestionset({ quizid, questionname, incorrect1, incorrect2, incorrect3, correct });
 
         try {
 
@@ -58,7 +60,7 @@ export function QuestionsetCreator() {
         }
     }
 
-    console.log(quizid)
+
 
 
 
@@ -66,6 +68,22 @@ export function QuestionsetCreator() {
         <><div>
             <p>What will be the name of your questionname</p>
             <input type="text" onChange={e => setQuestionName(e.target.value)} />
+        </div>
+        <div>
+            <p>What will be the first incorrect option</p>
+            <input type="text" onChange={e => setIncorrect1(e.target.value)} />
+        </div>
+        <div>
+            <p>What will be the second incorrect {quizid}</p>
+            <input type="text" onChange={e => setIncorrect2(e.target.value)} />
+        </div>
+        <div>
+            <p>What will be the third incorrect option</p>
+            <input type="text" onChange={e => setIncorrect3(e.target.value)} />
+        </div>
+        <div>
+            <p>What will be the correct option</p>
+            <input type="text" onChange={e => setCorrect(e.target.value)} />
         </div>
             <div className="insertQuizdatabutton">
                 <button onClick={e => insertDataClearForm()}>slub</button>
@@ -75,7 +93,6 @@ export function QuestionsetCreator() {
     )
 
 }
-
 
 
 

@@ -219,9 +219,6 @@ app.use('/insertquiz', (req, res) => {
     res.send({ id: results.insertId })
     //probably not best way to return last insert but ultimately will achieve same effect
 
-
-
-
     //connection.query('SELECT MAX(id) FROM quizzes WHERE userid = ?', [decodedtoken], function (error, results, fields) {
     //if (error) throw res.send({ Error: error });
     //console.log(results[0].id)
@@ -241,12 +238,12 @@ app.use('/insertquiz', (req, res) => {
       Quizid: req.body.quizid,
       Questionset:
       {
-        Questionname: req.body.question,
+        Questionname: req.body.questionname,
         Options:
         {
-          Incorrect1: req.body.option1,
-          Incorrect2: req.body.option2,
-          Incorrect3: req.body.option3,
+          Incorrect1: req.body.incorrect1,
+          Incorrect2: req.body.incorrect2,
+          Incorrect3: req.body.incorrect3,
           Correct: req.body.correct
         }
       }
@@ -254,14 +251,36 @@ app.use('/insertquiz', (req, res) => {
 
 
 
-    const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
-    console.log(decodedtoken)
 
 
-    connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [quizdata.Quizid, quizdata.Questionset.Questionname], function (error, results, fields) {
+    connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [quizdata.Quizid, quizdata.Questionset.Questionname], function (error, results1, fields) {
       if (error) throw res.send({ Error: error });
 
+
+      //  let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?" 
+      // let values = [
+      // [results.insertId, quizdata.Questionset.Options.Incorrect1, 0],
+      //  [results.insertId, quizdata.Questionset.Options.Incorrect2, 0],
+      // [results.insertId, quizdata.Questionset.Options.Incorrect3, 0],
+      //  [results.insertId, quizdata.Questionset.Options.Correct, 1]
+      //    ]
+
+      // find a way of bulk inserting the entire set of options with 2d arraylist?
+
+      connection.query('insert into question_options (questionID, questionText, isCorrect) values (?, ?, ?);', [results1.insertId, quizdata.Questionset.Options.Correct, 1], function (error, results2, fields) {
+        if (error) throw res.send({ Error: error });
+
+        res.send({
+          results: results2.insertId
+        })
+
+
+
+
+      })
+
     })
+
 
   })
 })

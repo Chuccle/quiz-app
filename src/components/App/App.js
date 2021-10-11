@@ -7,6 +7,7 @@ import useToken from './useToken.js';
 import Quiz from '../Quizzes/C++/Quiz'
 import Logout from './Logout.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
+import { QuestionsetCreator } from '../QuizCreator/QuestionsetCreator'
 import './App.css';
 
 
@@ -17,14 +18,15 @@ import './App.css';
 function App() {
 
 
-  const [tokenAuthorised, SetAuthState] = useState();
+  const [tokenAuthorised, SetAuthState] = useState(false);
   const { token, setToken } = useToken();
+  const [quizid, setQuizid] = useState()
 
 
 
   tokenAuthoriser()
 
-
+console.log(quizid)
 
   async function verifyTokenFetch(jwttoken) {
 
@@ -101,24 +103,30 @@ function App() {
             <li>
               <Link to="/quizcreator">create a quiz</Link>
             </li>
+            <li>
+              <Link to="/questionsetcreator">create a question</Link>
+            </li>
           </ul>
         </div>
         <Switch>
 
           <Route path="/dashboard">
-            <Dashboard setToken={setToken} />
+            <Dashboard />
           </Route>
           <Route path="/leaderboard">
-            <Preferences setToken={setToken} />
+            <Preferences />
           </Route>
           <Route path="/quizzes/c++">
-            <Quiz setToken={setToken} />
+            <Quiz />
           </Route>
           <Route path="/logout">
-            <Logout setToken={setToken} />
+            <Logout />
           </Route>
           <Route path="/quizcreator">
-            <QuizCreator setToken={setToken} />
+            <QuizCreator setQuizid={setQuizid} />
+          </Route>
+          <Route path="/questionsetcreator">
+            <QuestionsetCreator quizid={quizid} />
           </Route>
         </Switch>
       </BrowserRouter>

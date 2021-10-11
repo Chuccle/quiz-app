@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import useToken from '../App/useToken';
+import { QuestionsetCreator } from './QuestionsetCreator';
 
 
 
@@ -23,12 +25,13 @@ async function insertquizfunction(quizdata) {
 
 
 
-export function QuizCreator() {
+
+export function QuizCreator({setQuizid}) {
 
   const { token } = useToken();
-  const [quizid, SetQuizId] = useState();
-  const [quizname, setQuizName] = useState();
 
+  const [quizname, setQuizName] = useState();
+  
 
 
   async function getQuizID() {
@@ -45,7 +48,14 @@ export function QuizCreator() {
       }
       else if (response.id) {
 
-        SetQuizId(response.id)
+        setQuizid(response.id)
+        
+    
+
+       return <QuestionsetCreator  />
+   
+
+       
 
 
       }
@@ -57,7 +67,7 @@ export function QuizCreator() {
     }
   }
 
-  console.log(quizid)
+
 
 
 
@@ -69,6 +79,7 @@ export function QuizCreator() {
       <div className="insertQuizdatabutton">
         <button onClick={e => getQuizID()}>slub</button>
       </div></>
+      
 
 
   )
@@ -79,3 +90,6 @@ export function QuizCreator() {
 
 }
 
+QuizCreator.propTypes = {
+  setQuizid: PropTypes.func.isRequired
+};

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './Login.css';
 import Register from '../Register/Register.js'
 
@@ -21,9 +20,9 @@ async function loginUser(credentials) {
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [page, setPage] = useState()
+  const [Nextpage, setNextPage] = useState()
 
-  if (page) {
+  if (Nextpage) {
 
     return <Register setToken={setToken} />
 
@@ -41,6 +40,7 @@ export default function Login({ setToken }) {
           username,
           password
         });
+        console.log(token)
         setToken(token);
       }
       catch
@@ -78,7 +78,7 @@ export default function Login({ setToken }) {
         </label>
       </form>
       <div className="registerPageButton" >
-        <button onClick={e => setPage(true)}>Register Instead</button>
+        <button onClick={e => setNextPage(true)}>Register Instead</button>
       </div>
     </div>
 

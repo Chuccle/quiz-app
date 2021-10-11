@@ -17,14 +17,14 @@ CREATE TABLE `Questions` (
 );
 
 CREATE TABLE `Question_Options` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `questionID` int,
   `questionText` text,
   `isCorrect` boolean
 );
 
 CREATE TABLE `quiz_user_answers` (
-  `id` int PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `userid` int, 
   `questionID` int,
   `Question_Options` int

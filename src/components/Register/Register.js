@@ -21,9 +21,9 @@ export default function Register({ setToken }) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [passwordCompare, setPasswordCompare] = useState();
-    const [page, setPage] = useState()
+    const [Nextpage, setNextPage] = useState()
 
-    if (page) {
+    if (Nextpage) {
 
         return <Login setToken={setToken} />
 
@@ -78,7 +78,7 @@ export default function Register({ setToken }) {
                 </div>
             </form>
             <div className="loginPageButton" >
-                <button onClick={e => setPage(true)}>Login page</button>
+                <button onClick={e => setNextPage(true)}>Login page</button>
 
             </div>
         </div>
