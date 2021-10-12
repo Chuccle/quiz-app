@@ -20,7 +20,7 @@ function App() {
 
   const [tokenAuthorised, SetAuthState] = useState(false);
   const { token, setToken } = useToken();
-  const [quizid, setQuizid] = useState()
+  
 
 
 

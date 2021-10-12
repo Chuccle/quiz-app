@@ -26,12 +26,21 @@ async function insertquizfunction(quizdata) {
 
 
 
-export function QuizCreator({setQuizid}) {
+export function QuizCreator() {
 
   const { token } = useToken();
 
+  const [quizid, setQuizid] = useState()
+
   const [quizname, setQuizName] = useState();
-  
+
+  if (quizid) {
+
+    return <QuestionsetCreator quizid={quizid} />
+
+
+  }
+
 
 
   async function getQuizID() {
@@ -49,13 +58,11 @@ export function QuizCreator({setQuizid}) {
       else if (response.id) {
 
         setQuizid(response.id)
-        
-    
 
-       return <QuestionsetCreator  />
-   
 
-       
+
+
+
 
 
       }
@@ -79,7 +86,7 @@ export function QuizCreator({setQuizid}) {
       <div className="insertQuizdatabutton">
         <button onClick={e => getQuizID()}>slub</button>
       </div></>
-      
+
 
 
   )
@@ -90,6 +97,4 @@ export function QuizCreator({setQuizid}) {
 
 }
 
-QuizCreator.propTypes = {
-  setQuizid: PropTypes.func.isRequired
-};
+
