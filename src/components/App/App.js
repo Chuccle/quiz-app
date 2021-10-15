@@ -20,13 +20,13 @@ function App() {
 
   const [tokenAuthorised, SetAuthState] = useState(false);
   const { token, setToken } = useToken();
-  const [quizid, setQuizid] = useState()
+  
 
 
 
   tokenAuthoriser()
 
-console.log(quizid)
+
 
   async function verifyTokenFetch(jwttoken) {
 
@@ -123,10 +123,7 @@ console.log(quizid)
             <Logout />
           </Route>
           <Route path="/quizcreator">
-            <QuizCreator setQuizid={setQuizid} />
-          </Route>
-          <Route path="/questionsetcreator">
-            <QuestionsetCreator quizid={quizid} />
+            <QuizCreator  />
           </Route>
         </Switch>
       </BrowserRouter>
