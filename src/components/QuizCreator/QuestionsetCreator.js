@@ -23,8 +23,8 @@ async function insertquestionset(questiondata) {
 
 
 
-export function QuestionsetCreator({quizid}) {
-    
+export function QuestionsetCreator({ quizid }) {
+
 
     const [questionname, setQuestionName] = useState("");
     const [incorrect1, setIncorrect1] = useState("");
@@ -32,7 +32,7 @@ export function QuestionsetCreator({quizid}) {
     const [incorrect3, setIncorrect3] = useState("");
     const [correct, setCorrect] = useState("");
 
- 
+
 
     async function insertDataClearForm() {
         var response = await insertquestionset({ quizid, questionname, incorrect1, incorrect2, incorrect3, correct });
@@ -69,22 +69,22 @@ export function QuestionsetCreator({quizid}) {
             <p>What will be the name of your questionname</p>
             <input type="text" onChange={e => setQuestionName(e.target.value)} />
         </div>
-        <div>
-            <p>What will be the first incorrect option</p>
-            <input type="text" onChange={e => setIncorrect1(e.target.value)} />
-        </div>
-        <div>
-            <p>What will be the second incorrect {quizid}</p>
-            <input type="text" onChange={e => setIncorrect2(e.target.value)} />
-        </div>
-        <div>
-            <p>What will be the third incorrect option</p>
-            <input type="text" onChange={e => setIncorrect3(e.target.value)} />
-        </div>
-        <div>
-            <p>What will be the correct option</p>
-            <input type="text" onChange={e => setCorrect(e.target.value)} />
-        </div>
+            <div>
+                <p>What will be the first incorrect option</p>
+                <input type="text" onChange={e => setIncorrect1(e.target.value)} />
+            </div>
+            <div>
+                <p>What will be the second incorrect {quizid}</p>
+                <input type="text" onChange={e => setIncorrect2(e.target.value)} />
+            </div>
+            <div>
+                <p>What will be the third incorrect option</p>
+                <input type="text" onChange={e => setIncorrect3(e.target.value)} />
+            </div>
+            <div>
+                <p>What will be the correct option</p>
+                <input type="text" onChange={e => setCorrect(e.target.value)} />
+            </div>
             <div className="insertQuizdatabutton">
                 <button onClick={e => insertDataClearForm()}>slub</button>
             </div></>

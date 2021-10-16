@@ -46,17 +46,17 @@ export function QuizCreator() {
 
 
   async function getQuizID() {
-    
+
     try {
-    
+
       var response = await insertquizfunction({ token, quizname });
 
-    
+
 
       if (response.error) {
 
-      //if server returns an error with the data i.e: because of referential integrity conflict
-      
+        //if server returns an error with the data i.e: because of referential integrity conflict
+
         alert("there was an error inserting your quiz")
 
 
