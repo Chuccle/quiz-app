@@ -103,9 +103,6 @@ function App() {
             <li>
               <Link to="/quizcreator">create a quiz</Link>
             </li>
-            <li>
-              <Link to="/questionsetcreator">create a question</Link>
-            </li>
           </ul>
         </div>
         <Switch>
