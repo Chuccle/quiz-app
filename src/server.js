@@ -257,17 +257,17 @@ app.use('/insertquiz', (req, res) => {
       if (error) throw res.send({ Error: error });
 
 
-      //  let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?" 
-      // let values = [
-      // [results.insertId, quizdata.Questionset.Options.Incorrect1, 0],
-      //  [results.insertId, quizdata.Questionset.Options.Incorrect2, 0],
-      // [results.insertId, quizdata.Questionset.Options.Incorrect3, 0],
-      //  [results.insertId, quizdata.Questionset.Options.Correct, 1]
-      //    ]
+      let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
+      let values = [
+        [results1.insertId, quizdata.Questionset.Options.Incorrect1, 0],
+        [results1.insertId, quizdata.Questionset.Options.Incorrect2, 0],
+        [results1.insertId, quizdata.Questionset.Options.Incorrect3, 0],
+        [results1.insertId, quizdata.Questionset.Options.Correct, 1]
+      ]
 
-      // find a way of bulk inserting the entire set of options with 2d arraylist?
+      // find a way of bulk inserting the entire set of options with 2d arraylist? done!
 
-      connection.query('insert into question_options (questionID, questionText, isCorrect) values (?, ?, ?);', [results1.insertId, quizdata.Questionset.Options.Correct, 1], function (error, results2, fields) {
+      connection.query(sql, [values], function (error, results2, fields) {
         if (error) throw res.send({ Error: error });
 
         res.send({
