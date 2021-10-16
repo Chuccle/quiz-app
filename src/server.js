@@ -64,21 +64,16 @@ app.use('/retrieveStats', (req, res) => {
 
     //We use primary key as the parameter because it guarantees a unique record without any conflicts
 
-    connection.query('SELECT * FROM accounts WHERE id = ?', [decoded.data], function (error, results, fields) {
+    connection.query('SELECT Quizzes.id, Quizzes.quizname, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?', [decoded.data], function (error, results, fields) {
 
-
-      if (error) throw res.send({
+if (error) throw res.send({
         error: error
 
       });
 
-      // Just in case we have a conflict (two identical records existing) we perform a hard check
-      if (results.length > 0 && results.length < 2) {
-        console.log("works!")
+  
+        console.log(results)
         res.send({ results: results })
-
-
-      }
 
 
     })
