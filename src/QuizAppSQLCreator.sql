@@ -25,7 +25,8 @@ CREATE TABLE `Question_Options` (
 
 CREATE TABLE `quiz_user_answers` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `userid` int, 
+  `userid` int,
+  `quizID` int, 
   `score` int
 
 -- much more practical to query this in terms of performance and also allows us to make a single neat insert at the end of a quiz
@@ -43,6 +44,6 @@ ALTER TABLE `Question_Options` ADD FOREIGN KEY (`questionID`) REFERENCES `Questi
 
 ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`userid`) REFERENCES `accounts` (`id`);
 
---ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`questionID`) REFERENCES `Questions` (`id`);
+ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`quizID`) REFERENCES `Quizzes` (`id`);
 
---ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`Question_Options`) REFERENCES `Question_Options` (`id`);
+-- ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`Question_Options`) REFERENCES `Question_Options` (`id`);
