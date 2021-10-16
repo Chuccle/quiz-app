@@ -21,9 +21,9 @@ export default function Register({ setToken }) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [passwordCompare, setPasswordCompare] = useState();
-    const [page, setPage] = useState()
+    const [Nextpage, setNextPage] = useState()
 
-    if (page) {
+    if (Nextpage) {
 
         return <Login setToken={setToken} />
 
@@ -58,22 +58,27 @@ export default function Register({ setToken }) {
                     <p>Username</p>
                     <input type="text" onChange={e => setUserName(e.target.value)} />
                 </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" onChange={e => setPassword(e.target.value)} />
-                </label>
-                <label>
-                    <p>Retype Password</p>
-                    <input type="password" onChange={e => setPasswordCompare(e.target.value)} />
-                </label>
-                <label>
                 <div>
-                    <button type="submit">Submit</button>
+                    <label>
+                        <p>Password</p>
+                        <input type="password" onChange={e => setPassword(e.target.value)} />
+                    </label>
                 </div>
-                </label>
-             </form>
+                <div>
+                    <label>
+                        <p>Retype Password</p>
+                        <input type="password" onChange={e => setPasswordCompare(e.target.value)} />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <button type="submit">Submit</button>
+
+                    </label>
+                </div>
+            </form>
             <div className="loginPageButton" >
-                <button onClick={e => setPage(true)}>Login page</button>
+                <button onClick={e => setNextPage(true)}>Login page</button>
 
             </div>
         </div>

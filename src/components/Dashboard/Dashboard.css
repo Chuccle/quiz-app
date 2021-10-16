@@ -7,3 +7,50 @@ text {
   -webkit-filter: drop-shadow(6px 6px 10px #000000cc);
   filter: drop-shadow(6px 6px 10px #000000cc);
 }
+
+td{
+  text-align: center;
+
+  height: 150px;
+
+  font-size: x-large;
+
+}
+
+.jumbotron{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: black;
+  text-align: center;
+}
+
+
+thead {
+
+background-color: black;
+color: rgb(255, 255, 255);
+text-align: center;
+font-size: x-large;
+
+
+}
+
+.table td, .table th{
+
+
+vertical-align: middle;
+align-self: center;
+}
+ 
+
+.react-icons {
+  vertical-align: middle;
+}
+
+
+/*.col_spacer{
+  margin-left: 10%;
+
+
+
+} */
