@@ -7,7 +7,6 @@ import Container from 'react-bootstrap/Container';
 import { TiStarOutline } from "react-icons/ti";
 import { TiStarFullOutline } from "react-icons/ti";
 import { Link } from 'react-router-dom'
-import { Array } from 'core-js';
 import { useEffect } from 'react';
 
 
@@ -43,15 +42,24 @@ async function getUserData(credentials) {
 export default function Dashboard() {
   // I could neaten this up to one usestate hook call but this is more readable
 
-  const [data, SetData] = useState()
+  const [score, SetScore1] = useState()
+  const [score2, SetScore2] = useState()
+  const [score3, SetScore3] = useState()
+  const [score4, SetScore4] = useState()
+  const [quizname, SetQuizname1] = useState()
+  const [quizname2, SetQuizname2] = useState()
+  const [quizname3, SetQuizname3] = useState()
+  const [quizname4, SetQuizname4] = useState()
+
+
 
   const { token } = useToken();
 
-  
-  
-  
+
+
+
   useEffect(() => {
-    if (!data) {
+    if (!score) {
 
       async function SetStatsfunc() {
         const StatsArray = []
@@ -87,15 +95,19 @@ export default function Dashboard() {
                 value[2] = 0
               }
 
-              
-
-              SetData(StatsArray)
-
-            
-
-
-
             });
+
+            //lord forgive me for my trespasses
+            SetScore1(StatsArray[0][2])
+            SetScore2(StatsArray[1][2])
+            SetScore3(StatsArray[2][2])
+            SetScore4(StatsArray[3][2])
+
+            SetQuizname1(StatsArray[0][1])
+            SetQuizname2(StatsArray[1][1])
+            SetQuizname3(StatsArray[2][1])
+            SetQuizname4(StatsArray[3][1])
+
 
 
 
@@ -117,7 +129,8 @@ export default function Dashboard() {
     }
   })
 
-  
+  console.log(quizname)
+
 
   // console.log(quizname)
   // console.log(score)
@@ -129,7 +142,7 @@ export default function Dashboard() {
 
       <Jumbotron fluid>
 
-        <h1 className="header">Welcome to your dashboard: {data}</h1>
+        <h1 className="header">Welcome to your dashboard: user</h1>
         <h5>Please select a quiz</h5>
 
       </Jumbotron>
@@ -138,30 +151,37 @@ export default function Dashboard() {
         <thead>
           <tr>
             <th scope="col">Quiz</th>
-            <th scope="col" class="col_spacer"> Difficulty</th>
             <th scope="col">Best score</th>
             <th scope="col"> Begin quiz </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{data}</td>
-            <td class="col_spacer" > Easy <Container><TiStarFullOutline /> < TiStarOutline /> < TiStarOutline /></Container> </td>
-            <td>{data}%</td>
+            <td>{quizname}</td>
+
+            <td>{score}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
           <tr>
-            <td>{data}</td>
-            <td class="col_spacer">Hard <Container><TiStarFullOutline /> <TiStarFullOutline />   <TiStarFullOutline /> </Container> </td>
-            <td>{data}%</td>
+            <td>{quizname2}</td>
+
+            <td>{score2}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
           <tr>
-            <td>{data}</td>
-            <td class="col_spacer">Intermediate <Container> <TiStarFullOutline /> <TiStarFullOutline /> < TiStarOutline /> </Container> </td>
-            <td>{data}%</td>
+            <td>{quizname3}</td>
+
+            <td>{score3}%</td>
+            <td><Link to='/quizzes/c++'>Start</Link>   </td>
+
+          </tr>
+
+          <tr>
+            <td>{quizname4}</td>
+
+            <td>{score4}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
