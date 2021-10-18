@@ -41,7 +41,7 @@ export default function Dashboard() {
   // I could neaten this up to one usestate hook call but this is more readable
 
   const [data, SetData] = useState()
-
+  const [name, SetName] = useState()
 
 
 
@@ -86,6 +86,7 @@ export default function Dashboard() {
 
 
             SetData(StatsArray)
+            SetName(userStats.name[0].username)
 
           }
 
@@ -104,10 +105,7 @@ export default function Dashboard() {
     }
   })
 
-
-
-
-  //This as a buffer check to ensure that data is defined????
+//This as a buffer check to ensure that data is defined????
   if (data) {
 
     //array cleanup has to be done here for some reason and not in async function else bugs
@@ -123,7 +121,7 @@ export default function Dashboard() {
 
         <Jumbotron fluid>
 
-          <h1 className="header">Welcome to your dashboard: user</h1>
+          <h1 className="header">Welcome to your dashboard: {name}</h1>
           <h5>Please select a quiz</h5>
 
         </Jumbotron>

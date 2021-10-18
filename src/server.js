@@ -68,26 +68,35 @@ app.use('/retrieveStats', (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded.data)
 
-    //We use primary key as the parameter because it guarantees a unique record without any conflicts
-
-    connection.query('SELECT Quizzes.id, Quizzes.quizname, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
+    connection.query('SELECT username FROM accounts Where id = ?',
       [decoded.data],
-      function (error, results, fields) {
+      function (error, resultsname, fields) {
 
         if (error) throw res.send({
           error: error
 
         });
+        //We use primary key as the parameter because it guarantees a unique record without any conflicts
+
+        connection.query('SELECT Quizzes.id, Quizzes.quizname, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
+          [decoded.data],
+          function (error, resultsquizzes, fields) {
+
+            if (error) throw res.send({
+              error: error
+
+            });
 
 
-        console.log(results)
-        res.send({
-          results: results
-        })
+            console.log(resultsname)
+            res.send({
+              results: resultsquizzes,
+              name: resultsname
+            })
 
 
+          })
       })
-
 
   } catch (err) {
     res.send({
