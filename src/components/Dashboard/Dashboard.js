@@ -3,11 +3,9 @@ import useToken from '../App/useToken';
 import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import Container from 'react-bootstrap/Container';
-import { TiStarOutline } from "react-icons/ti";
-import { TiStarFullOutline } from "react-icons/ti";
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react';
+import { useRef } from 'react';
 
 
 
@@ -42,15 +40,9 @@ async function getUserData(credentials) {
 export default function Dashboard() {
   // I could neaten this up to one usestate hook call but this is more readable
 
-  const [score, SetScore1] = useState()
-  const [score2, SetScore2] = useState()
-  const [score3, SetScore3] = useState()
-  const [score4, SetScore4] = useState()
-  const [quizname, SetQuizname1] = useState()
-  const [quizname2, SetQuizname2] = useState()
-  const [quizname3, SetQuizname3] = useState()
-  const [quizname4, SetQuizname4] = useState()
-
+  const [data, SetData] = useState()
+  
+  const bruh = useRef()
 
 
   const { token } = useToken();
@@ -59,10 +51,14 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    if (!score) {
+    if (!data) {
 
+    
+
+      
       async function SetStatsfunc() {
         const StatsArray = []
+        
 
         try {
           const userStats = await getUserData({ token })
@@ -71,6 +67,7 @@ export default function Dashboard() {
           if (userStats.error) {
 
             alert("The server was unable verify your identity")
+      
 
 
 
@@ -92,24 +89,16 @@ export default function Dashboard() {
 
               if (value[2] == null) {
 
-                value[2] = 0
+                value[2] = "0"
+                
+             
               }
 
-            });
+              //WHY DOESNT THIS WORK
 
-            //lord forgive me for my trespasses
-            SetScore1(StatsArray[0][2])
-            SetScore2(StatsArray[1][2])
-            SetScore3(StatsArray[2][2])
-            SetScore4(StatsArray[3][2])
-
-            SetQuizname1(StatsArray[0][1])
-            SetQuizname2(StatsArray[1][1])
-            SetQuizname3(StatsArray[2][1])
-            SetQuizname4(StatsArray[3][1])
-
-
-
+          
+       SetData(StatsArray)
+            })
 
 
 
@@ -126,11 +115,18 @@ export default function Dashboard() {
 
       SetStatsfunc()
 
+      
     }
-  })
+    })
 
-  console.log(quizname)
+  
+console.log(data)
 
+
+//This as a buffer check to ensure that data is defined????
+if (data) {
+bruh.current = data
+console.log(bruh.current)
 
   // console.log(quizname)
   // console.log(score)
@@ -157,31 +153,31 @@ export default function Dashboard() {
         </thead>
         <tbody>
           <tr>
-            <td>{quizname}</td>
+            <td>{bruh.current[0][1]}</td>
 
-            <td>{score}%</td>
+            <td>{bruh.current[0][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
           <tr>
-            <td>{quizname2}</td>
+            <td>{bruh.current[1][1]}</td>
 
-            <td>{score2}%</td>
+            <td>{bruh.current[1][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
           <tr>
-            <td>{quizname3}</td>
+            <td>{bruh.current[2][1]}</td>
 
-            <td>{score3}%</td>
+            <td>{bruh.current[2][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
 
           <tr>
-            <td>{quizname4}</td>
+            <td>{bruh.current[3][1]}</td>
 
-            <td>{score4}%</td>
+            <td>{bruh.current[3][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
@@ -193,5 +189,14 @@ export default function Dashboard() {
     </div>
   );
 
-
+  }
+  
+  else { 
+    return ( <div>
+    
+    <h2>loading...</h2>
+    
+    </div>)
+  }
+  
 }
