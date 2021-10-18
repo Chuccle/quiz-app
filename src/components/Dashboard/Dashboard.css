@@ -39,15 +39,17 @@ thead {
 .table td,
 .table th {
 
-
+  width: 33%;
   vertical-align: middle;
   align-self: center;
+  
 }
 
 
 .react-icons {
   vertical-align: middle;
 }
+
 
 
 /*.col_spacer{
