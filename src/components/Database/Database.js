@@ -1,4 +1,3 @@
-
 const mysql = require('mysql');
 
 //Connection pooling for large scale implementation?
@@ -12,10 +11,10 @@ const mysql = require('mysql');
 
 
 const connection = mysql.createConnection({
-	host     : 'localhost',
-	user     : 'root',
-	password : '',
-	database : 'nodelogin'
+	host: 'localhost',
+	user: 'root',
+	password: '',
+	database: 'nodelogin'
 });
 
 module.exports = connection;

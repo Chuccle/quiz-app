@@ -105,7 +105,6 @@ function App() {
           </ul>
         </div>
         <Switch>
-
           <Route path="/dashboard">
             <Dashboard />
           </Route>

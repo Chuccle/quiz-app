@@ -3,12 +3,13 @@ text {
   font-weight: bolder;
   font-family: 'Nunito', sans-serif;
 }
+
 .shadow {
   -webkit-filter: drop-shadow(6px 6px 10px #000000cc);
   filter: drop-shadow(6px 6px 10px #000000cc);
 }
 
-td{
+td {
   text-align: center;
 
   height: 150px;
@@ -17,7 +18,7 @@ td{
 
 }
 
-.jumbotron{
+.jumbotron {
   margin-top: 20px;
   margin-bottom: 20px;
   color: black;
@@ -27,21 +28,22 @@ td{
 
 thead {
 
-background-color: black;
-color: rgb(255, 255, 255);
-text-align: center;
-font-size: x-large;
+  background-color: black;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  font-size: x-large;
 
 
 }
 
-.table td, .table th{
+.table td,
+.table th {
 
 
-vertical-align: middle;
-align-self: center;
+  vertical-align: middle;
+  align-self: center;
 }
- 
+
 
 .react-icons {
   vertical-align: middle;

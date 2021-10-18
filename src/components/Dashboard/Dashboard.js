@@ -3,10 +3,9 @@ import useToken from '../App/useToken';
 import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import Container from 'react-bootstrap/Container';
-import { TiStarOutline } from "react-icons/ti";
-import { TiStarFullOutline } from "react-icons/ti";
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react';
+import { useRef } from 'react';
 
 
 
@@ -40,56 +39,94 @@ async function getUserData(credentials) {
 
 export default function Dashboard() {
   // I could neaten this up to one usestate hook call but this is more readable
- // const [email, SetEmail] = useState()
-  const [id, SetId] = useState()
-  const [username, setUserName] = useState()
 
+  const [data, SetData] = useState()
+  
+  const bruh = useRef()
 
 
   const { token } = useToken();
 
-  async function SetStatsfunc() {
-
-
-    //  console.log(token)
-    const userStats = await getUserData({ token })
-
-
-    try {
-
-      if (userStats.error) {
-
-        alert("The server was unable to verify your session")
 
 
 
+  useEffect(() => {
+    if (!data) {
+
+    
+
+      
+      async function SetStatsfunc() {
+        const StatsArray = []
+        
+
+        try {
+          const userStats = await getUserData({ token })
+
+
+          if (userStats.error) {
+
+            alert("The server was unable verify your identity")
+      
+
+
+
+          }
+          else if (userStats.results) {
+
+            //We destructure our array of objects into an 2d arraylist of values
+
+            const objectArray = (userStats.results)
+
+            objectArray.forEach(value => {
+
+              StatsArray.push(Object.values(value))
+
+            });
+
+          
+       SetData(StatsArray)
+           
+
+
+
+          }
+
+        } catch {
+
+          alert("A server error occurred")
+
+
+        }
       }
-      else if (userStats.results) {
-
-        //change this to quiz score stats and display it on dashboard
-        //  console.log(userStats.results)
-       // SetEmail(userStats.results[0].email)
-        SetId(userStats.results[0].id)
-        setUserName(userStats.results[0].username)
 
 
+      SetStatsfunc()
 
-      }
-
-    } catch {
-
-      alert("A server error occurred")
-
-
+      
     }
+    })
 
+  
+console.log(data)
+
+
+//This as a buffer check to ensure that data is defined????
+if (data) {
+bruh.current = data
+
+//array cleanup has to be done here for some reason 
+bruh.current.forEach(element => {
+  if (element[2] == null){
+  element[2] = 0
   }
+});
 
-  SetStatsfunc()
 
+console.log(bruh.current)
 
-  //console.log(username)
-  // console.log(email)
+  // console.log(quizname)
+  // console.log(score)
   // console.log(id)
 
 
@@ -98,7 +135,7 @@ export default function Dashboard() {
 
       <Jumbotron fluid>
 
-        <h1 className="header">Welcome to your dashboard: {username}</h1>
+        <h1 className="header">Welcome to your dashboard: user</h1>
         <h5>Please select a quiz</h5>
 
       </Jumbotron>
@@ -107,30 +144,37 @@ export default function Dashboard() {
         <thead>
           <tr>
             <th scope="col">Quiz</th>
-            <th scope="col" class="col_spacer"> Difficulty</th>
             <th scope="col">Best score</th>
             <th scope="col"> Begin quiz </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>C++</td>
-            <td class="col_spacer" > Easy <Container><TiStarFullOutline /> < TiStarOutline /> < TiStarOutline /></Container> </td>
-            <td>{id}%</td>
+            <td>{bruh.current[0][1]}</td>
+
+            <td>{bruh.current[0][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
           <tr>
-            <td>Java</td>
-            <td class="col_spacer">Hard <Container><TiStarFullOutline /> <TiStarFullOutline />   <TiStarFullOutline /> </Container> </td>
-            <td>{id}%</td>
+            <td>{bruh.current[1][1]}</td>
+
+            <td>{bruh.current[1][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
           <tr>
-            <td>PHP</td>
-            <td class="col_spacer">Intermediate <Container> <TiStarFullOutline /> <TiStarFullOutline /> < TiStarOutline /> </Container> </td>
-            <td>{id}%</td>
+            <td>{bruh.current[2][1]}</td>
+
+            <td>{bruh.current[2][2]}%</td>
+            <td><Link to='/quizzes/c++'>Start</Link>   </td>
+
+          </tr>
+
+          <tr>
+            <td>{bruh.current[3][1]}</td>
+
+            <td>{bruh.current[3][2]}%</td>
             <td><Link to='/quizzes/c++'>Start</Link>   </td>
 
           </tr>
@@ -142,5 +186,14 @@ export default function Dashboard() {
     </div>
   );
 
-
+  }
+  
+  else { 
+    return ( <div>
+    
+    <h2>loading...</h2>
+    
+    </div>)
+  }
+  
 }

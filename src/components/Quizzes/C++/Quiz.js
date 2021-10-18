@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../Quiz.css'
 export default function Quiz() {
 
-    const questions = [
+	const questions = [
 		{
 			questionText: 'What is type of programming language is C++?',
 			answerOptions: [
@@ -41,7 +41,7 @@ export default function Quiz() {
 		},
 	];
 
-	
+
 
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);

@@ -9,7 +9,9 @@ const app = express();
 
 
 
-require('dotenv').config({ path: '../src/.env' })
+require('dotenv').config({
+  path: '../src/.env'
+})
 //TODO add JSON WEB TOKEN module to handle token verification? done
 
 // add a password hashing algo like bcrypt or argon2id, module would be easiest
@@ -33,12 +35,16 @@ app.use('/auth', (req, res) => {
     console.log(decoded.data)
 
 
-    res.send({ message: decoded })
+    res.send({
+      message: decoded
+    })
 
   } catch (err) {
 
 
-    res.send({ error: err })
+    res.send({
+      error: err
+    })
     console.log(err)
 
   }
@@ -64,28 +70,29 @@ app.use('/retrieveStats', (req, res) => {
 
     //We use primary key as the parameter because it guarantees a unique record without any conflicts
 
-    connection.query('SELECT * FROM accounts WHERE id = ?', [decoded.data], function (error, results, fields) {
+    connection.query('SELECT Quizzes.id, Quizzes.quizname, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
+      [decoded.data],
+      function (error, results, fields) {
+
+        if (error) throw res.send({
+          error: error
+
+        });
 
 
-      if (error) throw res.send({
-        error: error
-
-      });
-
-      // Just in case we have a conflict (two identical records existing) we perform a hard check
-      if (results.length > 0 && results.length < 2) {
-        console.log("works!")
-        res.send({ results: results })
+        console.log(results)
+        res.send({
+          results: results
+        })
 
 
-      }
-
-
-    })
+      })
 
 
   } catch (err) {
-    res.send({ error: err })
+    res.send({
+      error: err
+    })
     console.log(err)
 
   }
@@ -104,7 +111,9 @@ app.use('/login', (req, res) => {
   // ? characters in query represent escaped placeholders for our username and password 
   connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
 
-    if (error) throw res.send({ Error: error });
+    if (error) throw res.send({
+      Error: error
+    });
 
     // Getting the 'response' from the database and sending it to our route. This is were the data is.
     if (results.length > 0) {
@@ -120,11 +129,17 @@ app.use('/login', (req, res) => {
         //signing our token to send to client
         //we use primary key of our record as it guaranatees a unique identifier of the record
 
-        const jwtToken = jwt.sign({ data: results[0].id }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+        const jwtToken = jwt.sign({
+          data: results[0].id
+        }, process.env.JWT_SECRET, {
+          expiresIn: process.env.ACCESS_TOKEN_LIFE
+        });
 
         //sending our token response back to the client
 
-        res.send({ token: jwtToken });
+        res.send({
+          token: jwtToken
+        });
 
 
       }
@@ -149,7 +164,9 @@ app.use('/register', (req, res) => {
 
   // first we look for any duplicate usernames with the table
   connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
-    if (error) throw res.send({ Error: error });
+    if (error) throw res.send({
+      Error: error
+    });
 
     // if usernames aren't conflicting, hash password and create new record with supplied data
     if (results.length === 0) {
@@ -160,24 +177,34 @@ app.use('/register', (req, res) => {
 
         connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [username, hash], function (error, results, fields) {
           // Getting the 'response' from the database and sending it to our route. This is were the data is.
-          if (error) throw res.send({ Error: error });
+          if (error) throw res.send({
+            Error: error
+          });
 
         })
 
         //Query again to find record ID of usuing the username
 
         connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
-          if (error) throw res.send({ Error: error });
+          if (error) throw res.send({
+            Error: error
+          });
 
           //signing our token to send to client using record ID as payload 
 
-          const jwtToken = jwt.sign({ data: results[0].id }, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_LIFE });
+          const jwtToken = jwt.sign({
+            data: results[0].id
+          }, process.env.JWT_SECRET, {
+            expiresIn: process.env.ACCESS_TOKEN_LIFE
+          });
 
 
           //sending our token response back to the client
 
           console.log(jwtToken.data)
-          res.send({ token: jwtToken });
+          res.send({
+            token: jwtToken
+          });
 
 
         })
@@ -189,7 +216,9 @@ app.use('/register', (req, res) => {
     } else {
 
 
-      res.send({ error: "username already exists" })
+      res.send({
+        error: "username already exists"
+      })
 
 
     }
@@ -212,11 +241,15 @@ app.use('/insertquiz', (req, res) => {
   console.log(decodedtoken.data)
 
   connection.query('INSERT INTO quizzes (quizname, created_by_userid) VALUES (?, ?);', [quizname, decodedtoken.data], function (error, results, fields) {
-    if (error) throw res.send({ Error: error });
+    if (error) throw res.send({
+      Error: error
+    });
 
     console.log(results.insertId)
 
-    res.send({ id: results.insertId })
+    res.send({
+      id: results.insertId
+    })
     //probably not best way to return last insert but ultimately will achieve same effect
 
     //connection.query('SELECT MAX(id) FROM quizzes WHERE userid = ?', [decodedtoken], function (error, results, fields) {
@@ -233,14 +266,11 @@ app.use('/insertquiz', (req, res) => {
   app.use('/insertquestionset', (req, res) => {
 
 
-    const quizdata =
-    {
+    const quizdata = {
       Quizid: req.body.quizid,
-      Questionset:
-      {
+      Questionset: {
         Questionname: req.body.questionname,
-        Options:
-        {
+        Options: {
           Incorrect1: req.body.incorrect1,
           Incorrect2: req.body.incorrect2,
           Incorrect3: req.body.incorrect3,
@@ -254,7 +284,9 @@ app.use('/insertquiz', (req, res) => {
 
 
     connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [quizdata.Quizid, quizdata.Questionset.Questionname], function (error, results1, fields) {
-      if (error) throw res.send({ Error: error });
+      if (error) throw res.send({
+        Error: error
+      });
 
 
       let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
@@ -268,7 +300,9 @@ app.use('/insertquiz', (req, res) => {
       // find a way of bulk inserting the entire set of options with 2d arraylist? done!
 
       connection.query(sql, [values], function (error, results2, fields) {
-        if (error) throw res.send({ Error: error });
+        if (error) throw res.send({
+          Error: error
+        });
 
         res.send({
           results: results2.insertId
@@ -287,8 +321,3 @@ app.use('/insertquiz', (req, res) => {
 
 
 app.listen(8080, () => console.log('API is running on http://localhost:8080/login'))
-
-
-
-
-
