@@ -84,21 +84,9 @@ export default function Dashboard() {
 
             });
 
-            //on our 2d arraylist we cleanup the data on score
-            StatsArray.forEach(value => {
-
-              if (value[2] == null) {
-
-                value[2] = "0"
-                
-             
-              }
-
-              //WHY DOESNT THIS WORK
-
           
        SetData(StatsArray)
-            })
+           
 
 
 
@@ -126,6 +114,15 @@ console.log(data)
 //This as a buffer check to ensure that data is defined????
 if (data) {
 bruh.current = data
+
+//array cleanup has to be done here for some reason 
+bruh.current.forEach(element => {
+  if (element[2] == null){
+  element[2] = 0
+  }
+});
+
+
 console.log(bruh.current)
 
   // console.log(quizname)
