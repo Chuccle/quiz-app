@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router';
 import '../Quiz.css'
 export default function Quiz() {
+
+	const location = useLocation()
+	console.log(location.state.quizid)
+
+
 
 	const questions = [
 		{

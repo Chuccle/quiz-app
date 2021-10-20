@@ -100,7 +100,7 @@ function App() {
               <Link to="/logout">Log out</Link>
             </li>
             <li>
-              <Link to="/quizcreator">create a quiz</Link>
+              <Link to="/quizcreator">Create a quiz</Link>
             </li>
           </ul>
         </div>

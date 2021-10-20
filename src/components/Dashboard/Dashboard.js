@@ -74,7 +74,7 @@ export default function Dashboard() {
           }
           else if (userStats.results) {
 
-            //We destructure our array of objects into an 2d arraylist of values
+            //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
             const objectArray = (userStats.results)
 
@@ -105,7 +105,11 @@ export default function Dashboard() {
     }
   })
 
-//This as a buffer check to ensure that data is defined????
+
+
+
+
+  //This as a buffer check to ensure that data is defined????
   if (data) {
 
     //array cleanup has to be done here for some reason and not in async function else bugs
@@ -114,6 +118,7 @@ export default function Dashboard() {
         element[2] = 0
       }
     });
+
 
     console.log(data)
     return (
@@ -135,26 +140,17 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{data[0][1]}</td>
-              <td>{data[0][2]}%</td>
-              <td><Link to='/quizzes/c++'>Start</Link>   </td>
-            </tr>
-            <tr>
-              <td>{data[1][1]}</td>
-              <td>{data[1][2]}%</td>
-              <td><Link to='/quizzes/c++'>Start</Link>   </td>
-            </tr>
-            <tr>
-              <td>{data[2][1]}</td>
-              <td>{data[2][2]}%</td>
-              <td><Link to='/quizzes/c++'>Start</Link>   </td>
-            </tr>
-            <tr>
-              <td>{data[3][1]}</td>
-              <td>{data[3][2]}%</td>
-              <td><Link to='/quizzes/c++'>Start</Link>   </td>
-            </tr>
+            {
+            // much better and scales to the amount of rows sent
+            data.map(function (rowdata) {
+            return <tr>
+                <td>{rowdata[1]}</td>
+                <td>{rowdata[2]}%</td>
+                <td><Link to={{ pathname: '/quizzes/c++', state: { quizid: rowdata[0] } }}>Start </Link>   </td>
+              </tr>
+            })
+            
+            }
           </tbody>
         </table>
       </div>

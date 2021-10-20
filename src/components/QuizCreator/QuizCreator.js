@@ -1,25 +1,26 @@
+import { get } from 'core-js/core/dict';
 import React, { useState } from 'react';
 import useToken from '../App/useToken';
 import { QuestionsetCreator } from './QuestionsetCreator';
 
 
 
-async function insertquizfunction(quizdata) {
+//async function insertquizfunction(quizdata) {
 
-  return fetch('http://localhost:8080/insertquiz', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
+  //return fetch('http://localhost:8080/insertquiz', {
+    //method: 'POST',
+    //headers: {
+      //'Content-Type': 'application/json'
 
-    },
+   // },
+//
+  //  body: JSON.stringify(quizdata)
 
-    body: JSON.stringify(quizdata)
+  //})
+//
+ ///   .then(data => data.json())
 
-  })
-
-    .then(data => data.json())
-
-}
+//}
 
 
 
@@ -27,61 +28,21 @@ async function insertquizfunction(quizdata) {
 
 export function QuizCreator() {
 
-  const { token } = useToken();
-
-  const [quizid, setQuizid] = useState()
-
   const [quizname, setQuizName] = useState();
+  const [quizdifficulty, setQuizDifficulty] = useState();
+  const [quizlength, setQuizLength] = useState();
+  const [nextpage, SetNextPage ] = useState(false);
 
-  if (quizid) {
+
+
 
     //after quizid is assigned we pass the data onto the questionset functional component
+if (nextpage) {
 
+    return <QuestionsetCreator quizdata={quizname, quizdifficulty, quizlength } />
+}
 
-    return <QuestionsetCreator quizid={quizid} />
-
-
-  }
-
-
-
-  async function getQuizID() {
-
-    try {
-
-      var response = await insertquizfunction({ token, quizname });
-
-
-
-      if (response.error) {
-
-        //if server returns an error with the data i.e: because of referential integrity conflict
-
-        alert("there was an error inserting your quiz")
-
-
-      }
-      else if (response.id) {
-        //if server fetch returns expected response we assign the object daya to quizid
-
-        setQuizid(response.id)
-
-
-
-
-
-
-
-      }
-    } catch {
-
-      //if fetch request error occurs
-      alert("A server communication error occurred")
-
-
-    }
-  }
-
+  
 
 
 
@@ -91,8 +52,16 @@ export function QuizCreator() {
       <p>What will be the name of your quiz</p>
       <input type="text" onChange={e => setQuizName(e.target.value)} />
     </div>
+    <div>
+    <p>How difficult is your quiz?</p>
+      <input type="text" onChange={e => setQuizDifficulty(e.target.value)} />
+    </div>    
+    <div>
+    <p>What is the length of your quiz?</p>
+      <input type="text" onChange={e => setQuizLength(e.target.value)} />
+    </div>
       <div className="insertQuizdatabutton">
-        <button onClick={e => getQuizID()}>slub</button>
+        <button onClick={e => SetNextPage(true)}>slub</button>
       </div></>
 
 
