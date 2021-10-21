@@ -3,8 +3,14 @@ import { useLocation } from 'react-router';
 import '../Quiz.css'
 export default function Quiz() {
 
+
+
 	const location = useLocation()
-	console.log(location.state.quizid)
+	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [showScore, setShowScore] = useState(false);
+	const [score, setScore] = useState(0);
+	
+
 
 
 
@@ -49,9 +55,7 @@ export default function Quiz() {
 
 
 
-	const [currentQuestion, setCurrentQuestion] = useState(0);
-	const [showScore, setShowScore] = useState(false);
-	const [score, setScore] = useState(0);
+
 
 	const handleAnswerOptionClick = (isCorrect) => {
 		if (isCorrect) {

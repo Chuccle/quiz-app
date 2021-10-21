@@ -39,7 +39,7 @@ export function QuizCreator() {
     //after quizid is assigned we pass the data onto the questionset functional component
 if (nextpage) {
 
-    return <QuestionsetCreator quizdata={quizname, quizdifficulty, quizlength } />
+    return <QuestionsetCreator quizname={quizname} quizdifficulty={quizdifficulty} quizlength={quizlength}       />
 }
 
   

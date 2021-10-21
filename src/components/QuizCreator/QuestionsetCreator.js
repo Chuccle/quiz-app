@@ -23,8 +23,9 @@ async function insertquestionset(questiondata) {
 
 
 
-export function QuestionsetCreator({ quizid }) {
+export function QuestionsetCreator({ quizname, quizdifficulty, quizlength}) {
 
+    console.log(quizname, quizdifficulty, quizlength)
 
     const [questionname, setQuestionName] = useState("");
     const [incorrect1, setIncorrect1] = useState("");
@@ -35,7 +36,7 @@ export function QuestionsetCreator({ quizid }) {
 
 
     async function insertDataClearForm() {
-        var response = await insertquestionset({ quizid, questionname, incorrect1, incorrect2, incorrect3, correct });
+        var response = await insertquestionset({ quizname, questionname, incorrect1, incorrect2, incorrect3, correct });
 
         try {
 
@@ -74,7 +75,7 @@ export function QuestionsetCreator({ quizid }) {
                 <input type="text" onChange={e => setIncorrect1(e.target.value)} />
             </div>
             <div>
-                <p>What will be the second incorrect {quizid}</p>
+                <p>What will be the second incorrect {quizname}</p>
                 <input type="text" onChange={e => setIncorrect2(e.target.value)} />
             </div>
             <div>
