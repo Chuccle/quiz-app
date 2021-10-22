@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import useToken from '../App/useToken';
 
 
 
@@ -28,7 +28,7 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
 
     console.log(quizname, quizdifficulty, quizlength)
-
+    const { token } = useToken();
     const [questionname, setQuestionName] = useState("");
     const [incorrect1, setIncorrect1] = useState("");
     const [incorrect2, setIncorrect2] = useState("");
@@ -39,11 +39,14 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     const [quizdone, SetQuizDone] = useState(false);
 
 
+    
     async function insertDataClearForm() {
-        while (quizlength>=questionnumber){
-        setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+        if (quizlength>questionnumber){
+       
+            setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
         const quizdata = {
             Quizname: quizname,
+            Difficulty: quizdifficulty,
             Questionset: {
               Questionname: questionname,
               Options: {
@@ -54,11 +57,14 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
               }
             }
           }
+        
           SetQuestionSet(questionset => [...questionset, quizdata])
-          return
+        
 
         }
-var response = await insertquestionset({ quizname, quizdifficulty, questionname, incorrect1, incorrect2, incorrect3, correct });
+        else {
+        
+var response = await insertquestionset({questionset, token});
 
         try {
 
@@ -84,9 +90,11 @@ var response = await insertquestionset({ quizname, quizdifficulty, questionname,
 
         }
     }
+}
 
+    console.log(questionset)
 
-    while (quizdone==false) {
+    while (quizdone===false) {
         return (
             <><div>
                 <p>What will be the name of your questionname</p>
