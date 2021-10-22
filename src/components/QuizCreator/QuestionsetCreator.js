@@ -34,11 +34,30 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     const [incorrect2, setIncorrect2] = useState("");
     const [incorrect3, setIncorrect3] = useState("");
     const [correct, setCorrect] = useState("");
+    const [questionset, SetQuestionSet] = useState([])
     const [questionnumber, setQuestionNumber] = useState(0);
+    const [quizdone, SetQuizDone] = useState(false);
 
 
     async function insertDataClearForm() {
+        while (quizlength>=questionnumber){
         setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+        const quizdata = {
+            Quizname: quizname,
+            Questionset: {
+              Questionname: questionname,
+              Options: {
+                Incorrect1: incorrect1,
+                Incorrect2: incorrect2,
+                Incorrect3: incorrect3,
+                Correct: correct
+              }
+            }
+          }
+          SetQuestionSet(questionset => [...questionset, quizdata])
+          return
+
+        }
 var response = await insertquestionset({ quizname, quizdifficulty, questionname, incorrect1, incorrect2, incorrect3, correct });
 
         try {
@@ -54,6 +73,7 @@ var response = await insertquestionset({ quizname, quizdifficulty, questionname,
 
                 setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
                 //reset all fields and increment question number 
+                SetQuizDone(true)
 
 
             }
@@ -66,7 +86,7 @@ var response = await insertquestionset({ quizname, quizdifficulty, questionname,
     }
 
 
-    while (quizlength > questionnumber) {
+    while (quizdone==false) {
         return (
             <><div>
                 <p>What will be the name of your questionname</p>
