@@ -141,15 +141,15 @@ export default function Dashboard() {
           </thead>
           <tbody>
             {
-            // much better and scales to the amount of rows sent
-            data.map(function (rowdata) {
-            return <tr>
-                <td>{rowdata[1]}</td>
-                <td>{rowdata[2]}%</td>
-                <td><Link to={{ pathname: '/quizzes/c++', state: { quizid: rowdata[0] } }}>Start </Link>   </td>
-              </tr>
-            })
-            
+              // much better and scales to the amount of rows sent
+              data.map(function (rowdata) {
+                return <tr>
+                  <td>{rowdata[1]}</td>
+                  <td>{rowdata[2]}%</td>
+                  <td><Link to={{ pathname: '/quizzes/c++', state: { quizid: rowdata[0] } }}>Start </Link>   </td>
+                </tr>
+              })
+
             }
           </tbody>
         </table>
