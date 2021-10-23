@@ -64,9 +64,10 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
         }
         else {
         
-var response = await insertquestionset({questionset, token});
+            try {
+            var response = await insertquestionset({questionset, token});
 
-        try {
+        
 
             if (response.error) {
 
@@ -75,9 +76,9 @@ var response = await insertquestionset({questionset, token});
 
 
             }
-            else if (response.ok) {
+            else if (response.QuizStatus ==="Inserted") {
 
-                setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+        
                 //reset all fields and increment question number 
             
 
@@ -122,7 +123,10 @@ var response = await insertquestionset({questionset, token});
 
 
         )
-    } insertDataClearForm()
+    } 
+    
+
+    insertDataClearForm()
 
     return (<><div>
         
