@@ -36,66 +36,66 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     const [correct, setCorrect] = useState("");
     const [questionset, SetQuestionSet] = useState([])
     const [questionnumber, setQuestionNumber] = useState(0);
-    
 
 
-    
+
+
     async function insertDataClearForm() {
-        if (quizlength>questionnumber){
-       
+        if (quizlength > questionnumber) {
+
             setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
-        const quizdata = {
-            Quizname: quizname,
-            Difficulty: quizdifficulty,
-            Questionset: {
-              Questionname: questionname,
-              Options: {
-                Incorrect1: incorrect1,
-                Incorrect2: incorrect2,
-                Incorrect3: incorrect3,
-                Correct: correct
-              }
+            const quizdata = {
+                Quizname: quizname,
+                Difficulty: quizdifficulty,
+                Questionset: {
+                    Questionname: questionname,
+                    Options: {
+                        Incorrect1: incorrect1,
+                        Incorrect2: incorrect2,
+                        Incorrect3: incorrect3,
+                        Correct: correct
+                    }
+                }
             }
-          }
-        
-          SetQuestionSet(questionset => [...questionset, quizdata])
-        
+
+            SetQuestionSet(questionset => [...questionset, quizdata])
+
 
         }
         else {
-        
+
             try {
-            var response = await insertquestionset({questionset, token});
-
-        
-
-            if (response.error) {
+                var response = await insertquestionset({ questionset, token });
 
 
-                alert("there was an error inserting your quiz")
+
+                if (response.error) {
+
+
+                    alert("there was an error inserting your quiz")
+
+
+                }
+                else if (response.QuizStatus === "Inserted") {
+
+
+                    //reset all fields and increment question number 
+
+
+
+                }
+            } catch {
+
+                alert("A server communication error occurred")
 
 
             }
-            else if (response.QuizStatus ==="Inserted") {
-
-        
-                //reset all fields and increment question number 
-            
-
-
-            }
-        } catch {
-
-            alert("A server communication error occurred")
-
-
         }
     }
-}
 
     console.log(questionset)
 
-    while (quizlength>questionnumber) {
+    while (quizlength > questionnumber) {
         return (
             <><div>
                 <p>What will be the name of your questionname</p>
@@ -123,14 +123,14 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
 
         )
-    } 
-    
+    }
+
 
     insertDataClearForm()
 
     return (<><div>
-        
-<h2>WELL DONE</h2>
+
+        <h2>WELL DONE</h2>
     </div></>
     )
 }
