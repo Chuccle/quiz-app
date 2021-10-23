@@ -36,7 +36,7 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     const [correct, setCorrect] = useState("");
     const [questionset, SetQuestionSet] = useState([])
     const [questionnumber, setQuestionNumber] = useState(0);
-    const [quizdone, SetQuizDone] = useState(false);
+    
 
 
     
@@ -79,7 +79,7 @@ var response = await insertquestionset({questionset, token});
 
                 setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
                 //reset all fields and increment question number 
-                SetQuizDone(true)
+            
 
 
             }
@@ -94,7 +94,7 @@ var response = await insertquestionset({questionset, token});
 
     console.log(questionset)
 
-    while (quizdone===false) {
+    while (quizlength>questionnumber) {
         return (
             <><div>
                 <p>What will be the name of your questionname</p>
@@ -117,14 +117,16 @@ var response = await insertquestionset({questionset, token});
                     <input type="text" onChange={e => setCorrect(e.target.value)} />
                 </div>
                 <div className="insertQuizdatabutton">
-                    <button onClick={e => insertDataClearForm()} >slub</button>
+                    <button onClick={e => insertDataClearForm()} >Submit</button>
                 </div></>
 
 
         )
-    }
+    } insertDataClearForm()
+
     return (<><div>
-        <p>Quiz successfully created!</p>
+        
+<h2>WELL DONE</h2>
     </div></>
     )
 }
