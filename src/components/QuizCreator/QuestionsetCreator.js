@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import useToken from '../App/useToken';
 
 
 
@@ -28,43 +28,72 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
 
     console.log(quizname, quizdifficulty, quizlength)
-
+    const { token } = useToken();
     const [questionname, setQuestionName] = useState("");
     const [incorrect1, setIncorrect1] = useState("");
     const [incorrect2, setIncorrect2] = useState("");
     const [incorrect3, setIncorrect3] = useState("");
     const [correct, setCorrect] = useState("");
+    const [questionset, SetQuestionSet] = useState([])
     const [questionnumber, setQuestionNumber] = useState(0);
 
 
+
+
     async function insertDataClearForm() {
-        setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
-var response = await insertquestionset({ quizname, quizdifficulty, questionname, incorrect1, incorrect2, incorrect3, correct });
+        if (quizlength > questionnumber) {
 
-        try {
-
-            if (response.error) {
-
-
-                alert("there was an error inserting your quiz")
-
-
+            setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+            const quizdata = {
+                Quizname: quizname,
+                Difficulty: quizdifficulty,
+                Questionset: {
+                    Questionname: questionname,
+                    Options: {
+                        Incorrect1: incorrect1,
+                        Incorrect2: incorrect2,
+                        Incorrect3: incorrect3,
+                        Correct: correct
+                    }
+                }
             }
-            else if (response.ok) {
 
-                setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
-                //reset all fields and increment question number 
-
-
-            }
-        } catch {
-
-            alert("A server communication error occurred")
+            SetQuestionSet(questionset => [...questionset, quizdata])
 
 
         }
+        else {
+
+            try {
+                var response = await insertquestionset({ questionset, token });
+
+
+
+                if (response.error) {
+
+
+                    alert("there was an error inserting your quiz")
+
+
+                }
+                else if (response.QuizStatus === "Inserted") {
+
+
+                    //reset all fields and increment question number 
+
+
+
+                }
+            } catch {
+
+                alert("A server communication error occurred")
+
+
+            }
+        }
     }
 
+    console.log(questionset)
 
     while (quizlength > questionnumber) {
         return (
@@ -89,14 +118,19 @@ var response = await insertquestionset({ quizname, quizdifficulty, questionname,
                     <input type="text" onChange={e => setCorrect(e.target.value)} />
                 </div>
                 <div className="insertQuizdatabutton">
-                    <button onClick={e => insertDataClearForm()} >slub</button>
+                    <button onClick={e => insertDataClearForm()} >Submit</button>
                 </div></>
 
 
         )
     }
+
+
+    insertDataClearForm()
+
     return (<><div>
-        <p>Quiz successfully created!</p>
+
+        <h2>WELL DONE</h2>
     </div></>
     )
 }
