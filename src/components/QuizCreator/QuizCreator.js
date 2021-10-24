@@ -13,7 +13,10 @@ export function QuizCreator() {
 
 
 
-  //after quizid is assigned we pass the data onto the questionset functional component
+  // After values are assigned we pass the data onto the questionset functional component
+
+  // TODO validation {field presence check, dropdown for difficulty and length?}
+  
   if (nextpage) {
 
     return <QuestionsetCreator quizname={quizname} quizdifficulty={quizdifficulty} quizlength={quizlength} />

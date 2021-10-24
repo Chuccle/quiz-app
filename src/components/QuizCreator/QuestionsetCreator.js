@@ -3,9 +3,9 @@ import useToken from '../App/useToken';
 
 
 
-async function insertquestionset(questiondata) {
+async function insertQuiz(questiondata) {
 
-    return fetch('http://localhost:8080/insertquestionset', {
+    return fetch('http://localhost:8080/insertquiz', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -60,12 +60,13 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
             SetQuestionSet(questionset => [...questionset, quizdata])
 
+            // TODO reset all fields
 
         }
         else {
 
             try {
-                var response = await insertquestionset({ questionset, token });
+                var response = await insertQuiz({ questionset, token });
 
 
 
@@ -79,7 +80,7 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
                 else if (response.QuizStatus === "Inserted") {
 
 
-                    //reset all fields and increment question number 
+
 
 
 
@@ -94,6 +95,8 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     }
 
     console.log(questionset)
+
+    //TODO presence check validation
 
     while (quizlength > questionnumber) {
         return (

@@ -12,7 +12,7 @@ const app = express();
 require('dotenv').config({
   path: '../src/.env'
 })
-//TODO add JSON WEB TOKEN module to handle token verification? done
+// TODO add JSON WEB TOKEN module to handle token verification? done
 
 // add a password hashing algo like bcrypt or argon2id, module would be easiest
 
@@ -78,7 +78,7 @@ app.use('/retrieveStats', (req, res) => {
         });
         //We use primary key as the parameter because it guarantees a unique record without any conflicts
 
-        connection.query('SELECT Quizzes.id, Quizzes.quizname, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
+        connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
           [decoded.data],
           function (error, resultsquizzes, fields) {
 
@@ -177,7 +177,7 @@ app.use('/register', (req, res) => {
       Error: error
     });
 
-    // if usernames aren't conflicting, hash password and create new record with supplied data
+    // If usernames aren't conflicting, hash password and create new record with supplied data
     if (results.length === 0) {
 
       bcrypt.hash(password, 10, function (err, hash) {
@@ -192,14 +192,14 @@ app.use('/register', (req, res) => {
 
         })
 
-        //Query again to find record ID of usuing the username
+        // Query again to find record ID of usuing the username
 
         connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
           if (error) throw res.send({
             Error: error
           });
 
-          //signing our token to send to client using record ID as payload 
+          // Signing our token to send to client using record ID as payload 
 
           const jwtToken = jwt.sign({
             data: results[0].id
@@ -208,7 +208,7 @@ app.use('/register', (req, res) => {
           });
 
 
-          //sending our token response back to the client
+          // Sending our token response back to the client
 
           console.log(jwtToken.data)
           res.send({
@@ -240,40 +240,7 @@ app.use('/register', (req, res) => {
 
 
 
-// app.use('/insertquiz', (req, res) => {
-
-
-//   var quizname = req.body.quizname;
-
-
-//   const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
-//   console.log(decodedtoken.data)
-
-//   connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?,?);', [quizname, decodedtoken.data], function (error, results, fields) {
-//     if (error) throw res.send({
-//       Error: error
-//     });
-
-//     console.log(results.insertId)
-
-//     res.send({
-//       id: results.insertId
-//     })
-//     //probably not best way to return last insert but ultimately will achieve same effect
-
-//     //connection.query('SELECT MAX(id) FROM quizzes WHERE userid = ?', [decodedtoken], function (error, results, fields) {
-//     //if (error) throw res.send({ Error: error });
-//     //console.log(results[0].id)
-//     //})
-
-//     //find a way of saving this variable as a state? then calling it per each questionset entry for fk
-//     //alternatively send back the id to client and have it returned for each questionset http request
-
-//   })
-// })
-
-
-app.use('/insertquestionset', (req, res) => {
+app.use('/insertquiz', (req, res) => {
 
   console.log(req.body.questionset[0])
   const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);

@@ -114,8 +114,8 @@ export default function Dashboard() {
 
     //array cleanup has to be done here for some reason and not in async function else bugs
     data.forEach(element => {
-      if (element[2] == null) {
-        element[2] = 0
+      if (element[3] == null) {
+        element[3] = 0
       }
     });
 
@@ -136,6 +136,8 @@ export default function Dashboard() {
             <tr>
               <th scope="col">Quiz</th>
               <th scope="col">Best score</th>
+              <th scope="col">Difficulty</th>
+
               <th scope="col"> Begin quiz </th>
             </tr>
           </thead>
@@ -145,7 +147,8 @@ export default function Dashboard() {
               data.map(function (rowdata) {
                 return <tr>
                   <td>{rowdata[1]}</td>
-                  <td>{rowdata[2]}%</td>
+                  <td>{rowdata[3]}%</td>
+                  <td>{rowdata[2]}</td>
                   <td><Link to={{ pathname: '/quizzes/c++', state: { quizid: rowdata[0] } }}>Start </Link>   </td>
                 </tr>
               })
