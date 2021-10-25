@@ -1,60 +1,76 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import '../Quiz.css'
+import useToken from '../../App/useToken';
+
+async function fetchQuestions(data) {
+
+	return fetch('http://localhost:8080/retrievequestions', {
+	  method: 'POST',
+	  headers: {
+		'Content-Type': 'application/json'
+  
+	  },
+  
+	  body: JSON.stringify(data)
+  
+	})
+  
+	  .then(data => data.json())
+  
+  }
+  
+
+
+
+
 export default function Quiz() {
 
 
-
-	const location = useLocation()
+const {token} = useToken()
+	const quizdata = useLocation()
+	const quizid = quizdata.state.quizid
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
+	const [questiondata, setQuestionData] = useState()
 	
+	
+	
+	
+async function getquestiondata () {
+
+		if (!questiondata) {
+		const question = await fetchQuestions({token, quizid}) 
+
+   
+
+ setQuestionData(question)
+
+
+ console.log (question)
+}
+	}
 
 
 
-
-	const questions = [
-		{
-			questionText: 'What is type of programming language is C++?',
-			answerOptions: [
-				{ answerText: 'Procedural-oriented', isCorrect: false },
-				{ answerText: 'Functional', isCorrect: false },
-				{ answerText: 'Object-oriented', isCorrect: true },
-				{ answerText: 'Scripting', isCorrect: false },
-			],
-		},
-		{
-			questionText: 'Who is CEO of Tesla?',
-			answerOptions: [
-				{ answerText: 'Jeff Bezos', isCorrect: false },
-				{ answerText: 'Elon Musk', isCorrect: true },
-				{ answerText: 'Bill Gates', isCorrect: false },
-				{ answerText: 'Tony Stark', isCorrect: false },
-			],
-		},
-		{
-			questionText: 'The iPhone was created by which company?',
-			answerOptions: [
-				{ answerText: 'Apple', isCorrect: true },
-				{ answerText: 'Intel', isCorrect: false },
-				{ answerText: 'Amazon', isCorrect: false },
-				{ answerText: 'Microsoft', isCorrect: false },
-			],
-		},
-		{
-			questionText: 'How many Harry Potter books are there?',
-			answerOptions: [
-				{ answerText: '1', isCorrect: false },
-				{ answerText: '4', isCorrect: false },
-				{ answerText: '6', isCorrect: false },
-				{ answerText: '7', isCorrect: true },
-			],
-		},
-	];
+	getquestiondata()
+		
 
 
 
+const questions = [
+	{
+		questionText: 'What is type of programming language is C++?',
+		answerOptions: [
+			{ answerText: 'Procedural-oriented', isCorrect: false },
+			{ answerText: 'Functional', isCorrect: false },
+			{ answerText: 'Object-oriented', isCorrect: true },
+			{ answerText: 'Scripting', isCorrect: false },
+		],
+	},
+	
+];
 
 
 	const handleAnswerOptionClick = (isCorrect) => {

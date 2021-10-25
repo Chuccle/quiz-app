@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
 const app = express();
 
 
@@ -279,9 +280,92 @@ app.use('/insertquiz', (req, res) => {
       })
 
     })
-res.send({QuizStatus: "Inserted"})
+    
+    res.send({
+      QuizStatus: "Inserted"
+    })
 
   })
+
+
+})
+
+
+
+
+app.use('/retrievequestions', (req, res) => {
+
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET);
+  const quizid = req.body.quizid
+  const questionqueue = []
+
+
+  connection.query('Select * from questions where Quizid = ?', [quizid], function (error, questionresults, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+
+
+
+    for (let i = 0; questionresults.length > i; i++) {
+
+
+      connection.query('Select * from question_options where questionID = ? AND isCorrect = 1', [questionresults[i].id], function (error, CorrectOptionResults, fields) {
+        if (error) throw res.send({
+          Error: error
+        });
+
+        connection.query('Select * from question_options where questionID = ? AND isCorrect = 0', [questionresults[i].id], function (error, IncorrectOptionResults, fields) {
+          if (error) throw res.send({
+            Error: error
+          });
+
+
+
+          const questiondata = {
+
+            Questionid: questionresults[i].id,
+            Questiontext: questionresults[i].Question,
+            Options: {
+              Correct: CorrectOptionResults[0].questionText,
+              Incorrect1: IncorrectOptionResults[0].questionText,
+              Incorrect2: IncorrectOptionResults[1].questionText,
+              Incorrect3: IncorrectOptionResults[2].questionText,
+            }
+
+          }
+
+          questionqueue.push(questiondata)
+
+          // inefficient, runs every iteration
+
+          if (i === (questionresults.length - 1)) {
+
+            res.send({
+              questions: questionqueue
+            })
+
+
+
+          }
+
+
+        })
+
+
+      })
+
+    }
+
+
+    // why does this return an empty array?
+    //console.log(questionqueue?)
+
+
+
+  })
+
 
 
 })
