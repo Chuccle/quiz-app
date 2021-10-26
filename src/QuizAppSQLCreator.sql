@@ -7,6 +7,7 @@ CREATE TABLE `accounts` (
 CREATE TABLE `Quizzes` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `quizname` text,
+  `difficulty` text,
   `created_by_userid` int
 );
 

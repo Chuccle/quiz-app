@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import Dashboard from '../Dashboard/Dashboard.js';
 import Login from '../Login/Login.js';
@@ -10,71 +10,72 @@ import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import './App.css';
 
 
+
 // import Settings from '../Settings/Settings.js'
 
 
+async function verifyTokenFetch(jwttoken) {
+
+  return fetch('http://localhost:8080/auth', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+
+    },
+    body: JSON.stringify(jwttoken)
+  })
+
+
+    .then(data => data.json())
+
+    .catch(error => {
+      console.error('There has been a problem with your fetch operation:', error)
+    });
+
+
+}
 
 function App() {
 
 
   const [tokenAuthorised, SetAuthState] = useState(false);
   const { token, setToken } = useToken();
-  
+
+
+  useEffect(() => {
+    async function tokenAuthoriser() {
+
+      try {
+
+        const response = await verifyTokenFetch({ token });
+        //     console.log(response)
+
+
+        if (response.error) {
+
+          SetAuthState(false)
 
 
 
-  tokenAuthoriser()
 
+        }
+        else if (response.message) {
 
+          SetAuthState(true)
+          console.log(response.message)
 
-  async function verifyTokenFetch(jwttoken) {
+        }
+      } catch {
 
-    return fetch('http://localhost:8080/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-
-      },
-      body: JSON.stringify(jwttoken)
-    })
-
-
-      .then(data => data.json())
-
-      .catch(error => {
-        console.error('There has been a problem with your fetch operation:', error)
-      });
-
-
-  }
-
-  async function tokenAuthoriser() {
-    var response = await verifyTokenFetch({ token });
-    //     console.log(response)
-
-    try {
-
-      if (response.error) {
-
-        SetAuthState(false)
-
-
+        alert("A server error occurred")
 
 
       }
-      else if (response.message) {
-
-        SetAuthState(true)
-        console.log(response.message)
-
-      }
-    } catch {
-
-      alert("A server error occurred")
-
-
     }
-  }
+
+    tokenAuthoriser()
+
+  })
 
 
   if (!tokenAuthorised) {
@@ -100,7 +101,7 @@ function App() {
               <Link to="/logout">Log out</Link>
             </li>
             <li>
-              <Link to="/quizcreator">create a quiz</Link>
+              <Link to="/quizcreator">Create a quiz</Link>
             </li>
           </ul>
         </div>
@@ -118,7 +119,7 @@ function App() {
             <Logout />
           </Route>
           <Route path="/quizcreator">
-            <QuizCreator  />
+            <QuizCreator />
           </Route>
         </Switch>
       </BrowserRouter>

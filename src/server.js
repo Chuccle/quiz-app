@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
 const app = express();
 
 
@@ -12,7 +13,7 @@ const app = express();
 require('dotenv').config({
   path: '../src/.env'
 })
-//TODO add JSON WEB TOKEN module to handle token verification? done
+// TODO add JSON WEB TOKEN module to handle token verification? done
 
 // add a password hashing algo like bcrypt or argon2id, module would be easiest
 
@@ -68,26 +69,35 @@ app.use('/retrieveStats', (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded.data)
 
-    //We use primary key as the parameter because it guarantees a unique record without any conflicts
-
-    connection.query('SELECT Quizzes.id, Quizzes.quizname, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
+    connection.query('SELECT username FROM accounts Where id = ?',
       [decoded.data],
-      function (error, results, fields) {
+      function (error, resultsname, fields) {
 
         if (error) throw res.send({
           error: error
 
         });
+        //We use primary key as the parameter because it guarantees a unique record without any conflicts
+
+        connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
+          [decoded.data],
+          function (error, resultsquizzes, fields) {
+
+            if (error) throw res.send({
+              error: error
+
+            });
 
 
-        console.log(results)
-        res.send({
-          results: results
-        })
+            console.log(resultsname)
+            res.send({
+              results: resultsquizzes,
+              name: resultsname
+            })
 
 
+          })
       })
-
 
   } catch (err) {
     res.send({
@@ -168,7 +178,7 @@ app.use('/register', (req, res) => {
       Error: error
     });
 
-    // if usernames aren't conflicting, hash password and create new record with supplied data
+    // If usernames aren't conflicting, hash password and create new record with supplied data
     if (results.length === 0) {
 
       bcrypt.hash(password, 10, function (err, hash) {
@@ -183,14 +193,14 @@ app.use('/register', (req, res) => {
 
         })
 
-        //Query again to find record ID of usuing the username
+        // Query again to find record ID of usuing the username
 
         connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
           if (error) throw res.send({
             Error: error
           });
 
-          //signing our token to send to client using record ID as payload 
+          // Signing our token to send to client using record ID as payload 
 
           const jwtToken = jwt.sign({
             data: results[0].id
@@ -199,7 +209,7 @@ app.use('/register', (req, res) => {
           });
 
 
-          //sending our token response back to the client
+          // Sending our token response back to the client
 
           console.log(jwtToken.data)
           res.send({
@@ -233,91 +243,133 @@ app.use('/register', (req, res) => {
 
 app.use('/insertquiz', (req, res) => {
 
-
-  var quizname = req.body.quizname;
-
-
+  console.log(req.body.questionset[0])
   const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
-  console.log(decodedtoken.data)
+  console.log(req.body.questionset[0].Quizname, decodedtoken.data, req.body.questionset[0].Difficulty)
 
-  connection.query('INSERT INTO quizzes (quizname, created_by_userid) VALUES (?, ?);', [quizname, decodedtoken.data], function (error, results, fields) {
+
+  connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?,?);', [req.body.questionset[0].Quizname, decodedtoken.data, req.body.questionset[0].Difficulty], function (error, results, fields) {
     if (error) throw res.send({
       Error: error
     });
 
-    console.log(results.insertId)
 
-    res.send({
-      id: results.insertId
-    })
-    //probably not best way to return last insert but ultimately will achieve same effect
+    req.body.questionset.forEach(questiondata => {
 
-    //connection.query('SELECT MAX(id) FROM quizzes WHERE userid = ?', [decodedtoken], function (error, results, fields) {
-    //if (error) throw res.send({ Error: error });
-    //console.log(results[0].id)
-    //})
-
-    //find a way of saving this variable as a state? then calling it per each questionset entry for fk
-    //alternatively send back the id to client and have it returned for each questionset http request
-
-  })
-
-
-  app.use('/insertquestionset', (req, res) => {
-
-
-    const quizdata = {
-      Quizid: req.body.quizid,
-      Questionset: {
-        Questionname: req.body.questionname,
-        Options: {
-          Incorrect1: req.body.incorrect1,
-          Incorrect2: req.body.incorrect2,
-          Incorrect3: req.body.incorrect3,
-          Correct: req.body.correct
-        }
-      }
-    }
-
-
-
-
-
-    connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [quizdata.Quizid, quizdata.Questionset.Questionname], function (error, results1, fields) {
-      if (error) throw res.send({
-        Error: error
-      });
-
-
-      let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
-      let values = [
-        [results1.insertId, quizdata.Questionset.Options.Incorrect1, 0],
-        [results1.insertId, quizdata.Questionset.Options.Incorrect2, 0],
-        [results1.insertId, quizdata.Questionset.Options.Incorrect3, 0],
-        [results1.insertId, quizdata.Questionset.Options.Correct, 1]
-      ]
-
-      // find a way of bulk inserting the entire set of options with 2d arraylist? done!
-
-      connection.query(sql, [values], function (error, results2, fields) {
+      connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [results.insertId, questiondata.Questionset.Questionname], function (error, results1, fields) {
         if (error) throw res.send({
           Error: error
         });
 
-        res.send({
-          results: results2.insertId
+
+        let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
+        let values = [
+          [results1.insertId, questiondata.Questionset.Options.Incorrect1, 0],
+          [results1.insertId, questiondata.Questionset.Options.Incorrect2, 0],
+          [results1.insertId, questiondata.Questionset.Options.Incorrect3, 0],
+          [results1.insertId, questiondata.Questionset.Options.Correct, 1]
+        ]
+
+        // find a way of bulk inserting the entire set of options with 2d arraylist? done!
+
+        connection.query(sql, [values], function (error, results2, fields) {
+          if (error) throw res.send({
+            Error: error
+          });
         })
+      })
+
+    })
+    
+    res.send({
+      QuizStatus: "Inserted"
+    })
+
+  })
 
 
+})
+
+
+
+
+app.use('/retrievequestions', (req, res) => {
+
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET);
+  const quizid = req.body.quizid
+  const questionqueue = []
+
+
+  connection.query('Select * from questions where Quizid = ?', [quizid], function (error, questionresults, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+
+
+
+    for (let i = 0; questionresults.length > i; i++) {
+
+
+      connection.query('Select * from question_options where questionID = ? AND isCorrect = 1', [questionresults[i].id], function (error, CorrectOptionResults, fields) {
+        if (error) throw res.send({
+          Error: error
+        });
+
+        connection.query('Select * from question_options where questionID = ? AND isCorrect = 0', [questionresults[i].id], function (error, IncorrectOptionResults, fields) {
+          if (error) throw res.send({
+            Error: error
+          });
+
+
+
+          const questiondata = {
+
+            Questionid: questionresults[i].id,
+            Questiontext: questionresults[i].Question,
+            Options: {
+              Correct: CorrectOptionResults[0].questionText,
+              Incorrect1: IncorrectOptionResults[0].questionText,
+              Incorrect2: IncorrectOptionResults[1].questionText,
+              Incorrect3: IncorrectOptionResults[2].questionText,
+            }
+
+          }
+
+          questionqueue.push(questiondata)
+
+          // inefficient, runs every iteration
+
+          if (i === (questionresults.length - 1)) {
+
+            res.send({
+              questions: questionqueue
+            })
+
+
+
+          }
+
+
+        })
 
 
       })
 
-    })
+    }
+
+
+    // why does this return an empty array?
+    //console.log(questionqueue?)
+
 
 
   })
+
+
+
 })
+
 
 
 app.listen(8080, () => console.log('API is running on http://localhost:8080/login'))

@@ -1,11 +1,11 @@
 import { useState } from "react";
+import useToken from '../App/useToken';
 
 
 
+async function insertQuiz(questiondata) {
 
-async function insertquestionset(questiondata) {
-
-    return fetch('http://localhost:8080/insertquestionset', {
+    return fetch('http://localhost:8080/insertquiz', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -23,75 +23,119 @@ async function insertquestionset(questiondata) {
 
 
 
-export function QuestionsetCreator({ quizid }) {
+export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
 
+
+    console.log(quizname, quizdifficulty, quizlength)
+    const { token } = useToken();
     const [questionname, setQuestionName] = useState("");
     const [incorrect1, setIncorrect1] = useState("");
     const [incorrect2, setIncorrect2] = useState("");
     const [incorrect3, setIncorrect3] = useState("");
     const [correct, setCorrect] = useState("");
+    const [questionset, SetQuestionSet] = useState([])
+    const [questionnumber, setQuestionNumber] = useState(0);
+
 
 
 
     async function insertDataClearForm() {
-        var response = await insertquestionset({ quizid, questionname, incorrect1, incorrect2, incorrect3, correct });
+        if (quizlength > questionnumber) {
 
-        try {
+            setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+            const quizdata = {
+                Quizname: quizname,
+                Difficulty: quizdifficulty,
+                Questionset: {
+                    Questionname: questionname,
+                    Options: {
+                        Incorrect1: incorrect1,
+                        Incorrect2: incorrect2,
+                        Incorrect3: incorrect3,
+                        Correct: correct
+                    }
+                }
+            }
 
-            if (response.error) {
+            SetQuestionSet(questionset => [...questionset, quizdata])
+
+            // TODO reset all fields
+
+        }
+        else {
+
+            try {
+                var response = await insertQuiz({ questionset, token });
 
 
-                alert("there was an error inserting your quiz")
+
+                if (response.error) {
+
+
+                    alert("there was an error inserting your quiz")
+
+
+                }
+                else if (response.QuizStatus === "Inserted") {
+
+
+
+
+
+
+                }
+            } catch {
+
+                alert("A server communication error occurred")
 
 
             }
-            else if (response.ok) {
-
-                //reset all fields and increment question number 
-
-
-            }
-        } catch {
-
-            alert("A server communication error occurred")
-
-
         }
     }
 
+    console.log(questionset)
 
+    //TODO presence check validation
 
-
-
-    return (
-        <><div>
-            <p>What will be the name of your questionname</p>
-            <input type="text" onChange={e => setQuestionName(e.target.value)} />
-        </div>
-            <div>
-                <p>What will be the first incorrect option</p>
-                <input type="text" onChange={e => setIncorrect1(e.target.value)} />
+    while (quizlength > questionnumber) {
+        return (
+            <><div>
+                <p>What will be the name of your questionname</p>
+                <input type="text" onChange={e => setQuestionName(e.target.value)} />
             </div>
-            <div>
-                <p>What will be the second incorrect {quizid}</p>
-                <input type="text" onChange={e => setIncorrect2(e.target.value)} />
-            </div>
-            <div>
-                <p>What will be the third incorrect option</p>
-                <input type="text" onChange={e => setIncorrect3(e.target.value)} />
-            </div>
-            <div>
-                <p>What will be the correct option</p>
-                <input type="text" onChange={e => setCorrect(e.target.value)} />
-            </div>
-            <div className="insertQuizdatabutton">
-                <button onClick={e => insertDataClearForm()}>slub</button>
-            </div></>
+                <div>
+                    <p>What will be the first incorrect option</p>
+                    <input type="text" onChange={e => setIncorrect1(e.target.value)} />
+                </div>
+                <div>
+                    <p>What will be the second incorrect {quizname}</p>
+                    <input type="text" onChange={e => setIncorrect2(e.target.value)} />
+                </div>
+                <div>
+                    <p>What will be the third incorrect option</p>
+                    <input type="text" onChange={e => setIncorrect3(e.target.value)} />
+                </div>
+                <div>
+                    <p>What will be the correct option</p>
+                    <input type="text" onChange={e => setCorrect(e.target.value)} />
+                </div>
+                <div className="insertQuizdatabutton">
+                    <button onClick={e => insertDataClearForm()} >Submit</button>
+                </div></>
 
 
+        )
+    }
+
+
+    insertDataClearForm()
+
+    return (<><div>
+
+        <h2>WELL DONE</h2>
+    </div></>
     )
-
 }
 
 
