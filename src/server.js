@@ -370,6 +370,21 @@ app.use('/retrievequestions', (req, res) => {
 
 })
 
+app.use('/sendresults', (req, res) => {
+
+
+  const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
+  
+  connection.query('Select * from quiz_user_answers where userid = ? And quizid = ? And score < ? ' , [], function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+  })
+
+
+
+})
+
 
 
 app.listen(8080, () => console.log('API is running on http://localhost:8080/login'))

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 import '../Quiz.css'
 import useToken from '../../App/useToken';
 
+
 async function fetchQuestions(data) {
 
 	return fetch('http://localhost:8080/retrievequestions', {
@@ -20,7 +21,24 @@ async function fetchQuestions(data) {
   
   }
   
+async function sendResults(data) {
 
+	return fetch('http://localhost:8080/sendresults', {
+	  method: 'POST',
+	  headers: {
+		'Content-Type': 'application/json'
+  
+	  },
+  
+	  body: JSON.stringify(data)
+  
+	})
+  
+	  .then(data => data.json())
+
+
+
+}
 
 
 
@@ -35,6 +53,7 @@ const {token} = useToken()
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
 	const [questiondata, setQuestionData] = useState()
+	
 	
 	
 	
@@ -82,6 +101,7 @@ const questions =
 		],
 	}
 	
+	
 
 
 	const handleAnswerOptionClick = (isCorrect) => {
@@ -94,17 +114,36 @@ const questions =
 			setCurrentQuestion(nextQuestion);
 
 		} else {
+		
+			
 			setShowScore(true);
+			
+
 		}
+
 	};
 
+	let results
+	
+	// assign results after quiz is finished 
+	if (showScore) {
+
+		results = (score/questiondata.questions.length)*100
+		sendResults({token, results, quizid })
+	
+}
 
 
-	return (
+return (
 		<div className='app'>
-			{showScore ? (
+			{showScore ?
+			 
+			 
+			 
+			 (
+				
 				<div className='score-section'>
-					You scored {score} out of {questiondata.questions.length}
+					You scored {results}% ({(score)}/{questiondata.questions.length})
 				</div>
 			) : (
 				<>
