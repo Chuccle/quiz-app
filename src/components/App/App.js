@@ -4,7 +4,7 @@ import Dashboard from '../Dashboard/Dashboard.js';
 import Login from '../Login/Login.js';
 import Preferences from '../Preferences/Preferences.js';
 import useToken from './useToken.js';
-import Quiz from '../Quizzes/C++/Quiz.js'
+import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import './App.css';
@@ -112,7 +112,7 @@ function App() {
           <Route path="/leaderboard">
             <Preferences />
           </Route>
-          <Route path="/quizzes/c++">
+          <Route path="/quiz">
             <Quiz />
           </Route>
           <Route path="/logout">

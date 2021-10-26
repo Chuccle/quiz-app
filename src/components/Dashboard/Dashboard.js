@@ -119,8 +119,7 @@ export default function Dashboard() {
       }
     });
 
-
-    console.log(data)
+    
     return (
       <div>
 
@@ -134,11 +133,10 @@ export default function Dashboard() {
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Quiz</th>
-              <th scope="col">Best score</th>
+              <th scope="col">Quiz Name</th>
               <th scope="col">Difficulty</th>
-
-              <th scope="col"> Begin quiz </th>
+              <th scope="col">Best score</th>
+              <th scope="col">Begin quiz</th>
             </tr>
           </thead>
           <tbody>
@@ -147,9 +145,9 @@ export default function Dashboard() {
               data.map(function (rowdata) {
                 return <tr key={rowdata[0]}>
                   <td>{rowdata[1]}</td>
-                  <td >{rowdata[3]}%</td>
                   <td >{rowdata[2]}</td>
-                  <td ><Link to={{ pathname: '/quizzes/c++', state: { quizid: rowdata[0] } }}>Start </Link></td>
+                  <td >{rowdata[3]}%</td>
+                  <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start </Link></td>
                 </tr>
               })
 

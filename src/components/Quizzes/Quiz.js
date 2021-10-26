@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
-import '../Quiz.css'
-import useToken from '../../App/useToken';
+import './Quiz.css'
+import useToken from '../App/useToken.js';
 
 
 async function fetchQuestions(data) {
