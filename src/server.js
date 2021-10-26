@@ -375,13 +375,34 @@ app.use('/sendresults', (req, res) => {
 
   const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
   
-  connection.query('Select * from quiz_user_answers where userid = ? And quizid = ? And score < ? ' , [], function (error, results, fields) {
+connection.query('Select * from quiz_user_answers where userid = ? And quizid = ?' , [decodedtoken.data, req.body.quizid], function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+
+if (results.length===0) {
+  connection.query('insert into quiz_user_answers(userid, quizid, score) values (?,?,?)' , [decodedtoken.data, req.body.quizid, req.body.results], function (error, results, fields) {
     if (error) throw res.send({
       Error: error
     });
   })
 
+} else {
 
+if (results[0].score<req.body.results) {
+
+  connection.query('UPDATE quiz_user_answers SET score = ? WHERE id = ?' , [req.body.results, results[0].id], function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+  })
+
+}
+}
+
+})
+
+res.send({status: "ok"})
 
 })
 
