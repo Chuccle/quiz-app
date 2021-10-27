@@ -5,35 +5,7 @@ import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react';
-
-
-
-
-
-
-
-
-//TODO 
-// USE ID TOKEN DATA IN RETRIEVING USER'S RECORD FROM SQL TABLE (JWTVERIFY-->DATA)
-// FOR NOW JUST CREATE SYSTEM WHICH IMPORTS THE DATA AND DISPLAYS IT ON THIS PAGE
-
-
-async function getUserData(credentials) {
-
-  return fetch('http://localhost:8080/retrieveStats', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-
-    },
-
-    body: JSON.stringify(credentials)
-
-  })
-
-    .then(data => data.json())
-
-}
+import Fetch from '../FetchData/FetchFunc';
 
 
 
@@ -61,8 +33,8 @@ export default function Dashboard() {
 
 
         try {
-          const userStats = await getUserData({ token })
-
+          const userStats = await Fetch('http://localhost:8080/retrieveStats', { token })
+ 
 
           if (userStats.error) {
 

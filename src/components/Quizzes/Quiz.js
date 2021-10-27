@@ -2,43 +2,44 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import './Quiz.css'
 import useToken from '../App/useToken.js';
+import Fetch from '../FetchData/FetchFunc'
 
 
-async function fetchQuestions(data) {
+// async function fetchQuestions(data) {
 
-	return fetch('http://localhost:8080/retrievequestions', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
+// 	return fetch('http://localhost:8080/retrievequestions', {
+// 		method: 'POST',
+// 		headers: {
+// 			'Content-Type': 'application/json'
 
-		},
+// 		},
 
-		body: JSON.stringify(data)
+// 		body: JSON.stringify(data)
 
-	})
+// 	})
 
-		.then(data => data.json())
+// 		.then(data => data.json())
 
-}
+// }
 
-async function sendResults(data) {
+// async function sendResults(data) {
 
-	return fetch('http://localhost:8080/sendresults', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
+// 	return fetch('http://localhost:8080/sendresults', {
+// 		method: 'POST',
+// 		headers: {
+// 			'Content-Type': 'application/json'
 
-		},
+// 		},
 
-		body: JSON.stringify(data)
+// 		body: JSON.stringify(data)
 
-	})
+// 	})
 
-		.then(data => data.json())
+// 		.then(data => data.json())
 
 
 
-}
+// }
 
 
 
@@ -67,7 +68,7 @@ export default function Quiz() {
 			async function getquestiondata() {
 
 
-				const question = await fetchQuestions({ token, quizid })
+				const question = await Fetch('http://localhost:8080/retrievequestions',{ token, quizid })
 
 
 
@@ -129,7 +130,7 @@ export default function Quiz() {
 		if (showScore) {
 
 			results = (score / questiondata.questions.length) * 100
-			sendResults({ token, results, quizid })
+			Fetch('http://localhost:8080/sendresults', { token, results, quizid })
 
 		}
 
