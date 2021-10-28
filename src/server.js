@@ -22,7 +22,7 @@ require('dotenv').config({
 app.use(cors());
 app.use(bodyParser.json())
 
-app.use('/auth', (req, res) => {
+app.post('/auth', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
@@ -56,7 +56,7 @@ app.use('/auth', (req, res) => {
 
 
 
-app.use('/retrieveStats', (req, res) => {
+app.post('/retrieveStats', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
@@ -111,96 +111,35 @@ app.use('/retrieveStats', (req, res) => {
 })
 
 
-app.use('/login', (req, res) => {
+app.post('/login', (req, res) => {
 
-  let username = req.body.username;
+  try {
 
-  let password = req.body.password;
+    let username = req.body.username;
 
-
-  // ? characters in query represent escaped placeholders for our username and password 
-  connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
-
-    if (error) throw res.send({
-      Error: error
-    });
-
-    // Getting the 'response' from the database and sending it to our route. This is were the data is.
-    if (results.length > 0) {
-
-      const passMatch = bcrypt.compare(password, results[0].password)
+    let password = req.body.password;
 
 
-      console.log(results[0].id)
+    // ? characters in query represent escaped placeholders for our username and password 
+    connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
+
+      if (error) throw res.send({
+        Error: error
+      });
+
+      // Getting the 'response' from the database and sending it to our route. This is were the data is.
+      if (results.length > 0) {
+
+        const passMatch = bcrypt.compare(password, results[0].password)
 
 
-      if (passMatch) {
-
-        //signing our token to send to client
-        //we use primary key of our record as it guaranatees a unique identifier of the record
-
-        const jwtToken = jwt.sign({
-          data: results[0].id
-        }, process.env.JWT_SECRET, {
-          expiresIn: process.env.ACCESS_TOKEN_LIFE
-        });
-
-        //sending our token response back to the client
-
-        res.send({
-          token: jwtToken
-        });
+        console.log(results[0].id)
 
 
-      }
+        if (passMatch) {
 
-
-    }
-
-
-  })
-
-
-})
-
-
-app.use('/register', (req, res) => {
-
-
-  let username = req.body.username;
-  let password = req.body.password;
-
-  // ? characters in query represent escaped placeholders for our username and password 
-
-  // first we look for any duplicate usernames with the table
-  connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
-    if (error) throw res.send({
-      Error: error
-    });
-
-    // If usernames aren't conflicting, hash password and create new record with supplied data
-    if (results.length === 0) {
-
-      bcrypt.hash(password, 10, function (err, hash) {
-
-        console.log(hash)
-
-        connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [username, hash], function (error, results, fields) {
-          // Getting the 'response' from the database and sending it to our route. This is were the data is.
-          if (error) throw res.send({
-            Error: error
-          });
-
-        })
-
-        // Query again to find record ID of usuing the username
-
-        connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
-          if (error) throw res.send({
-            Error: error
-          });
-
-          // Signing our token to send to client using record ID as payload 
+          //signing our token to send to client
+          //we use primary key of our record as it guaranatees a unique identifier of the record
 
           const jwtToken = jwt.sign({
             data: results[0].id
@@ -208,231 +147,352 @@ app.use('/register', (req, res) => {
             expiresIn: process.env.ACCESS_TOKEN_LIFE
           });
 
+          //sending our token response back to the client
 
-          // Sending our token response back to the client
-
-          console.log(jwtToken.data)
           res.send({
             token: jwtToken
           });
 
 
+        }
+
+
+      }
+
+
+    })
+  } catch (err) {
+
+
+    res.send({
+      error: err
+    })
+    console.log(err)
+
+  }
+
+})
+
+
+app.post('/register', (req, res) => {
+
+  try {
+
+    let username = req.body.username;
+    let password = req.body.password;
+
+    // ? characters in query represent escaped placeholders for our username and password 
+
+    // first we look for any duplicate usernames with the table
+    connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
+      if (error) throw res.send({
+        Error: error
+      });
+
+      // If usernames aren't conflicting, hash password and create new record with supplied data
+      if (results.length === 0) {
+
+        bcrypt.hash(password, 10, function (err, hash) {
+
+          console.log(hash)
+
+          connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [username, hash], function (error, results, fields) {
+            // Getting the 'response' from the database and sending it to our route. This is were the data is.
+            if (error) throw res.send({
+              Error: error
+            });
+
+          })
+
+          // Query again to find record ID of usuing the username
+
+          connection.query('SELECT * FROM accounts WHERE username = ?', [username], function (error, results, fields) {
+            if (error) throw res.send({
+              Error: error
+            });
+
+            // Signing our token to send to client using record ID as payload 
+
+            const jwtToken = jwt.sign({
+              data: results[0].id
+            }, process.env.JWT_SECRET, {
+              expiresIn: process.env.ACCESS_TOKEN_LIFE
+            });
+
+
+            // Sending our token response back to the client
+
+            console.log(jwtToken.data)
+            res.send({
+              token: jwtToken
+            });
+
+
+          })
+
+
         })
 
 
-      })
+      } else {
 
 
-    } else {
+        res.send({
+          error: "username already exists"
+        })
 
 
-      res.send({
-        error: "username already exists"
-      })
+      }
 
 
-    }
+    })
+  } catch (err) {
 
 
-  })
+    res.send({
+      error: err
+    })
+    console.log(err)
+
+  }
 
 
 })
 
 
 
-app.use('/insertquiz', (req, res) => {
+app.post('/insertquiz', (req, res) => {
 
-  console.log(req.body.questionset[0])
-  const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
-  console.log(req.body.questionset[0].Quizname, decodedtoken.data, req.body.questionset[0].Difficulty)
+  try {
 
-
-  connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?,?);', [req.body.questionset[0].Quizname, decodedtoken.data, req.body.questionset[0].Difficulty], function (error, results, fields) {
-    if (error) throw res.send({
-      Error: error
-    });
+    console.log(req.body.questionset[0])
+    const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
+    console.log(req.body.questionset[0].Quizname, decodedtoken.data, req.body.questionset[0].Difficulty)
 
 
-    req.body.questionset.forEach(questiondata => {
-
-      connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [results.insertId, questiondata.Questionset.Questionname], function (error, results1, fields) {
-        if (error) throw res.send({
-          Error: error
-        });
+    connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?,?);', [req.body.questionset[0].Quizname, decodedtoken.data, req.body.questionset[0].Difficulty], function (error, results, fields) {
+      if (error) throw res.send({
+        Error: error
+      });
 
 
-        let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
-        let values = [
-          [results1.insertId, questiondata.Questionset.Options.Incorrect1, 0],
-          [results1.insertId, questiondata.Questionset.Options.Incorrect2, 0],
-          [results1.insertId, questiondata.Questionset.Options.Incorrect3, 0],
-          [results1.insertId, questiondata.Questionset.Options.Correct, 1]
-        ]
+      req.body.questionset.forEach(questiondata => {
 
-        // find a way of bulk inserting the entire set of options with 2d arraylist? done!
+        connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [results.insertId, questiondata.Questionset.Questionname], function (error, results1, fields) {
+          if (error) throw res.send({
+            Error: error
+          });
 
-        connection.query(sql, [values], function (error, results2, fields) {
+
+          let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
+          let values = [
+            [results1.insertId, questiondata.Questionset.Options.Incorrect1, 0],
+            [results1.insertId, questiondata.Questionset.Options.Incorrect2, 0],
+            [results1.insertId, questiondata.Questionset.Options.Incorrect3, 0],
+            [results1.insertId, questiondata.Questionset.Options.Correct, 1]
+          ]
+
+          // find a way of bulk inserting the entire set of options with 2d arraylist? done!
+
+          connection.query(sql, [values], function (error, results2, fields) {
+            if (error) throw res.send({
+              Error: error
+            });
+          })
+        })
+
+      })
+
+      res.send({
+        QuizStatus: "Inserted"
+      })
+
+    })
+  } catch (err) {
+
+
+    res.send({
+      error: err
+    })
+    console.log(err)
+
+  }
+
+
+})
+
+
+
+
+app.post('/retrievequestions', (req, res) => {
+
+
+  try {
+
+    jwt.verify(req.body.token, process.env.JWT_SECRET);
+    const quizid = req.body.quizid
+    const questionqueue = []
+
+
+    connection.query('Select * from questions where Quizid = ?', [quizid], function (error, questionresults, fields) {
+      if (error) throw res.send({
+        Error: error
+      });
+
+
+
+      for (let i = 0; questionresults.length > i; i++) {
+
+
+        connection.query('Select * from question_options where questionID = ? AND isCorrect = 1', [questionresults[i].id], function (error, CorrectOptionResults, fields) {
+          if (error) throw res.send({
+            Error: error
+          });
+
+          connection.query('Select * from question_options where questionID = ? AND isCorrect = 0', [questionresults[i].id], function (error, IncorrectOptionResults, fields) {
+            if (error) throw res.send({
+              Error: error
+            });
+
+
+
+            const questiondata = {
+
+              Questionid: questionresults[i].id,
+              Questiontext: questionresults[i].Question,
+              Options: {
+                Correct: CorrectOptionResults[0].questionText,
+                Incorrect1: IncorrectOptionResults[0].questionText,
+                Incorrect2: IncorrectOptionResults[1].questionText,
+                Incorrect3: IncorrectOptionResults[2].questionText,
+              }
+
+            }
+
+            questionqueue.push(questiondata)
+
+            // inefficient, runs every iteration
+
+            if (i === (questionresults.length - 1)) {
+
+              res.send({
+                questions: questionqueue
+              })
+
+
+
+            }
+
+
+          })
+
+
+        })
+
+      }
+
+
+      // why does this return an empty array?
+      //console.log(questionqueue?)
+
+
+
+    })
+
+  } catch (err) {
+
+
+    res.send({
+      error: err
+    })
+    console.log(err)
+
+  }
+
+})
+
+app.post('/sendresults', (req, res) => {
+
+  try {
+    const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
+
+    connection.query('Select * from quiz_user_answers where userid = ? And quizid = ?', [decodedtoken.data, req.body.quizid], function (error, results, fields) {
+      if (error) throw res.send({
+        Error: error
+      });
+
+      if (results.length === 0) {
+        connection.query('insert into quiz_user_answers(userid, quizid, score) values (?,?,?)', [decodedtoken.data, req.body.quizid, req.body.results], function (error, results, fields) {
           if (error) throw res.send({
             Error: error
           });
         })
-      })
+
+      } else {
+
+
+        if (results[0].score < req.body.results) {
+          //by using update we can reduce the amount of records overall, the alternative is multiple records with different scores
+          connection.query('UPDATE quiz_user_answers SET score = ? WHERE id = ?', [req.body.results, results[0].id], function (error, results, fields) {
+            if (error) throw res.send({
+              Error: error
+            });
+          })
+
+        }
+      }
 
     })
 
     res.send({
-      QuizStatus: "Inserted"
+      status: "ok"
+    })
+  } catch (err) {
+
+
+    res.send({
+      error: err
+    })
+    console.log(err)
+
+  }
+
+})
+
+app.post('/retrieveleaderboard', (req, res) => {
+
+
+  try {
+
+
+    jwt.verify(req.body.token, process.env.JWT_SECRET);
+
+
+    connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (error, results, fields) {
+      if (error) throw res.send({
+        Error: error
+      });
+      console.log(results)
+
+      res.send({
+        results: results
+      })
+
     })
 
-  })
+  } catch (err) {
 
 
-})
+    res.send({
+      error: err
+    })
+    console.log(err)
 
-
-
-
-app.use('/retrievequestions', (req, res) => {
-
-
-  jwt.verify(req.body.token, process.env.JWT_SECRET);
-  const quizid = req.body.quizid
-  const questionqueue = []
-
-
-  connection.query('Select * from questions where Quizid = ?', [quizid], function (error, questionresults, fields) {
-    if (error) throw res.send({
-      Error: error
-    });
-
-
-
-    for (let i = 0; questionresults.length > i; i++) {
-
-
-      connection.query('Select * from question_options where questionID = ? AND isCorrect = 1', [questionresults[i].id], function (error, CorrectOptionResults, fields) {
-        if (error) throw res.send({
-          Error: error
-        });
-
-        connection.query('Select * from question_options where questionID = ? AND isCorrect = 0', [questionresults[i].id], function (error, IncorrectOptionResults, fields) {
-          if (error) throw res.send({
-            Error: error
-          });
-
-
-
-          const questiondata = {
-
-            Questionid: questionresults[i].id,
-            Questiontext: questionresults[i].Question,
-            Options: {
-              Correct: CorrectOptionResults[0].questionText,
-              Incorrect1: IncorrectOptionResults[0].questionText,
-              Incorrect2: IncorrectOptionResults[1].questionText,
-              Incorrect3: IncorrectOptionResults[2].questionText,
-            }
-
-          }
-
-          questionqueue.push(questiondata)
-
-          // inefficient, runs every iteration
-
-          if (i === (questionresults.length - 1)) {
-
-            res.send({
-              questions: questionqueue
-            })
-
-
-
-          }
-
-
-        })
-
-
-      })
-
-    }
-
-
-    // why does this return an empty array?
-    //console.log(questionqueue?)
-
-
-
-  })
+  }
 
 
 
 })
-
-app.use('/sendresults', (req, res) => {
-
-
-  const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
-
-  connection.query('Select * from quiz_user_answers where userid = ? And quizid = ?', [decodedtoken.data, req.body.quizid], function (error, results, fields) {
-    if (error) throw res.send({
-      Error: error
-    });
-
-    if (results.length === 0) {
-      connection.query('insert into quiz_user_answers(userid, quizid, score) values (?,?,?)', [decodedtoken.data, req.body.quizid, req.body.results], function (error, results, fields) {
-        if (error) throw res.send({
-          Error: error
-        });
-      })
-
-    } else {
-
-
-      if (results[0].score < req.body.results) {
-        //by using update we can reduce the amount of records overall, the alternative is multiple records with different scores
-        connection.query('UPDATE quiz_user_answers SET score = ? WHERE id = ?', [req.body.results, results[0].id], function (error, results, fields) {
-          if (error) throw res.send({
-            Error: error
-          });
-        })
-
-      }
-    }
-
-  })
-
-  res.send({
-    status: "ok"
-  })
-
-})
-
-app.use('/retrieveleaderboard', (req, res) => {
-
-
-  //const decodedtoken = jwt.verify(req.auth.bearer, process.env.JWT_SECRET);
-
-
- 
-
-  
-  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (error, results, fields) {
-    if (error) throw res.send({
-      Error: error
-    });
-    console.log(results)
-    
-res.send({results: results})
-
-  })
-
-
-
-
-
-  })
 
 
 
