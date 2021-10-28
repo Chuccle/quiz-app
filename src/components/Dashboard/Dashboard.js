@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
 import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom'
-import { useEffect } from 'react';
 import Fetch from '../FetchData/FetchFunc';
 
 
@@ -33,7 +32,7 @@ export default function Dashboard() {
 
 
         try {
-          const userStats = await Fetch('http://localhost:8080/retrieveStats', { token })
+          const userStats = await Fetch('http://localhost:8080/retrieveStats', { token }  )
  
 
           if (userStats.error) {

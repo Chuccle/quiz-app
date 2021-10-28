@@ -1,45 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import './Quiz.css'
 import useToken from '../App/useToken.js';
 import Fetch from '../FetchData/FetchFunc'
-
-
-// async function fetchQuestions(data) {
-
-// 	return fetch('http://localhost:8080/retrievequestions', {
-// 		method: 'POST',
-// 		headers: {
-// 			'Content-Type': 'application/json'
-
-// 		},
-
-// 		body: JSON.stringify(data)
-
-// 	})
-
-// 		.then(data => data.json())
-
-// }
-
-// async function sendResults(data) {
-
-// 	return fetch('http://localhost:8080/sendresults', {
-// 		method: 'POST',
-// 		headers: {
-// 			'Content-Type': 'application/json'
-
-// 		},
-
-// 		body: JSON.stringify(data)
-
-// 	})
-
-// 		.then(data => data.json())
-
-
-
-// }
 
 
 
@@ -48,19 +12,14 @@ export default function Quiz() {
 
 	const { token } = useToken()
 	const quizdata = useLocation()
-	console.log(quizdata.state.quizid)
 	const quizid = quizdata.state.quizid
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
 	const [questiondata, setQuestionData] = useState()
 
-
-
-
-
-
-
+	// We need to declare results here in the outermost scope so we can reference it in the inner and outer scopes later on
+	let results
 
 
 	useEffect(() => {
@@ -68,7 +27,7 @@ export default function Quiz() {
 			async function getquestiondata() {
 
 
-				const question = await Fetch('http://localhost:8080/retrievequestions',{ token, quizid })
+				const question = await Fetch('http://localhost:8080/retrievequestions', { token, quizid })
 
 
 
@@ -83,13 +42,7 @@ export default function Quiz() {
 
 
 
-
-
-
-
-
 	if (questiondata) {
-		console.log(questiondata.questions.length)
 
 		const questions =
 		{
@@ -124,9 +77,9 @@ export default function Quiz() {
 
 		};
 
-		let results
 
-		// assign results after quiz is finished 
+
+		// assign results after quiz is finished and send it off to our backend 
 		if (showScore) {
 
 			results = (score / questiondata.questions.length) * 100
@@ -138,14 +91,16 @@ export default function Quiz() {
 		return (
 			<div className='app'>
 				{showScore ?
-
-
-
 					(
 
 						<div className='score-section'>
 							You scored {results}% ({(score)}/{questiondata.questions.length})
+							<div>
+								<Link to="/dashboard">Back to dashboard</Link>
+							</div>
 						</div>
+
+
 					) : (
 						<>
 							<div className='question-section'>

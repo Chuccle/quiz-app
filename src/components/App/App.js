@@ -39,7 +39,7 @@ function App() {
         else if (response.message) {
 
           SetAuthState(true)
-          console.log(response.message)
+      
 
         }
       } catch {

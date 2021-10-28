@@ -409,6 +409,32 @@ app.use('/sendresults', (req, res) => {
 
 })
 
+app.use('/retrieveleaderboard', (req, res) => {
+
+
+  //const decodedtoken = jwt.verify(req.auth.bearer, process.env.JWT_SECRET);
+
+
+ 
+
+  
+  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+    console.log(results)
+    
+res.send({results: results})
+
+  })
+
+
+
+
+
+  })
+
+
 
 
 app.listen(8080, () => console.log('API is running on http://localhost:8080/login'))
