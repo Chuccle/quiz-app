@@ -2,38 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import Dashboard from '../Dashboard/Dashboard.js';
 import Login from '../Login/Login.js';
-import Preferences from '../Preferences/Preferences.js';
+import Preferences from '../Leaderboards/Leaderboards.js';
 import useToken from './useToken.js';
-import Quiz from '../Quizzes/C++/Quiz'
+import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
+import Fetch from '../FetchData/FetchFunc'
 import './App.css';
 
 
-
-// import Settings from '../Settings/Settings.js'
-
-
-async function verifyTokenFetch(jwttoken) {
-
-  return fetch('http://localhost:8080/auth', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-
-    },
-    body: JSON.stringify(jwttoken)
-  })
-
-
-    .then(data => data.json())
-
-    .catch(error => {
-      console.error('There has been a problem with your fetch operation:', error)
-    });
-
-
-}
 
 function App() {
 
@@ -47,7 +24,7 @@ function App() {
 
       try {
 
-        const response = await verifyTokenFetch({ token });
+        const response = await Fetch('http://localhost:8080/auth',{ token });
         //     console.log(response)
 
 
@@ -62,7 +39,7 @@ function App() {
         else if (response.message) {
 
           SetAuthState(true)
-          console.log(response.message)
+      
 
         }
       } catch {
@@ -112,7 +89,7 @@ function App() {
           <Route path="/leaderboard">
             <Preferences />
           </Route>
-          <Route path="/quizzes/c++">
+          <Route path="/quiz">
             <Quiz />
           </Route>
           <Route path="/logout">

@@ -1,39 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
 import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom'
-import { useEffect } from 'react';
-
-
-
-
-
-
-
-
-//TODO 
-// USE ID TOKEN DATA IN RETRIEVING USER'S RECORD FROM SQL TABLE (JWTVERIFY-->DATA)
-// FOR NOW JUST CREATE SYSTEM WHICH IMPORTS THE DATA AND DISPLAYS IT ON THIS PAGE
-
-
-async function getUserData(credentials) {
-
-  return fetch('http://localhost:8080/retrieveStats', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-
-    },
-
-    body: JSON.stringify(credentials)
-
-  })
-
-    .then(data => data.json())
-
-}
+import Fetch from '../FetchData/FetchFunc';
 
 
 
@@ -61,8 +32,8 @@ export default function Dashboard() {
 
 
         try {
-          const userStats = await getUserData({ token })
-
+          const userStats = await Fetch('http://localhost:8080/retrieveStats', { token }  )
+ 
 
           if (userStats.error) {
 
@@ -119,8 +90,7 @@ export default function Dashboard() {
       }
     });
 
-
-    console.log(data)
+    
     return (
       <div>
 
@@ -134,11 +104,10 @@ export default function Dashboard() {
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Quiz</th>
-              <th scope="col">Best score</th>
+              <th scope="col">Quiz Name</th>
               <th scope="col">Difficulty</th>
-
-              <th scope="col"> Begin quiz </th>
+              <th scope="col">Best score</th>
+              <th scope="col">Begin quiz</th>
             </tr>
           </thead>
           <tbody>
@@ -147,9 +116,9 @@ export default function Dashboard() {
               data.map(function (rowdata) {
                 return <tr key={rowdata[0]}>
                   <td>{rowdata[1]}</td>
-                  <td >{rowdata[3]}%</td>
                   <td >{rowdata[2]}</td>
-                  <td ><Link to={{ pathname: '/quizzes/c++', state: { quizid: rowdata[0] } }}>Start </Link></td>
+                  <td >{rowdata[3]}%</td>
+                  <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start </Link></td>
                 </tr>
               })
 

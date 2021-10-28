@@ -280,7 +280,7 @@ app.use('/insertquiz', (req, res) => {
       })
 
     })
-    
+
     res.send({
       QuizStatus: "Inserted"
     })
@@ -369,6 +369,71 @@ app.use('/retrievequestions', (req, res) => {
 
 
 })
+
+app.use('/sendresults', (req, res) => {
+
+
+  const decodedtoken = jwt.verify(req.body.token, process.env.JWT_SECRET);
+
+  connection.query('Select * from quiz_user_answers where userid = ? And quizid = ?', [decodedtoken.data, req.body.quizid], function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+
+    if (results.length === 0) {
+      connection.query('insert into quiz_user_answers(userid, quizid, score) values (?,?,?)', [decodedtoken.data, req.body.quizid, req.body.results], function (error, results, fields) {
+        if (error) throw res.send({
+          Error: error
+        });
+      })
+
+    } else {
+
+
+      if (results[0].score < req.body.results) {
+        //by using update we can reduce the amount of records overall, the alternative is multiple records with different scores
+        connection.query('UPDATE quiz_user_answers SET score = ? WHERE id = ?', [req.body.results, results[0].id], function (error, results, fields) {
+          if (error) throw res.send({
+            Error: error
+          });
+        })
+
+      }
+    }
+
+  })
+
+  res.send({
+    status: "ok"
+  })
+
+})
+
+app.use('/retrieveleaderboard', (req, res) => {
+
+
+  //const decodedtoken = jwt.verify(req.auth.bearer, process.env.JWT_SECRET);
+
+
+ 
+
+  
+  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (error, results, fields) {
+    if (error) throw res.send({
+      Error: error
+    });
+    console.log(results)
+    
+res.send({results: results})
+
+  })
+
+
+
+
+
+  })
+
 
 
 

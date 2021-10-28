@@ -1,25 +1,6 @@
 import { useState } from "react";
 import useToken from '../App/useToken';
-
-
-
-async function insertQuiz(questiondata) {
-
-    return fetch('http://localhost:8080/insertquiz', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-
-        },
-
-        body: JSON.stringify(questiondata)
-
-    })
-
-        .then(data => data.json())
-
-}
-
+import Fetch from '../FetchData/FetchFunc'
 
 
 
@@ -66,7 +47,7 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
         else {
 
             try {
-                var response = await insertQuiz({ questionset, token });
+                var response = await Fetch('http://localhost:8080/insertquiz', { questionset, token });
 
 
 
