@@ -7,6 +7,14 @@ import Fetch from '../FetchData/FetchFunc'
 
 
 
+
+function shuffle(array) {
+	array.sort(() => Math.random() - 0.5);
+  }
+
+
+
+
 export default function Quiz() {
 
 
@@ -44,6 +52,7 @@ export default function Quiz() {
 
 	if (questiondata) {
 
+		
 		const questions =
 		{
 			questionText: questiondata.questions[currentQuestion].Questiontext,
@@ -54,6 +63,12 @@ export default function Quiz() {
 				{ answerText: questiondata.questions[currentQuestion].Options.Incorrect3, isCorrect: false },
 			],
 		}
+
+		shuffle(questions.answerOptions)
+
+
+
+	
 
 
 
