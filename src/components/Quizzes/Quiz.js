@@ -6,15 +6,6 @@ import useToken from '../App/useToken.js';
 import Fetch from '../FetchData/FetchFunc'
 
 
-
-
-function shuffle(array) {
-	array.sort(() => Math.random() - 0.5);
-  }
-
-
-
-
 export default function Quiz() {
 
 
@@ -32,6 +23,7 @@ export default function Quiz() {
 
 	useEffect(() => {
 		if (!questiondata) {
+
 			async function getquestiondata() {
 
 
@@ -52,7 +44,7 @@ export default function Quiz() {
 
 	if (questiondata) {
 
-		
+
 		const questions =
 		{
 			questionText: questiondata.questions[currentQuestion].Questiontext,
@@ -64,13 +56,8 @@ export default function Quiz() {
 			],
 		}
 
-		shuffle(questions.answerOptions)
-
-
-
-	
-
-
+		//shuffle answeroptions array to randomise correct answer position
+		questions.answerOptions.sort(() => Math.random() - 0.5);
 
 
 		const handleAnswerOptionClick = (isCorrect) => {
