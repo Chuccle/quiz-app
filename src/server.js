@@ -1,4 +1,4 @@
-const connection = require('./components/Database/Database.js')
+const connection = require('./databaseCfg.js')
 const express = require('express');
 const cors = require('cors')
 const bodyParser = require('body-parser')
