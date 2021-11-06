@@ -78,7 +78,7 @@ app.post('/retrieveStats', (req, res) => {
             [tokenResult.data],
             function (selectQuizzesError, resultsQuizzes, fields) {
 
-              if (error) throw res.send({
+              if (selectQuizzesError) throw res.send({
                 error: selectQuizzesError
 
               });
@@ -87,7 +87,7 @@ app.post('/retrieveStats', (req, res) => {
               console.log(resultsname)
               res.send({
                 results: resultsQuizzes,
-                name: resultsName
+                name: resultsname
               })
 
 
@@ -213,7 +213,7 @@ app.post('/register', (req, res) => {
         // Query again to find record ID of usuing the username
 
         connection.query('SELECT * FROM accounts WHERE username = ?', [req.body.username], function (selectUserError, results, fields) {
-          if (error) throw res.send({
+          if (selectUserError) throw res.send({
             error: selectUserError
           });
 
