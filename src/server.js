@@ -60,7 +60,7 @@ app.post('/retrieveStats', (req, res) => {
 
     if (tokenResult) {
 
-
+ 
       // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log(tokenResult.data)
 
@@ -73,9 +73,10 @@ app.post('/retrieveStats', (req, res) => {
 
           });
           //We use primary key as the parameter because it guarantees a unique record without any conflicts
+          const offset = req.body.resultset * 7
 
-          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ?',
-            [tokenResult.data],
+          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? LIMIT ?,7',
+            [tokenResult.data, offset],
             function (selectQuizzesError, resultsQuizzes, fields) {
 
               if (selectQuizzesError) throw res.send({
