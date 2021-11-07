@@ -4,8 +4,8 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
 const app = express();
+const http = require('http')
 
 
 
@@ -48,9 +48,6 @@ app.post('/auth', (req, res) => {
 
 
 
-
-
-
 app.post('/retrieveStats', (req, res) => {
 
   // error 400 bad request
@@ -60,37 +57,40 @@ app.post('/retrieveStats', (req, res) => {
 
     if (tokenResult) {
 
- 
-      // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log(tokenResult.data)
 
       connection.query('SELECT username FROM accounts Where id = ?',
         [tokenResult.data],
-        function (selectIdError, resultsname, fields) {
+        function (selectUsernameError, selectUsernameResult) {
 
-          if (selectIdError) throw res.send({
-            error: selectIdError
+          if (selectUsernameError) throw res.send({
+            error: selectUsernameError
 
           });
-          //We use primary key as the parameter because it guarantees a unique record without any conflicts
-          const offset = req.body.resultset * 7
 
-          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? LIMIT ?,7',
+          const offset = req.body.resultset * 6
+
+          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? LIMIT ?,6',
             [tokenResult.data, offset],
-            function (selectQuizzesError, resultsQuizzes, fields) {
+            function (selectQuizzesError, selectQuizzesResult) {
 
               if (selectQuizzesError) throw res.send({
                 error: selectQuizzesError
 
               });
-
-
-              console.log(resultsname)
+            connection.query('SELECT COUNT(*) As count from quizzes;', function(selectQuizCountError, selectQuizCountResult) {
+              if (selectQuizCountError) throw res.send({
+                error: selectQuizCountError
+              });
+              console.log(selectUsernameResult)
+              
               res.send({
-                results: resultsQuizzes,
-                name: resultsname
+                results: selectQuizzesResult,
+                name: selectUsernameResult,
+                quizcount: selectQuizCountResult
               })
-
+            
+            })
 
             })
         })
@@ -110,30 +110,30 @@ app.post('/retrieveStats', (req, res) => {
 
 app.post('/login', (req, res) => {
 
-
-
   // ? characters in query represent escaped placeholders for our username and password 
-  connection.query('SELECT * FROM accounts WHERE username = ?', [req.body.username], function (selectUserError, results, fields) {
 
-    if (selectUserError) throw res.send({
-      error: selectUserError
+  connection.query('SELECT * FROM accounts WHERE username = ?', [req.body.username], function (selectUserRecordError, selectUserRecordResults) {
+
+    if (selectUserRecordError) throw res.send({
+      error: selectUserRecordError
     });
 
     // Getting the 'response' from the database and sending it to our route. This is were the data is.
-    if (results.length > 0) {
 
-      bcrypt.compare(req.body.password, results[0].password, function (passwordCompareErr, result) {
+    if (selectUserRecordResults.length > 0) {
 
-        if (result) {
+      bcrypt.compare(req.body.password, selectUserRecordResults[0].password, function (passwordCompareErr, passwordCompareResult) {
 
-          console.log(results[0].id)
+        if (passwordCompareResult) {
+
+          console.log(selectUserRecordResults[0].id)
 
           //signing our token to send to client
           //we use primary key of our record as it guaranatees a unique identifier of the record
 
 
           jwt.sign({
-            data: results[0].id
+            data: selectUserRecordResults[0].id
           }, process.env.JWT_SECRET, {
             expiresIn: process.env.ACCESS_TOKEN_LIFE
           }, function (tokenErr, tokenSuccess) {
@@ -182,13 +182,15 @@ app.post('/register', (req, res) => {
   // ? characters in query represent escaped placeholders for our username and password 
 
   // first we look for any duplicate usernames with the table
-  connection.query('SELECT * FROM accounts WHERE username = ?', [req.body.username], function (selectUserError, results, fields) {
-    if (selectUserError) throw res.send({
-      error: selectUserError
+
+  connection.query('SELECT * FROM accounts WHERE username = ?', [req.body.username], function (selectUserRecordError, selectUserRecordResults) {
+    if (selectUserRecordError) throw res.send({
+      error: selectUserRecordError
     });
 
     // If usernames aren't conflicting, hash password and create new record with supplied data
-    if (results.length === 0) {
+
+    if (selectUserRecordResults.length === 0) {
 
       bcrypt.hash(req.body.password, 10, function (hasherr, hash) {
 
@@ -196,58 +198,49 @@ app.post('/register', (req, res) => {
 
           console.log(hash)
 
-          connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [req.body.username, hash], function (error, results, fields) {
+          connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [req.body.username, hash], function (InsertUserError, InsertUserResults) {
+
             // Getting the 'response' from the database and sending it to our route. This is were the data is.
-            if (error) throw res.send({
-              error: error
+
+            if (InsertUserError) throw res.send({
+              error: InsertUserError
             });
 
+
+            jwt.sign({
+              data: InsertUserResults.insertId
+            }, process.env.JWT_SECRET, {
+              expiresIn: process.env.ACCESS_TOKEN_LIFE
+            }, function (tokenCreationErr, tokenCreationSuccess) {
+
+              if (tokenCreationSuccess) {
+
+
+                console.log(tokenCreationSuccess.data)
+                res.send({
+                  token: tokenCreationSuccess
+                });
+              } else {
+
+                res.send({
+                  error: tokenCreationErr
+                })
+              }
+
+
+            })
           })
+
         } else {
 
           res.send({
             error: hasherr
           })
+
         }
 
-
-        // Query again to find record ID of usuing the username
-
-        connection.query('SELECT * FROM accounts WHERE username = ?', [req.body.username], function (selectUserError, results, fields) {
-          if (selectUserError) throw res.send({
-            error: selectUserError
-          });
-
-          // Signing our token to send to client using record ID as payload 
-
-          jwt.sign({
-            data: results[0].id
-          }, process.env.JWT_SECRET, {
-            expiresIn: process.env.ACCESS_TOKEN_LIFE
-          }, function (tokenCreationErr, tokenCreationSuccess) {
-            ;
-
-
-            // Sending our token response back to the client
-
-            if (tokenCreationSuccess) {
-
-
-              console.log(tokenCreationSuccess.data)
-              res.send({
-                token: tokenCreationSuccess
-              });
-            } else {
-
-              res.send({
-                error: tokenCreationErr
-              })
-            }
-
-          })
-
-        })
       })
+
     } else {
 
 
@@ -257,13 +250,14 @@ app.post('/register', (req, res) => {
 
 
     }
-
-
   })
 
 
 
+
 })
+
+
 
 
 
@@ -276,7 +270,7 @@ app.post('/insertquiz', (req, res) => {
     console.log(req.body.questionset[0].Quizname, tokenSuccess.data, req.body.questionset[0].Difficulty)
 
 
-    connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?,?);', [req.body.questionset[0].Quizname, tokenSuccess.data, req.body.questionset[0].Difficulty], function (insertQuizError, results, fields) {
+    connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?, ?);', [req.body.questionset[0].Quizname, tokenSuccess.data, req.body.questionset[0].Difficulty], function (insertQuizError, insertQuizResults) {
       if (insertQuizError) throw res.send({
         error: insertQuizError
       });
@@ -285,7 +279,7 @@ app.post('/insertquiz', (req, res) => {
 
       req.body.questionset.forEach(questiondata => {
 
-        connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [results.insertId, questiondata.Questionset.Questionname], function (insertQuestionsError, results1, fields) {
+        connection.query('INSERT INTO questions (QuizID, Question) VALUES (?, ?);', [insertQuizResults.insertId, questiondata.Questionset.Questionname], function (insertQuestionsError, insertQuestionsResults) {
           if (insertQuestionsError) throw res.send({
             error: insertQuestionsError
           });
@@ -293,15 +287,15 @@ app.post('/insertquiz', (req, res) => {
 
           let sql = "INSERT INTO question_options(questionID, questionText, isCorrect) VALUES ?"
           let values = [
-            [results1.insertId, questiondata.Questionset.Options.Incorrect1, 0],
-            [results1.insertId, questiondata.Questionset.Options.Incorrect2, 0],
-            [results1.insertId, questiondata.Questionset.Options.Incorrect3, 0],
-            [results1.insertId, questiondata.Questionset.Options.Correct, 1]
+            [insertQuestionsResults.insertId, questiondata.Questionset.Options.Incorrect1, 0],
+            [insertQuestionsResults.insertId, questiondata.Questionset.Options.Incorrect2, 0],
+            [insertQuestionsResults.insertId, questiondata.Questionset.Options.Incorrect3, 0],
+            [insertQuestionsResults.insertId, questiondata.Questionset.Options.Correct, 1]
           ]
 
           // find a way of bulk inserting the entire set of options with 2d arraylist? done!
 
-          connection.query(sql, [values], function (insertQuestionsetError, results2, fields) {
+          connection.query(sql, [values], function (insertQuestionsetError) {
             if (insertQuestionsetError) throw res.send({
               error: insertQuestionsetError
             });
@@ -342,37 +336,37 @@ app.post('/retrievequestions', (req, res) => {
   const questionqueue = []
 
 
-  connection.query('Select * from questions where Quizid = ?', [req.body.quizid], function (selectQuestionError, questionresults, fields) {
-    if (selectQuestionError) throw res.send({
-      error: selectQuestionError
+  connection.query('Select * from questions where Quizid = ?', [req.body.quizid], function (selectQuestionRecordsError, selectQuestionRecordsResults) {
+    if (selectQuestionRecordsError) throw res.send({
+      error: selectQuestionRecordsError
     });
 
 
 
-    for (let i = 0; questionresults.length > i; i++) {
+    for (let i = 0; selectQuestionRecordsResults.length > i; i++) {
 
 
-      connection.query('Select * from question_options where questionID = ? AND isCorrect = 1', [questionresults[i].id], function (selectCorrectOptionError, CorrectOptionResults, fields) {
-        if (selectCorrectOptionError) throw res.send({
-          error: selectCorrectOptionError
+      connection.query('Select * from question_options where questionID = ? AND isCorrect = 1', [selectQuestionRecordsResults[i].id], function (selectCorrectOptionRecordError, CorrectOptionRecordResults) {
+        if (selectCorrectOptionRecordError) throw res.send({
+          error: selectCorrectOptionRecordError
         });
 
-        connection.query('Select * from question_options where questionID = ? AND isCorrect = 0', [questionresults[i].id], function (selectIncorrectOptionsError, IncorrectOptionResults, fields) {
-          if (selectCorrectOptionError) throw res.send({
-            error: selectIncorrectOptionsError
+        connection.query('Select * from question_options where questionID = ? AND isCorrect = 0', [selectQuestionRecordsResults[i].id], function (selectIncorrectOptionsRecordError, IncorrectOptionRecordResults) {
+          if (selectCorrectOptionRecordError) throw res.send({
+            error: selectIncorrectOptionsRecordError
           });
 
 
 
           const questiondata = {
 
-            Questionid: questionresults[i].id,
-            Questiontext: questionresults[i].Question,
+            Questionid: selectQuestionRecordsResults[i].id,
+            Questiontext: selectQuestionRecordsResults[i].Question,
             Options: {
-              Correct: CorrectOptionResults[0].questionText,
-              Incorrect1: IncorrectOptionResults[0].questionText,
-              Incorrect2: IncorrectOptionResults[1].questionText,
-              Incorrect3: IncorrectOptionResults[2].questionText,
+              Correct: CorrectOptionRecordResults[0].questionText,
+              Incorrect1: IncorrectOptionRecordResults[0].questionText,
+              Incorrect2: IncorrectOptionRecordResults[1].questionText,
+              Incorrect3: IncorrectOptionRecordResults[2].questionText,
             }
 
           }
@@ -381,7 +375,7 @@ app.post('/retrievequestions', (req, res) => {
 
           // inefficient, runs every iteration
 
-          if (i === (questionresults.length - 1)) {
+          if (i === (selectQuestionRecordsResults.length - 1)) {
 
             res.send({
               questions: questionqueue
@@ -418,14 +412,14 @@ app.post('/sendresults', (req, res) => {
 
     if (verifySuccess) {
 
-      connection.query('Select * from quiz_user_answers where userid = ? And quizid = ?', [verifySuccess.data, req.body.quizid], function (selectUserQuizDataError, results, fields) {
+      connection.query('Select * from quiz_user_answers where userid = ? And quizid = ?', [verifySuccess.data, req.body.quizid], function (selectUserQuizDataError, selectUserQuizDataResults) {
         if (selectUserQuizDataError) throw res.send({
           error: selectUserQuizDataError
         });
 
-        if (results.length === 0) {
+        if (selectUserQuizDataResults.length === 0) {
 
-          connection.query('insert into quiz_user_answers(userid, quizid, score) values (?,?,?)', [verifySuccess.data, req.body.quizid, req.body.results], function (insertUserQuizDataError, results, fields) {
+          connection.query('insert into quiz_user_answers(userid, quizid, score) values (?,?,?)', [verifySuccess.data, req.body.quizid, req.body.results], function (insertUserQuizDataError) {
             if (insertUserQuizDataError) throw res.send({
               error: insertUserQuizDataError
             });
@@ -434,9 +428,9 @@ app.post('/sendresults', (req, res) => {
         } else {
 
 
-          if (results[0].score < req.body.results) {
+          if (selectUserQuizDataResults[0].score < req.body.results) {
             //by using update we can reduce the amount of records overall, the alternative is multiple records with different scores
-            connection.query('UPDATE quiz_user_answers SET score = ? WHERE id = ?', [req.body.results, results[0].id], function (updateUserQuizDataError, results, fields) {
+            connection.query('UPDATE quiz_user_answers SET score = ? WHERE id = ?', [req.body.results, selectUserQuizDataResults[0].id], function (updateUserQuizDataError) {
               if (updateUserQuizDataError) throw res.send({
                 error: updateUserQuizDataError
               });
@@ -474,15 +468,15 @@ app.post('/retrieveleaderboard', (req, res) => {
   jwt.verify(req.body.token, process.env.JWT_SECRET);
 
 
-  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (selectQuizScoresError, results, fields) {
+  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (selectQuizScoresError, selectQuizScoresResults) {
     if (selectQuizScoresError) throw res.send({
       error: selectQuizScoresError
     });
 
-    console.log(results)
+    console.log(selectQuizScoresResults)
 
     res.send({
-      results: results
+      results: selectQuizScoresResults
     })
 
   })
@@ -492,4 +486,5 @@ app.post('/retrieveleaderboard', (req, res) => {
 
 
 
-app.listen(8080, () => console.log('API is running on http://localhost:8080/login'))
+
+http.createServer(app.listen(8080))

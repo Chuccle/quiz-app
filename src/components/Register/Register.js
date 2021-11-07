@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Login from '../Login/Login.js'
+import Fetch from '../res/FetchFunc';
 import './Register.css';
 
 
-async function RegisterUser(credentials) {
-
-    return fetch('http://localhost:8080/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
-}
 
 
 export default function Register({ setToken }) {
@@ -42,7 +32,7 @@ export default function Register({ setToken }) {
             return false;
         }
         else {
-            const token = await RegisterUser({
+            const token = await Fetch('http://localhost:8080/register',{
                 username,
                 password
             });

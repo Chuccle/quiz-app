@@ -7,7 +7,7 @@ import useToken from './useToken.js';
 import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
-import Fetch from '../FetchData/FetchFunc'
+import Fetch from '../res/FetchFunc'
 import './App.css';
 
 

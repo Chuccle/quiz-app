@@ -2,20 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './Login.css';
 import Register from '../Register/Register.js'
+import Fetch from '../res/FetchFunc'
 
 
-
-async function loginUser(credentials) {
-
-  return fetch('http://localhost:8080/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-  })
-    .then(data => data.json())
-}
 
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
@@ -36,7 +25,7 @@ export default function Login({ setToken }) {
     if (username && password) {
 
       try {
-        const token = await loginUser({
+        const token = await Fetch('http://localhost:8080/login',{
           username,
           password
         });

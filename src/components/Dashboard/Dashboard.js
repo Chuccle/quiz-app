@@ -4,7 +4,7 @@ import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom'
-import Fetch from '../FetchData/FetchFunc';
+import Fetch from '../res/FetchFunc';
 import { Button } from 'react-bootstrap';
 
 
@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [data, SetData] = useState()
   const [name, SetName] = useState()
   const [resultset, SetResultSet] = useState(0)
-
+  const [quiznumber, SetQuizNumber] = useState()
 
 
   const { token } = useToken();
@@ -25,70 +25,78 @@ export default function Dashboard() {
 
   useEffect(() => {
 
-      async function SetStatsfunc() {
-        const StatsArray = []
+    async function SetStatsfunc() {
+      const StatsArray = []
 
 
-        try {
-          const userStats = await Fetch('http://localhost:8080/retrieveStats', { token, resultset }  )
- 
-
-          if (userStats.error) {
-
-            alert("The server was unable verify your identity")
+      try {
+        const userStats = await Fetch('http://localhost:8080/retrieveStats', { token, resultset })
 
 
+        if (userStats.error) {
+
+          alert("The server was unable verify your identity")
 
 
-          }
-          else if (userStats.results) {
-
-                      //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
-
-            const objectArray = (userStats.results)
-            console.log(objectArray.length)   
-            objectArray.forEach(value => {
-
-              StatsArray.push(Object.values(value))
-
-            });
-              
-
-            SetData(StatsArray)
-            SetName(userStats.name[0].username)
-            return
-
-          }
-
-        } catch {
-
-          alert("A server error occurred")
 
 
         }
+        else if (userStats.results) {
+
+          //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
+
+          const objectArray = (userStats.results)
+          console.log(objectArray.length)
+          objectArray.forEach(value => {
+
+            StatsArray.push(Object.values(value))
+
+          });
+
+      
+          SetData(StatsArray)
+          SetName(userStats.name[0].username)
+          SetQuizNumber(userStats.quizcount[0].count)
+          
+
+        }
+
+      } catch {
+
+        alert("A server error occurred")
+
+
       }
+    }
+   
 
 
-      SetStatsfunc()
+    SetStatsfunc()
 
-  
+
   }, [token, resultset])
 
-
+  console.log(quiznumber)
 
   function ConditionalButtons() {
-    
-   if (resultset === 0){
-return <Button onClick={e => SetResultSet(resultset+1)}>Page {resultset}</Button>;
-   }
-else if (resultset>=1) {
 
-return <><Button onClick={e => SetResultSet(resultset + 1)}>Page {resultset}</Button><div /><Button onClick={e => SetResultSet(resultset - 1)}>Page -</Button></>
+   
+   //find a way of conditional rendering of this html based on the amount of quizzes
+   
+    const pages = quiznumber/6
 
 
-}
+    if (resultset === 0) {
+      return <Button onClick={e => SetResultSet(resultset + 1)}>Page {pages}</Button>;
+    }
+    else if (resultset >= 1) {
+
+      return <><Button onClick={e => SetResultSet(resultset + 1)}>Page +</Button><div /><Button onClick={e => SetResultSet(resultset - 1)}>Page -</Button></>
+
+
+    }
   }
-  
+
 
   //This as a buffer check to ensure that data is defined????
   if (data) {
@@ -101,7 +109,7 @@ return <><Button onClick={e => SetResultSet(resultset + 1)}>Page {resultset}</Bu
     });
 
 
-    
+
     return (
       <div>
 
@@ -134,8 +142,8 @@ return <><Button onClick={e => SetResultSet(resultset + 1)}>Page {resultset}</Bu
               })
             }
           </tbody>
-           </table>
-           <ConditionalButtons/>
+        </table>
+        <ConditionalButtons />
       </div>
     );
 

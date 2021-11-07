@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useToken from '../App/useToken';
-import Fetch from '../FetchData/FetchFunc'
+import Fetch from '../res/FetchFunc'
 
 
 

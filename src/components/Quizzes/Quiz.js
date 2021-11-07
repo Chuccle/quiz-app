@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import './Quiz.css'
 import useToken from '../App/useToken.js';
-import Fetch from '../FetchData/FetchFunc'
+import Fetch from '../res/FetchFunc'
 
 
 export default function Quiz() {
