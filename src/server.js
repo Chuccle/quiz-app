@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const app = express();
-const http = require('http')
+
 
 
 
@@ -48,12 +48,19 @@ app.post('/auth', (req, res) => {
 
 
 
-app.post('/retrieveStats', (req, res) => {
+app.post('/retrievestats', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+    
+    
+    const offset = req.body.currentpage * 6
+
+    
+    console.log(offset)
+    
 
     if (tokenResult) {
 
@@ -68,9 +75,9 @@ app.post('/retrieveStats', (req, res) => {
 
           });
 
-          const offset = req.body.resultset * 6
+        
 
-          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? LIMIT ?,6',
+          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? LIMIT ? , 6',
             [tokenResult.data, offset],
             function (selectQuizzesError, selectQuizzesResult) {
 
@@ -78,16 +85,16 @@ app.post('/retrieveStats', (req, res) => {
                 error: selectQuizzesError
 
               });
-            connection.query('SELECT COUNT(*) As count from quizzes;', function(selectQuizCountError, selectQuizCountResult) {
-              if (selectQuizCountError) throw res.send({
-                error: selectQuizCountError
-              });
-              console.log(selectUsernameResult)
+           connection.query('SELECT COUNT(*) As count from quizzes;', function(selectQuizCountError, selectQuizCountResult) {
+            if (selectQuizCountError) throw res.send({
+              error: selectQuizCountError
+             });
+             console.log(selectUsernameResult)
               
-              res.send({
+             res.send({
                 results: selectQuizzesResult,
                 name: selectUsernameResult,
-                quizcount: selectQuizCountResult
+              quizcount: selectQuizCountResult
               })
             
             })
@@ -487,4 +494,4 @@ app.post('/retrieveleaderboard', (req, res) => {
 
 
 
-http.createServer(app.listen(8080))
+app.listen(8080)

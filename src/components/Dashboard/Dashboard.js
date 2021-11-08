@@ -14,8 +14,8 @@ export default function Dashboard() {
 
   const [data, SetData] = useState()
   const [name, SetName] = useState()
-  const [resultset, SetResultSet] = useState(0)
-  const [quiznumber, SetQuizNumber] = useState()
+  const [currentpage, SetCurrentPage] = useState(0)
+  const [quizcount, SetQuizCount] = useState()
 
 
   const { token } = useToken();
@@ -30,12 +30,12 @@ export default function Dashboard() {
 
 
       try {
-        const userStats = await Fetch('http://localhost:8080/retrieveStats', { token, resultset })
+        const userStats = await Fetch('http://localhost:8080/retrievestats', { token, currentpage })
 
 
         if (userStats.error) {
 
-          alert("The server was unable verify your identity")
+          alert("A server communication error has occurred")
 
 
 
@@ -46,18 +46,17 @@ export default function Dashboard() {
           //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
           const objectArray = (userStats.results)
-          console.log(objectArray.length)
           objectArray.forEach(value => {
 
             StatsArray.push(Object.values(value))
 
           });
 
-      
+
           SetData(StatsArray)
           SetName(userStats.name[0].username)
-          SetQuizNumber(userStats.quizcount[0].count)
-          
+          SetQuizCount(userStats.quizcount[0].count)
+
 
         }
 
@@ -68,33 +67,46 @@ export default function Dashboard() {
 
       }
     }
-   
+
 
 
     SetStatsfunc()
 
 
-  }, [token, resultset])
+  }, [token, currentpage])
 
-  console.log(quiznumber)
+
 
   function ConditionalButtons() {
 
-   
-   //find a way of conditional rendering of this html based on the amount of quizzes
-   
-    const pages = quiznumber/6
+    let pages
 
+    if (quizcount % 6 === 0) {
 
-    if (resultset === 0) {
-      return <Button onClick={e => SetResultSet(resultset + 1)}>Page {pages}</Button>;
+      pages = (quizcount / 6) - 1
+
+    } else {
+
+      pages = Math.trunc(quizcount / 6)
     }
-    else if (resultset >= 1) {
 
-      return <><Button onClick={e => SetResultSet(resultset + 1)}>Page +</Button><div /><Button onClick={e => SetResultSet(resultset - 1)}>Page -</Button></>
 
+    if (currentpage === 0) {
+
+      return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+    }
+
+    else if (currentpage < pages) {
+
+      return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div /><Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+
+    } else if (currentpage === pages) {
+
+      return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
 
     }
+
+
   }
 
 
@@ -103,14 +115,17 @@ export default function Dashboard() {
 
     //array cleanup has to be done here for some reason and not in async function else bugs
     data.forEach(element => {
+
       if (element[3] == null) {
+
         element[3] = 0
+
       }
+
     });
 
-
-
     return (
+
       <div>
 
         <Jumbotron fluid>
