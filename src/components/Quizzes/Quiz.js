@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import './Quiz.css'
 import useToken from '../App/useToken.js';
-import Fetch from '../FetchData/FetchFunc'
-
+import Fetch from '../res/FetchFunc'
 
 
 export default function Quiz() {
@@ -24,6 +23,7 @@ export default function Quiz() {
 
 	useEffect(() => {
 		if (!questiondata) {
+
 			async function getquestiondata() {
 
 
@@ -44,6 +44,7 @@ export default function Quiz() {
 
 	if (questiondata) {
 
+
 		const questions =
 		{
 			questionText: questiondata.questions[currentQuestion].Questiontext,
@@ -55,7 +56,8 @@ export default function Quiz() {
 			],
 		}
 
-
+		//shuffle answeroptions array to randomise correct answer position
+		questions.answerOptions.sort(() => Math.random() - 0.5);
 
 
 		const handleAnswerOptionClick = (isCorrect) => {

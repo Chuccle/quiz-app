@@ -4,7 +4,8 @@ import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom'
-import Fetch from '../FetchData/FetchFunc';
+import Fetch from '../res/FetchFunc';
+import { Button } from 'react-bootstrap';
 
 
 
@@ -13,7 +14,8 @@ export default function Dashboard() {
 
   const [data, SetData] = useState()
   const [name, SetName] = useState()
-
+  const [currentpage, SetCurrentPage] = useState(0)
+  const [quizcount, SetQuizCount] = useState()
 
 
   const { token } = useToken();
@@ -22,62 +24,90 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    if (!data) {
+
+    async function SetStatsfunc() {
+      const StatsArray = []
 
 
+      try {
+        const userStats = await Fetch('http://localhost:8080/retrievestats', { token, currentpage })
 
 
-      async function SetStatsfunc() {
-        const StatsArray = []
+        if (userStats.error) {
+
+          alert("A server communication error has occurred")
 
 
-        try {
-          const userStats = await Fetch('http://localhost:8080/retrieveStats', { token }  )
- 
-
-          if (userStats.error) {
-
-            alert("The server was unable verify your identity")
-
-
-
-
-          }
-          else if (userStats.results) {
-
-            //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
-
-            const objectArray = (userStats.results)
-
-            objectArray.forEach(value => {
-
-              StatsArray.push(Object.values(value))
-
-            });
-
-
-            SetData(StatsArray)
-            SetName(userStats.name[0].username)
-
-          }
-
-        } catch {
-
-          alert("A server error occurred")
 
 
         }
+        else if (userStats.results) {
+
+          //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
+
+          const objectArray = (userStats.results)
+          objectArray.forEach(value => {
+
+            StatsArray.push(Object.values(value))
+
+          });
+
+
+          SetData(StatsArray)
+          SetName(userStats.name[0].username)
+          SetQuizCount(userStats.quizcount[0].count)
+
+
+        }
+
+      } catch {
+
+        alert("A server error occurred")
+
+
       }
+    }
 
 
-      SetStatsfunc()
 
+    SetStatsfunc()
+
+
+  }, [token, currentpage])
+
+
+
+  function ConditionalButtons() {
+
+    let pages
+
+    if (quizcount % 6 === 0) {
+
+      pages = (quizcount / 6) - 1
+
+    } else {
+
+      pages = Math.trunc(quizcount / 6)
+    }
+
+
+    if (currentpage === 0) {
+
+      return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+    }
+
+    else if (currentpage < pages) {
+
+      return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div /><Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+
+    } else if (currentpage === pages) {
+
+      return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
 
     }
-  })
 
 
-
+  }
 
 
   //This as a buffer check to ensure that data is defined????
@@ -85,13 +115,17 @@ export default function Dashboard() {
 
     //array cleanup has to be done here for some reason and not in async function else bugs
     data.forEach(element => {
+
       if (element[3] == null) {
+
         element[3] = 0
+
       }
+
     });
 
-    
     return (
+
       <div>
 
         <Jumbotron fluid>
@@ -101,7 +135,7 @@ export default function Dashboard() {
 
         </Jumbotron>
 
-        <table class="table">
+        <table className="table">
           <thead>
             <tr>
               <th scope="col">Quiz Name</th>
@@ -118,13 +152,13 @@ export default function Dashboard() {
                   <td>{rowdata[1]}</td>
                   <td >{rowdata[2]}</td>
                   <td >{rowdata[3]}%</td>
-                  <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start </Link></td>
+                  <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start</Link></td>
                 </tr>
               })
-
             }
           </tbody>
         </table>
+        <ConditionalButtons />
       </div>
     );
 
