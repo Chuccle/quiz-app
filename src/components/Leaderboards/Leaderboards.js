@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import Fetch from '../res/FetchFunc'
+import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
-
+import { Button } from 'react-bootstrap';
 
 
 export default function Leaderboards() {
   
   
-  const [data, SetData] = useState()
+  const [data, SetData] = useState();
+  const [currentpage, SetCurrentPage] = useState(0);
+  const [leaderboardcount, SetLeaderboardCount] = useState();
+
   const { token } = useToken();
   
   
   useEffect(() => {
-    if (!data) {
-
-
-
+    
 
       async function SetStatsfunc() {
-        const StatsArray = []
+        const StatsArray = [];
 
 
         try {
-          const userStats = await Fetch('http://localhost:8080/retrieveleaderboard', { token })
+          const userStats = await Fetch('http://localhost:8080/retrieveleaderboard', { token, currentpage });
  
 
           if (userStats.error) {
 
-            alert("The server was unable verify your identity")
+            alert("A server communication error has occurred");
 
 
 
@@ -38,34 +38,71 @@ export default function Leaderboards() {
 
             //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-            const objectArray = (userStats.results)
+            const objectArray = (userStats.results);
 
             objectArray.forEach(value => {
 
-              StatsArray.push(Object.values(value))
+              StatsArray.push(Object.values(value));
 
             });
 
 
-            SetData(StatsArray)
+            SetData(StatsArray);
+            SetLeaderboardCount(userStats.leaderboardcount[0].count)
             
 
           }
 
         } catch {
 
-          alert("A server error occurred")
+          alert("A server error occurred");
 
 
         }
       }
 
 
-      SetStatsfunc()
+      SetStatsfunc();
 
+
+  }, [token, currentpage]);
+
+
+ 
+
+  function ConditionalButtons() {
+
+    let pages;
+
+    if (leaderboardcount % 3 === 0) {
+
+      pages = (leaderboardcount / 3) - 1;
+
+    } else {
+
+      pages = Math.trunc(leaderboardcount / 3);
+    }
+
+    if (currentpage === 0) {
+
+      return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+    }
+
+    else if (currentpage < pages) {
+
+      return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div /><Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>;
+
+    } else if (currentpage === pages) {
+
+      return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
 
     }
-  })
+
+
+  }
+
+
+
 
   
   if (data) {
@@ -104,6 +141,7 @@ export default function Leaderboards() {
          }
         </tbody>
       </table>
+      <ConditionalButtons />
     </div>
   );
 

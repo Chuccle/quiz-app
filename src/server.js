@@ -474,17 +474,25 @@ app.post('/retrieveleaderboard', (req, res) => {
 
   jwt.verify(req.body.token, process.env.JWT_SECRET);
 
+const offset = req.body.currentpage * 3
 
-  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC ;', function (selectQuizScoresError, selectQuizScoresResults) {
+  connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC  LIMIT ? , 3;', [offset], function (selectQuizScoresError, selectQuizScoresResults) {
     if (selectQuizScoresError) throw res.send({
       error: selectQuizScoresError
     });
+    
+    connection.query('SELECT COUNT(*) as count from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x;', function(selectTotalLeaderboardCountError, selectTotalLeaderboardCountResult) {
+      if (selectTotalLeaderboardCountError) throw res.send({
+        error: selectTotalLeaderboardCountError
+       });
 
     console.log(selectQuizScoresResults)
 
     res.send({
-      results: selectQuizScoresResults
+      results: selectQuizScoresResults, 
+      leaderboardcount: selectTotalLeaderboardCountResult
     })
+  })
 
   })
 
