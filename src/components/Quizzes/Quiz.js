@@ -8,6 +8,7 @@ import Fetch from '../res/FetchFunc'
 
 export default function Quiz() {
 
+	if (quizdata.state.quizid) {
 
 	const { token } = useToken()
 	const quizdata = useLocation()
@@ -22,8 +23,7 @@ export default function Quiz() {
 
 
 	useEffect(() => {
-		if (!questiondata) {
-
+	
 			async function getquestiondata() {
 
 
@@ -37,8 +37,8 @@ export default function Quiz() {
 			}
 
 			getquestiondata()
-		}
-	})
+		
+	}, [token,quizid])
 
 
 
@@ -121,14 +121,21 @@ export default function Quiz() {
 			</div>
 		);
 	} else {
+		
 		return (
 			<div>Loading..</div>
 		)
-
-
-
-
-
+			
 	}
+
+} else {
+
+ return (
+		<div>
+			<h1>Error 400</h1></div>
+	)
+
+
+}
 }
 
