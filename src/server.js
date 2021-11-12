@@ -532,10 +532,11 @@ app.post('/findquiz', (req, res) => {
 
       console.log(tokenResult.data)
 
+      const offset = req.body.currentpage * 6
         
 
-          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? Where Quizzes.quizname = ?',
-            [tokenResult.data, req.body.quizname],
+          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? Where Quizzes.quizname = ? LIMIT ?, 6',
+            [tokenResult.data, req.body.quizname, offset],
             function (selectQuiznameError, selectQuiznameResult) {
 
               if (selectQuiznameError) throw res.send({

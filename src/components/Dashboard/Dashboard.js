@@ -6,6 +6,8 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom'
 import Fetch from '../res/FetchFunc';
 import { Button } from 'react-bootstrap';
+import DashboardResults from '../Search/DashboardSearch';
+import ConditionalButtons from '../res/ConditionalButtons'
 
 
 
@@ -16,11 +18,18 @@ export default function Dashboard() {
   const [name, SetName] = useState()
   const [currentpage, SetCurrentPage] = useState(0)
   const [quizcount, SetQuizCount] = useState()
+  const [nextpage, SetNextPage] = useState(false)
+  const [searchquery, SetSearchQuery] = useState()
 
 
   const { token } = useToken();
 
+  if (nextpage) {
+   
+    return
+    <DashboardResults SetSearchQuery={searchquery}></DashboardResults>
 
+  }
 
 
   useEffect(() => {
@@ -77,38 +86,7 @@ export default function Dashboard() {
 
 
 
-  function ConditionalButtons() {
-
-    let pages
-
-    if (quizcount % 6 === 0) {
-
-      pages = (quizcount / 6) - 1
-
-    } else {
-
-      pages = Math.trunc(quizcount / 6)
-    }
-
-
-    if (currentpage === 0) {
-
-      return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
-    }
-
-    else if (currentpage < pages) {
-
-      return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
-
-    } else if (currentpage === pages) {
-
-      return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
-
-    }
-
-
-  }
+ConditionalButtons(6)
 
 
   //This as a buffer check to ensure that data is defined????
@@ -144,6 +122,13 @@ export default function Dashboard() {
               <th scope="col">Best score</th>
               <th scope="col">Begin quiz</th>
             </tr>
+            <form onSubmit={handleSubmit}>
+          <label>
+            <p>Search for a quiz</p>
+            <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+          </label>
+          </form>
+          <Button onClick={e => setNextPage(true)}>Submit</Button>
           </thead>
           <tbody>
             {

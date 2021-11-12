@@ -3,6 +3,7 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
 import { Button } from 'react-bootstrap';
+import ConditionalButtons from '../res/ConditionalButtons.js'
 
 
 export default function Leaderboards() {
@@ -70,40 +71,7 @@ export default function Leaderboards() {
 
  
 
-  function ConditionalButtons() {
-
-    let pages;
-
-    if (leaderboardcount % 3 === 0) {
-
-      pages = (leaderboardcount / 3) - 1;
-
-    } else {
-
-      pages = Math.trunc(leaderboardcount / 3);
-    }
-
-    if (currentpage === 0) {
-
-      return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
-    }
-
-    else if (currentpage < pages) {
-
-      return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>;
-
-    } else if (currentpage === pages) {
-
-      return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
-
-    }
-
-
-  }
-
-
-
+ ConditionalButtons(3) 
 
   
   if (data) {
