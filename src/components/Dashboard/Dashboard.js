@@ -3,23 +3,23 @@ import useToken from '../App/useToken';
 import '../assets/bootstrap.min.css';
 import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
 import { Button } from 'react-bootstrap';
 import DashboardResults from '../Search/DashboardSearch';
-import ConditionalButtons from '../res/ConditionalButtons'
+import ConditionalButtons from '../res/ConditionalButtons';
 
 
 
 export default function Dashboard() {
   // I could neaten this up to one usestate hook call but this is more readable
 
-  const [data, SetData] = useState()
-  const [name, SetName] = useState()
-  const [currentpage, SetCurrentPage] = useState(0)
-  const [quizcount, SetQuizCount] = useState()
-  const [nextpage, SetNextPage] = useState(false)
-  const [searchquery, SetSearchQuery] = useState()
+  const [data, SetData] = useState();
+  const [name, SetName] = useState();
+  const [currentpage, SetCurrentPage] = useState(0);
+  const [quizcount, SetQuizCount] = useState();
+  const [nextpage, SetNextPage] = useState(false);
+  const [searchquery, SetSearchQuery] = useState(false);
 
 
   const { token } = useToken();
@@ -39,39 +39,38 @@ export default function Dashboard() {
 
 
       try {
-        const userStats = await Fetch('http://localhost:8080/retrievestats', { token, currentpage })
+      
+        const userStats = await Fetch('http://localhost:8080/retrievestats', { token, currentpage });
 
 
         if (userStats.error) {
 
-          alert("A server communication error has occurred")
-
-
-
+          alert("A server communication error has occurred");
 
         }
+       
         else if (userStats.results) {
 
           //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-          const objectArray = (userStats.results)
+          const objectArray = (userStats.results);
           objectArray.forEach(value => {
 
-            StatsArray.push(Object.values(value))
+            StatsArray.push(Object.values(value));
 
           });
 
 
-          SetData(StatsArray)
-          SetName(userStats.name[0].username)
-          SetQuizCount(userStats.quizcount[0].count)
+          SetData(StatsArray);
+          SetName(userStats.name[0].username);
+          SetQuizCount(userStats.quizcount[0].count);
 
 
         }
 
       } catch {
 
-        alert("A server error occurred")
+        alert("A server error occurred");
 
 
       }
@@ -86,7 +85,7 @@ export default function Dashboard() {
 
 
 
-ConditionalButtons(6)
+ConditionalButtons(6);
 
 
   //This as a buffer check to ensure that data is defined????
@@ -97,7 +96,7 @@ ConditionalButtons(6)
 
       if (element[3] == null) {
 
-        element[3] = 0
+        element[3] = 0;
 
       }
 

@@ -7,7 +7,7 @@ import useToken from './useToken.js';
 import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
-import Fetch from '../res/FetchFunc'
+import Fetch from '../res/FetchFunc';
 import './App.css';
 
 
@@ -30,7 +30,7 @@ function App() {
 
         if (response.error) {
 
-          SetAuthState(false)
+          SetAuthState(false);
 
 
 
@@ -38,19 +38,19 @@ function App() {
         }
         else if (response.message) {
 
-          SetAuthState(true)
+          SetAuthState(true);
       
 
         }
       } catch {
 
-        alert("A server error occurred")
+        alert("A server error occurred");
 
 
       }
     }
 
-    tokenAuthoriser()
+    tokenAuthoriser();
 
   })
 

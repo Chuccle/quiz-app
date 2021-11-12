@@ -1,65 +1,74 @@
 import React, { useState } from 'react';
 import useToken from '../App/useToken';
-import ConditionalButtons from '../res/ConditionalButtons'
+import Dashboard from '../Dashboard/Dashboard';
+import ConditionalButtons from '../res/ConditionalButtons';
 
 
 
 export default function DashboardResults(searchquery) {
 
-    const [data, SetData] = useState()
-    const [currentpage, SetCurrentPage] = useState(0)
-    const [quizcount, SetQuizCount] = useState()
-    const [goback, setGoBack] = useState(false)
+    const [data, SetData] = useState();
+    const [currentpage, SetCurrentPage] = useState(0);
+    const [quizcount, SetQuizCount] = useState();
+    const [goback, setGoBack] = useState(false);
+    const { token } = useToken();
+
+
+
+    if (goback) {
+
+        return <Dashboard />
+
+    }
 
 
     useEffect(() => {
 
         async function SetStatsfunc() {
-            const StatsArray = []
+            const StatsArray = [];
 
             try {
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, searchquery })
+                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, searchquery });
 
 
                 if (userStats.error) {
 
-                    alert("A server communication error has occurred")
+                    alert("A server communication error has occurred");
 
                 }
                 else if (userStats.results) {
 
                     //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-                    const objectArray = (userStats.results)
+                    const objectArray = (userStats.results);
                     objectArray.forEach(value => {
 
-                        StatsArray.push(Object.values(value))
+                        StatsArray.push(Object.values(value));
 
                     });
 
 
-                    SetData(StatsArray)
-                    SetName(userStats.name[0].username)
-                    SetQuizCount(userStats.quizcount[0].count)
+                    SetData(StatsArray);
+                    SetName(userStats.name[0].username);
+                    SetQuizCount(userStats.quizcount[0].count);
 
 
                 }
 
             } catch {
 
-                alert("A server error occurred")
+                alert("A server error occurred");
 
             }
         }
 
 
-
-        SetStatsfunc()
+        SetStatsfunc();
 
 
     }, [token, currentpage])
 
-    ConditionalButtons(6)
+    ConditionalButtons(6);
 
     //This as a buffer check to ensure that data is defined????
     if (data) {
@@ -69,7 +78,7 @@ export default function DashboardResults(searchquery) {
 
             if (element[3] == null) {
 
-                element[3] = 0
+                element[3] = 0;
 
             }
 
@@ -80,10 +89,10 @@ export default function DashboardResults(searchquery) {
             <div>
                 <div className="DashboardResults" >
                     <h1>Results for: {searchquery}  </h1>
-                    <div/>
-                    <Button onClick={e => setGoBack(true)}></Button>
+                    <div />
+                    <Button onClick={e => setGoBack(true)}> Go Back</Button>
 
-                 </div>
+                </div>
 
 
                 <table className="table">
@@ -94,13 +103,6 @@ export default function DashboardResults(searchquery) {
                             <th scope="col">Best score</th>
                             <th scope="col">Begin quiz</th>
                         </tr>
-                        <form onSubmit={handleSubmit}>
-                            <label>
-                                <p>Search for a quiz</p>
-                                <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-                            </label>
-                        </form>
-                        <Button onClick={e => setNextPage(true)}>Submit</Button>
                     </thead>
                     <tbody>
                         {
@@ -123,6 +125,7 @@ export default function DashboardResults(searchquery) {
     }
 
     else {
+
         return (<div>
 
             <h2>loading...</h2>
