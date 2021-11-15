@@ -46,11 +46,14 @@ export default function DashboardResults(searchquery) {
                         StatsArray.push(Object.values(value));
 
                     });
-
+                    
+               
 
                     SetData(StatsArray);
-                    SetName(userStats.name[0].username);
+
                     SetQuizCount(userStats.quizcount[0].count);
+
+
 
 
                 }

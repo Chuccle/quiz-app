@@ -4,6 +4,7 @@ import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
 import { Button } from 'react-bootstrap';
 import ConditionalButtons from '../res/ConditionalButtons.js'
+import LeaderboardSearch from '../Search/LeaderboardSearch.js';
 
 
 export default function Leaderboards() {
@@ -12,9 +13,17 @@ export default function Leaderboards() {
   const [data, SetData] = useState();
   const [currentpage, SetCurrentPage] = useState(0);
   const [leaderboardcount, SetLeaderboardCount] = useState();
+  const [nextpage, SetNextPage] = useState(false);
+  const [searchquery, SetSearchQuery] = useState(false);
 
   const { token } = useToken();
   
+  if (nextpage) {
+   
+    return
+    <LeaderboardSearch SetSearchQuery={searchquery}></LeaderboardSearch>
+
+  }
   
   useEffect(() => {
     
@@ -93,6 +102,13 @@ export default function Leaderboards() {
             <th scope="col">Username</th>
             <th scope="col">Quizzes completed</th>
           </tr>
+          <form onSubmit={handleSubmit}>
+          <label>
+            <p>Search for a quiz</p>
+            <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+          </label>
+          </form>
+          <Button onClick={e => setNextPage(true)}>Submit</Button>
         </thead>
         <tbody>
           {
