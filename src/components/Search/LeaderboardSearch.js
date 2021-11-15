@@ -33,7 +33,7 @@ export default function DashboardResults(searchquery) {
 
                 if (userStats.error) {
 
-                    alert("A server communication error has occurred");
+                    alert("A server error has occurred");
 
                 }
                 else if (userStats.results) {
@@ -60,7 +60,7 @@ export default function DashboardResults(searchquery) {
 
             } catch {
 
-                alert("A server error occurred");
+                alert("A server communication error occurred");
 
             }
         }
@@ -94,7 +94,7 @@ export default function DashboardResults(searchquery) {
 
                     <Jumbotron fluid>
 
-                        <h1 className="header">Top users</h1>
+                        <h1 className="header">Results for: {searchquery}</h1>
 
                     </Jumbotron>
 
