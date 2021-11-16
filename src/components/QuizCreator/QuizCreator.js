@@ -11,6 +11,20 @@ export function QuizCreator() {
   const [nextpage, SetNextPage] = useState(false);
 
 
+  function validation() {
+    
+switch (quizname) {
+
+
+
+
+}
+
+
+
+
+
+  }
 
 
   // After values are assigned we pass the data onto the questionset functional component
@@ -25,18 +39,21 @@ export function QuizCreator() {
   return (
     <><div>
       <p>What will be the name of your quiz</p>
-      <input type="text" onChange={e => setQuizName(e.target.value)} />
+      <input type="text" onChange={e => setQuizName(e.target.value)} required />
     </div>
       <div>
         <p>How difficult is your quiz?</p>
-        <input type="text" onChange={e => setQuizDifficulty(e.target.value)} />
+        <input type="text" onChange={e => setQuizDifficulty(e.target.value)} required />
       </div>
       <div>
         <p>What is the length of your quiz?</p>
-        <input type="text" onChange={e => setQuizLength(e.target.value)} />
+        <div className="LengthButtons" />
+        <button onClick={e => quizlength(5)}>5</button>
+        <button onClick={e => quizlength(10)}>10</button>
+        <button onClick={e => quizlength(15)}>15</button>
       </div>
       <div className="insertQuizdatabutton">
-        <button onClick={e => SetNextPage(true)}>slub</button>
+        <button onClick={e => SetNextPage(true)}>Nextpage</button>
       </div></>
 
 
