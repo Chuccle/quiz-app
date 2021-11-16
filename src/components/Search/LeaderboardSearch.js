@@ -12,8 +12,21 @@ export default function DashboardResults(searchquery) {
     const [quizcount, SetQuizCount] = useState();
     const [goback, setGoBack] = useState(false);
     const { token } = useToken();
+    const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
+    const [newsearch, SetNewSearch] = useState(false);
+    const [newsearchquery, SetNewSearchQuery] = useState();
+    
 
 
+
+
+    if (newsearch) {
+
+      SetCurrentSearchQuery(newsearchquery);
+     SetNewSearch(false);
+    
+    
+      }
 
     if (goback) {
 
@@ -28,7 +41,7 @@ export default function DashboardResults(searchquery) {
             const StatsArray = [];
 
             try {
-                const userStats = await Fetch('http://localhost:8080/finduserrank', { token, currentpage, searchquery });
+                const userStats = await Fetch('http://localhost:8080/finduserrank', { token, currentpage, currentsearchquery });
 
 
                 if (userStats.error) {
@@ -69,7 +82,7 @@ export default function DashboardResults(searchquery) {
         SetStatsfunc();
 
 
-    }, [token, currentpage])
+    }, [token, currentpage, currentsearchquery])
 
     ConditionalButtons(3);
 
@@ -94,9 +107,16 @@ export default function DashboardResults(searchquery) {
 
                     <Jumbotron fluid>
 
-                        <h1 className="header">Results for: {searchquery}</h1>
+                        <h1 className="header">Results for: {currentsearchquery}</h1>
 
                     </Jumbotron>
+                    
+                    <label>
+                        <p>Search for a user</p>
+                        <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+                    
+                    </label>
+                    <Button onClick={e => SetNewSearch(true)}>Submit</Button>
 
                     <table class="table">
                         <thead>

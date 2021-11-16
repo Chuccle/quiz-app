@@ -25,7 +25,7 @@ export default function Dashboard() {
   const { token } = useToken();
 
   if (nextpage) {
-   
+
     return
     <DashboardResults SetSearchQuery={searchquery}></DashboardResults>
 
@@ -39,7 +39,7 @@ export default function Dashboard() {
 
 
       try {
-      
+
         const userStats = await Fetch('http://localhost:8080/retrievestats', { token, currentpage });
 
 
@@ -48,7 +48,7 @@ export default function Dashboard() {
           alert("A server communication error has occurred");
 
         }
-       
+
         else if (userStats.results) {
 
           //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
@@ -85,7 +85,7 @@ export default function Dashboard() {
 
 
 
-ConditionalButtons(6);
+  ConditionalButtons(6);
 
 
   //This as a buffer check to ensure that data is defined????
@@ -121,13 +121,13 @@ ConditionalButtons(6);
               <th scope="col">Best score</th>
               <th scope="col">Begin quiz</th>
             </tr>
-            <form onSubmit={handleSubmit}>
-          <label>
-            <p>Search for a quiz</p>
-            <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-          </label>
-          </form>
-          <Button onClick={e => setNextPage(true)}>Submit</Button>
+
+            <label>
+              <p>Search for a quiz</p>
+              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+            </label>
+
+            <Button onClick={e => setNextPage(true)}>Submit</Button>
           </thead>
           <tbody>
             {

@@ -102,12 +102,10 @@ export default function Leaderboards() {
             <th scope="col">Username</th>
             <th scope="col">Quizzes completed</th>
           </tr>
-          <form onSubmit={handleSubmit}>
           <label>
-            <p>Search for a quiz</p>
+            <p>Search for a user</p>
             <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
           </label>
-          </form>
           <Button onClick={e => setNextPage(true)}>Submit</Button>
         </thead>
         <tbody>
