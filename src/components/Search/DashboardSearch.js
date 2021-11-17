@@ -11,8 +11,19 @@ export default function DashboardResults(searchquery) {
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [goback, setGoBack] = useState(false);
+    const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
+    const [newsearch, SetNewSearch] = useState(false);
+    const [newsearchquery, SetNewSearchQuery] = useState();
+    
     const { token } = useToken();
 
+    if (newsearch) {
+
+        SetCurrentSearchQuery(newsearchquery);
+       SetNewSearch(false);
+      
+      
+        }
 
 
     if (goback) {
@@ -91,12 +102,17 @@ export default function DashboardResults(searchquery) {
 
             <div>
                 <div className="DashboardResults" >
-                    <h1>Results for: {searchquery}  </h1>
+                    <h1>Results for: {currentsearchquery}  </h1>
                     <div />
                     <Button onClick={e => setGoBack(true)}> Go Back</Button>
 
                 </div>
-
+                <label>
+                        <p>Search for a quiz</p>
+                        <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+                    
+                    </label>
+                    <Button onClick={e => SetNewSearch(true)}>Submit</Button>
 
                 <table className="table">
                     <thead>

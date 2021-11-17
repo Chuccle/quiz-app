@@ -11,12 +11,11 @@ export default function DashboardResults(searchquery) {
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [goback, setGoBack] = useState(false);
-    const { token } = useToken();
     const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
     const [newsearch, SetNewSearch] = useState(false);
     const [newsearchquery, SetNewSearchQuery] = useState();
     
-
+    const { token } = useToken();
 
 
 
@@ -108,7 +107,7 @@ export default function DashboardResults(searchquery) {
                     <Jumbotron fluid>
 
                         <h1 className="header">Results for: {currentsearchquery}</h1>
-
+                        <Button onClick={e => setGoBack(true)}> Go Back</Button>
                     </Jumbotron>
                     
                     <label>
