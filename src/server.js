@@ -54,13 +54,13 @@ app.post('/retrievestats', (req, res) => {
   //jwt must be provided
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
-    
-    
+
+
     const offset = req.body.currentpage * 6
 
-    
+
     console.log(offset)
-    
+
 
     if (tokenResult) {
 
@@ -75,7 +75,7 @@ app.post('/retrievestats', (req, res) => {
 
           });
 
-        
+
 
           connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? LIMIT ? , 6',
             [tokenResult.data, offset],
@@ -85,19 +85,19 @@ app.post('/retrievestats', (req, res) => {
                 error: selectQuizzesError
 
               });
-           connection.query('SELECT COUNT(*) As count from quizzes;', function(selectQuizCountError, selectQuizCountResult) {
-            if (selectQuizCountError) throw res.send({
-              error: selectQuizCountError
-             });
-             console.log(selectUsernameResult)
-              
-             res.send({
-                results: selectQuizzesResult,
-                name: selectUsernameResult,
-              quizcount: selectQuizCountResult
+              connection.query('SELECT COUNT(*) As count from quizzes;', function (selectQuizCountError, selectQuizCountResult) {
+                if (selectQuizCountError) throw res.send({
+                  error: selectQuizCountError
+                });
+                console.log(selectUsernameResult)
+
+                res.send({
+                  results: selectQuizzesResult,
+                  name: selectUsernameResult,
+                  quizcount: selectQuizCountResult
+                })
+
               })
-            
-            })
 
             })
         })
@@ -474,25 +474,25 @@ app.post('/retrieveleaderboard', (req, res) => {
 
   jwt.verify(req.body.token, process.env.JWT_SECRET);
 
-const offset = req.body.currentpage * 3
+  const offset = req.body.currentpage * 3
 
   connection.query('SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC  LIMIT ? , 3;', [offset], function (selectQuizScoresError, selectQuizScoresResults) {
     if (selectQuizScoresError) throw res.send({
       error: selectQuizScoresError
     });
-    
-    connection.query('SELECT COUNT(*) as count from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x;', function(selectTotalLeaderboardCountError, selectTotalLeaderboardCountResult) {
+
+    connection.query('SELECT COUNT(*) as count from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x;', function (selectTotalLeaderboardCountError, selectTotalLeaderboardCountResult) {
       if (selectTotalLeaderboardCountError) throw res.send({
         error: selectTotalLeaderboardCountError
-       });
+      });
 
-    console.log(selectQuizScoresResults)
+      console.log(selectQuizScoresResults)
 
-    res.send({
-      results: selectQuizScoresResults, 
-      leaderboardcount: selectTotalLeaderboardCountResult
+      res.send({
+        results: selectQuizScoresResults,
+        leaderboardcount: selectTotalLeaderboardCountResult
+      })
     })
-  })
 
   })
 
@@ -509,11 +509,11 @@ app.post('/finduserrank', (req, res) => {
     if (selectUserPositionError) throw res.send({
       error: selectUserPositionError
     });
-   
+
     res.send({
-      results: selectUserPositionResults, 
+      results: selectUserPositionResults,
     })
- })
+  })
 
 })
 
@@ -525,34 +525,34 @@ app.post('/findquiz', (req, res) => {
   //jwt must be provided
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
-    
-    
+
+
 
     if (tokenResult) {
 
       console.log(tokenResult.data)
 
       const offset = req.body.currentpage * 6
-        
 
-          connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? Where Quizzes.quizname = ? LIMIT ?, 6',
-            [tokenResult.data, req.body.quizname, offset],
-            function (selectQuiznameError, selectQuiznameResult) {
 
-              if (selectQuiznameError) throw res.send({
-                error: selectQuiznameError
+      connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? Where Quizzes.quizname = ? LIMIT ?, 6',
+        [tokenResult.data, req.body.quizname, offset],
+        function (selectQuiznameError, selectQuiznameResult) {
 
-              });
-           
-              
-             res.send({
-                results: selectQuiznameResult
-              })
-            
-            })
+          if (selectQuiznameError) throw res.send({
+            error: selectQuiznameError
 
-            
-        
+          });
+
+
+          res.send({
+            results: selectQuiznameResult
+          })
+
+        })
+
+
+
 
     } else {
 

@@ -14,18 +14,18 @@ export default function DashboardResults(searchquery) {
     const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
     const [newsearch, SetNewSearch] = useState(false);
     const [newsearchquery, SetNewSearchQuery] = useState();
-    
+
     const { token } = useToken();
 
 
 
     if (newsearch) {
 
-      SetCurrentSearchQuery(newsearchquery);
-     SetNewSearch(false);
-    
-    
-      }
+        SetCurrentSearchQuery(newsearchquery);
+        SetNewSearch(false);
+
+
+    }
 
     if (goback) {
 
@@ -109,11 +109,11 @@ export default function DashboardResults(searchquery) {
                         <h1 className="header">Results for: {currentsearchquery}</h1>
                         <Button onClick={e => setGoBack(true)}> Go Back</Button>
                     </Jumbotron>
-                    
+
                     <label>
                         <p>Search for a user</p>
                         <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
-                    
+
                     </label>
                     <Button onClick={e => SetNewSearch(true)}>Submit</Button>
 

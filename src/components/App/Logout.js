@@ -6,11 +6,12 @@ export default function Logout() {
     window.location.replace('/')
 
     return (<>
-    <div>
-<h1>successful logout</h1>
+       
+        <div>
+            <h1>successful logout</h1>
 
-    </div>
-    
+        </div>
+
     </>)
-    
+
 }

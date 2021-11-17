@@ -14,16 +14,16 @@ export default function DashboardResults(searchquery) {
     const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
     const [newsearch, SetNewSearch] = useState(false);
     const [newsearchquery, SetNewSearchQuery] = useState();
-    
+
     const { token } = useToken();
 
     if (newsearch) {
 
         SetCurrentSearchQuery(newsearchquery);
-       SetNewSearch(false);
-      
-      
-        }
+        SetNewSearch(false);
+
+
+    }
 
 
     if (goback) {
@@ -57,8 +57,8 @@ export default function DashboardResults(searchquery) {
                         StatsArray.push(Object.values(value));
 
                     });
-                    
-               
+
+
 
                     SetData(StatsArray);
 
@@ -108,11 +108,11 @@ export default function DashboardResults(searchquery) {
 
                 </div>
                 <label>
-                        <p>Search for a quiz</p>
-                        <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
-                    
-                    </label>
-                    <Button onClick={e => SetNewSearch(true)}>Submit</Button>
+                    <p>Search for a quiz</p>
+                    <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+
+                </label>
+                <Button onClick={e => SetNewSearch(true)}>Submit</Button>
 
                 <table className="table">
                     <thead>
