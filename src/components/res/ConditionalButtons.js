@@ -1,5 +1,5 @@
-function ConditionalButtons(maxRows) {
-
+import { Button } from 'react-bootstrap';
+export default function ConditionalButtons(maxRows, quizcount, currentpage, SetCurrentPage) {
 
   //may need quizcount and currentpage as args
 
@@ -8,7 +8,7 @@ function ConditionalButtons(maxRows) {
 
 
   //base case 
-  if (quizcount < maxRows) {
+  if (quizcount / maxRows) {
 
     return null
 

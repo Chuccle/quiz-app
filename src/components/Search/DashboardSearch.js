@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
 import Dashboard from '../Dashboard/Dashboard';
-import ConditionalButtons from '../res/ConditionalButtons';
+//import ConditionalButtons from '../res/ConditionalButtons';
+import Fetch from '../res/FetchFunc';
+import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-
-
-export default function DashboardResults(searchquery) {
+export default function DashboardResults({ searchquery }) {
 
     const [data, SetData] = useState();
     const [currentpage, SetCurrentPage] = useState(0);
@@ -17,29 +18,16 @@ export default function DashboardResults(searchquery) {
 
     const { token } = useToken();
 
-    if (newsearch) {
-
-        SetCurrentSearchQuery(newsearchquery);
-        SetNewSearch(false);
-
-
-    }
-
-
-    if (goback) {
-
-        return <Dashboard />
-
-    }
-
 
     useEffect(() => {
 
         async function SetStatsfunc() {
+
             const StatsArray = [];
 
             try {
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, searchquery });
+
+                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, currentsearchquery });
 
 
                 if (userStats.error) {
@@ -52,6 +40,7 @@ export default function DashboardResults(searchquery) {
                     //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
                     const objectArray = (userStats.results);
+
                     objectArray.forEach(value => {
 
                         StatsArray.push(Object.values(value));
@@ -59,12 +48,10 @@ export default function DashboardResults(searchquery) {
                     });
 
 
+                    console.log(StatsArray);
 
                     SetData(StatsArray);
-
-                    SetQuizCount(userStats.quizcount[0].count);
-
-
+                    SetQuizCount(userStats.quizsearchcount[0].quizsearchcount);
 
 
                 }
@@ -80,9 +67,68 @@ export default function DashboardResults(searchquery) {
         SetStatsfunc();
 
 
-    }, [token, currentpage])
+    }, [token, currentpage, currentsearchquery])
 
-    ConditionalButtons(6);
+    console.log(quizcount)
+   
+    if (newsearch) {
+
+        SetCurrentSearchQuery(newsearchquery);
+       
+        SetNewSearch(false);
+
+
+    }
+
+
+    if (goback) {
+
+        return <Dashboard />
+
+    }
+
+
+
+    function ConditionalButtons() {
+
+        let pages
+
+        if (quizcount < 6) {
+
+            return null
+
+        }
+
+        else if (quizcount % 6 === 0) {
+
+            pages = (quizcount / 6) - 1
+
+        } else {
+
+            pages = Math.trunc(quizcount / 6)
+        }
+
+
+
+        if (currentpage === 0) {
+
+            return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+        }
+
+        else if (currentpage < pages) {
+
+            return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
+                <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+
+        } else if (currentpage === pages) {
+
+            return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
+
+        }
+
+
+    }
+
 
     //This as a buffer check to ensure that data is defined????
     if (data) {

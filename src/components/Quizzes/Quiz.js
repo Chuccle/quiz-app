@@ -8,10 +8,13 @@ import Fetch from '../res/FetchFunc'
 
 export default function Quiz() {
 
-	if (quizdata.state.quizid) {
+
+	const quizdata = useLocation()
+	
+	
 
 		const { token } = useToken()
-		const quizdata = useLocation()
+		
 		const quizid = quizdata.state.quizid
 		const [currentQuestion, setCurrentQuestion] = useState(0);
 		const [showScore, setShowScore] = useState(false);
@@ -128,15 +131,7 @@ export default function Quiz() {
 				<div>Loading..</div>
 			)
 
-		}
-
-	} else {
-
-		return (
-			<div>
-				<h1>Error 400</h1></div>
-		)
-
+		
 
 	}
 }

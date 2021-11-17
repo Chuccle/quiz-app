@@ -3,7 +3,7 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
 import { Button } from 'react-bootstrap';
-import ConditionalButtons from '../res/ConditionalButtons.js'
+//import ConditionalButtons from '../res/ConditionalButtons.js'
 import LeaderboardSearch from '../Search/LeaderboardSearch.js';
 
 
@@ -18,12 +18,6 @@ export default function Leaderboards() {
 
   const { token } = useToken();
 
-  if (nextpage) {
-
-    return
-    <LeaderboardSearch SetSearchQuery={searchquery}></LeaderboardSearch>
-
-  }
 
   useEffect(() => {
 
@@ -58,6 +52,7 @@ export default function Leaderboards() {
 
 
           SetData(StatsArray);
+        
           SetLeaderboardCount(userStats.leaderboardcount[0].count)
 
 
@@ -77,13 +72,61 @@ export default function Leaderboards() {
 
   }, [token, currentpage]);
 
+  
+  function ConditionalButtons() {
+
+    let pages;
+
+    if (leaderboardcount < 3) {
+
+        return null;
+
+    }
+
+    else if (leaderboardcount % 3 === 0) {
+
+        pages = (leaderboardcount / 3) - 1;
+
+    } else {
+
+        pages = Math.trunc(leaderboardcount / 3);
+    }
 
 
 
-  ConditionalButtons(3)
+    if (currentpage === 0) {
+
+        return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+    }
+
+    else if (currentpage < pages) {
+
+        return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
+            <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+
+    } else if (currentpage === pages) {
+
+        return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
+
+    }
 
 
-  if (data) {
+}
+
+
+ // ConditionalButtons(3, leaderboardcount, currentpage)
+
+
+
+  if (nextpage) {
+
+    return <LeaderboardSearch searchquery={searchquery}></LeaderboardSearch>
+
+  }
+
+
+
+if (data) {
 
 
     return (
@@ -106,7 +149,7 @@ export default function Leaderboards() {
               <p>Search for a user</p>
               <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
             </label>
-            <Button onClick={e => setNextPage(true)}>Submit</Button>
+            <Button onClick={e => SetNextPage(true)}>Submit</Button>
           </thead>
           <tbody>
             {

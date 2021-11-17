@@ -44,7 +44,7 @@ app.post('/auth', (req, res) => {
 });
 
 
-app.post('/retrievestats', (req, res) => {
+app.post('/retrievequizzes', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
@@ -480,16 +480,47 @@ app.post('/retrieveleaderboard', (req, res) => {
 
 app.post('/finduserrank', (req, res) => {
 
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
-  connection.query('SELECT * from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x WHERE username = ?', [req.body.username], function (selectUserPositionError, selectUserPositionResults) {
+    if (tokenResult) {
 
-    if (selectUserPositionError) throw res.send({
-      error: selectUserPositionError
-    });
+      console.log(tokenResult.data);
 
-    res.send({
-      results: selectUserPositionResults,
-    });
+      const offset = req.body.currentpage * 3;
+
+      console.log(req.body.currentsearchquery)
+
+      connection.query('SELECT * from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x WHERE username = ? LIMIT ?, 3', [req.body.currentsearchquery, offset], function (selectUserPositionError, selectUserPositionResults) {
+
+        if (selectUserPositionError) throw res.send({
+          error: selectUserPositionError
+        });
+
+        connection.query('SELECT COUNT(*) AS usersearchcount FROM (SELECT * from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x WHERE username = ?) x;', [req.body.currentsearchquery], function (selectUserPositionCountError, selectUserPositionCountResults) {
+
+          if (selectUserPositionCountError) throw res.send({
+            error: selectUserPositionCountError
+          });
+
+          res.send({
+            results: selectUserPositionResults,
+            leaderboardcount: selectUserPositionCountResults
+          });
+
+        });
+
+      });
+
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    }
 
   });
 
@@ -509,8 +540,10 @@ app.post('/findquiz', (req, res) => {
 
       const offset = req.body.currentpage * 6;
 
+      console.log(req.body.currentsearchquery)
+
       connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? Where Quizzes.quizname = ? LIMIT ?, 6',
-        [tokenResult.data, req.body.quizname, offset],
+        [tokenResult.data, req.body.currentsearchquery, offset],
         function (selectQuiznameError, selectQuiznameResult) {
 
           if (selectQuiznameError) throw res.send({
@@ -518,9 +551,22 @@ app.post('/findquiz', (req, res) => {
 
           });
 
-          res.send({
-            results: selectQuiznameResult
-          });
+          connection.query('SELECT COUNT(*) AS quizsearchcount FROM (SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? WHERE Quizzes.quizname = ?) x',
+            [tokenResult.data, req.body.currentsearchquery],
+            function (selectQuiznameCountError, selectQuiznameCountResult) {
+
+              if (selectQuiznameCountError) throw res.send({
+                error: selectQuiznameError
+
+              });
+
+              console.log(selectQuiznameResult);
+              res.send({
+                results: selectQuiznameResult,
+                quizsearchcount: selectQuiznameCountResult
+              });
+
+            });
 
         });
 
