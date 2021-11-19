@@ -19,8 +19,6 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     const [questionnumber, setQuestionNumber] = useState(0);
 
 
-
-
     async function insertDataClearForm() {
         if (quizlength > questionnumber) {
 
@@ -49,31 +47,22 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
             try {
                 var response = await Fetch('http://localhost:8080/insertquiz', { questionset, token });
 
-
-
                 if (response.error) {
-
 
                     alert("there was an error inserting your quiz")
 
-
-                }
-                else if (response.QuizStatus === "Inserted") {
-
-
-
-
-
+                } else if (response.QuizStatus === "Inserted") {
 
                 }
             } catch {
 
                 alert("A server communication error occurred")
 
-
             }
         }
     }
+
+
 
     console.log(questionset)
 

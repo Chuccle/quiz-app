@@ -13,12 +13,14 @@ export default function Register({ setToken }) {
     const [passwordCompare, setPasswordCompare] = useState();
     const [Nextpage, setNextPage] = useState()
 
+    //if Nextpage is true, then pass setToken prop to Login component
     if (Nextpage) {
 
         return <Login setToken={setToken} />
 
     }
 
+    //On form click validate the form and if validation is satisfied then send the data to the server
     const handleSubmit = async e => {
         e.preventDefault()
 
@@ -32,7 +34,7 @@ export default function Register({ setToken }) {
             return false;
         }
         else {
-            const token = await Fetch('http://localhost:8080/register',{
+            const token = await Fetch('http://localhost:8080/register', {
                 username,
                 password
             });
@@ -74,6 +76,7 @@ export default function Register({ setToken }) {
         </div>
     )
 }
+
 
 Register.propTypes = {
     setToken: PropTypes.func.isRequired
