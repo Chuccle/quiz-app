@@ -18,6 +18,7 @@ app.use(bodyParser.json())
 
 app.post('/auth', (req, res) => {
 
+  // asynchronously check if our tokeb is valid and return the user id in data property of result
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (err, result) {
 
 
@@ -48,10 +49,12 @@ app.post('/retrievequizzes', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
+    
+  // asynchronously check if our tokeb is valid and return the user id in data property of result
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
-
+// offset is how many results the page is designed to display
     const offset = req.body.currentpage * 6;
 
     console.log(offset);

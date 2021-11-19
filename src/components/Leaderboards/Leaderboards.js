@@ -116,9 +116,8 @@ export default function Leaderboards() {
 
  // ConditionalButtons(3, leaderboardcount, currentpage)
 
-
-
-  if (nextpage) {
+ //if Nextpage is true, then pass setToken prop to Leaderboardsearch component
+ if (nextpage) {
 
     return <LeaderboardSearch searchquery={searchquery}></LeaderboardSearch>
 
@@ -135,26 +134,26 @@ if (data) {
         <Jumbotron fluid>
 
           <h1 className="header">Top users</h1>
+          <label>
+              <p>Search for a user</p>
+              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+            </label>
+            <Button onClick={e => SetNextPage(true)}>Submit</Button>
 
         </Jumbotron>
 
         <table class="table">
-          <thead>
+       <thead>
             <tr>
               <th scope="col">Rank</th>
               <th scope="col">Username</th>
               <th scope="col">Quizzes completed</th>
             </tr>
-            <label>
-              <p>Search for a user</p>
-              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-            </label>
-            <Button onClick={e => SetNextPage(true)}>Submit</Button>
           </thead>
           <tbody>
             {
 
-              // // much better and scales to the amount of rows sent
+              // scalable
               data.map(function (rowdata) {
                 return <tr key={rowdata[0]}>
                   <td>{rowdata[0]}</td>

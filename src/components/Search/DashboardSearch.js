@@ -66,7 +66,7 @@ export default function DashboardResults({ searchquery }) {
 
         SetStatsfunc();
 
-
+       
     }, [token, currentpage, currentsearchquery])
 
     console.log(quizcount)
@@ -93,44 +93,57 @@ export default function DashboardResults({ searchquery }) {
 
         let pages
 
+        //base case
         if (quizcount < 6) {
 
             return null
 
         }
 
-        else if (quizcount % 6 === 0) {
+       //if there is no remainder 
 
-            pages = (quizcount / 6) - 1
+  else if (quizcount % 6 === 0) {
 
-        } else {
+        //-1 because we need to offset the fact that arrays start at 0
+    
+    pages = (quizcount / 6) - 1
 
-            pages = Math.trunc(quizcount / 6)
-        }
+} else {
+
+    //if there is a remainder treat it as a whole number
+    
+    pages = Math.trunc(quizcount / 6)
+  }
 
 
+ //first page 
+  
+ if (currentpage === 0) {
 
-        if (currentpage === 0) {
+    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+  }
 
-            return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
-        }
+  //middle pages
+  
+  else if (currentpage < pages) {
 
-        else if (currentpage < pages) {
+    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
+      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
 
-            return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-                <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
 
-        } else if (currentpage === pages) {
+//last page
 
-            return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
+} else if (currentpage === pages) {
 
-        }
+    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
+
+  }
 
 
     }
 
 
-    //This as a buffer check to ensure that data is defined????
+    //This as a buffer check to ensure that data is defined.
     if (data) {
 
         //array cleanup has to be done here for some reason and not in async function else bugs

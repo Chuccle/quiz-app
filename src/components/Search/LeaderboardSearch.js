@@ -84,6 +84,7 @@ export default function LeaderboardSearch({ searchquery }) {
 
     }
 
+  
     function ConditionalButtons() {
 
         let pages;
@@ -104,22 +105,25 @@ export default function LeaderboardSearch({ searchquery }) {
 
         }
 
+  //first page 
+  if (currentpage === 0) {
+
+    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+  }
+
+  //middle pages
+  else if (currentpage < pages) {
+
+    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
+      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
 
 
-        if (currentpage === 0) {
+//last page
+  } else if (currentpage === pages) {
 
-            return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
-        }
+    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
 
-        else if (currentpage < pages) {
-
-            return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-                <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
-
-        } else if (currentpage === pages) {
-
-            return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
-        }
+  }
 
 
     }
@@ -130,6 +134,7 @@ export default function LeaderboardSearch({ searchquery }) {
     if (data) {
 
         //array cleanup has to be done here for some reason and not in async function else bugs
+
         data.forEach(element => {
 
             if (element[3] == null) {
@@ -185,7 +190,7 @@ export default function LeaderboardSearch({ searchquery }) {
             </div>
         );
     }
-    
+
     else {
 
         return (<div>

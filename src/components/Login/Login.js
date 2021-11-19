@@ -11,13 +11,14 @@ export default function Login({ setToken }) {
   const [password, setPassword] = useState();
   const [Nextpage, setNextPage] = useState()
 
+ //if Nextpage is true, then pass setToken prop to Login component
   if (Nextpage) {
 
     return <Register setToken={setToken} />
 
   }
 
-
+//On form click validate the form and if validation is satisfied then send the data to the server
   const handleSubmit = async e => {
     e.preventDefault()
 

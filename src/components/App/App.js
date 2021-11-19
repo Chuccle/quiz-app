@@ -55,6 +55,7 @@ function App() {
   })
 
 
+  // If token is not authorised, redirect to login page as this is parent it will take precedent over the other components
   if (!tokenAuthorised) {
 
     return <Login setToken={setToken} />
@@ -62,7 +63,7 @@ function App() {
   //console.log(tokenAuthorised)
 
 
-
+//define our routes
   return (
     <div className="wrapper">
       <BrowserRouter>

@@ -1,4 +1,7 @@
 
+
+//Send a post request to server.js with an address and data and have the return value be parsed into a JSON object.
+
 export default async function Fetch(address, Data) {
 
   return fetch(address, {

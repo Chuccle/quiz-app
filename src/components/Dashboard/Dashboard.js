@@ -12,7 +12,6 @@ import DashboardResults from '../Search/DashboardSearch';
 
 
 export default function Dashboard() {
-  // I could neaten this up to one usestate hook call but this is more readable
 
   const [data, SetData] = useState();
   const [name, SetName] = useState();
@@ -20,7 +19,6 @@ export default function Dashboard() {
   const [quizcount, SetQuizCount] = useState();
   const [nextpage, SetNextPage] = useState(false);
   const [searchquery, SetSearchQuery] = useState(false);
-
 
   const { token } = useToken();
 
@@ -31,11 +29,9 @@ export default function Dashboard() {
 
       const StatsArray = []
 
-
       try {
 
         const userStats = await Fetch('http://localhost:8080/retrievequizzes', { token, currentpage });
-
 
         if (userStats.error) {
 
@@ -55,11 +51,9 @@ export default function Dashboard() {
 
           });
 
-
           SetData(StatsArray);
           SetName(userStats.name[0].username);
           SetQuizCount(userStats.quizcount[0].count);
-
 
         }
 
@@ -67,29 +61,20 @@ export default function Dashboard() {
 
         alert("A server error occurred");
 
-
       }
     }
 
-
-
     SetStatsfunc()
-
 
   }, [token, currentpage])
 
 
-
-  // ConditionalButtons(6, quizcount, currentpage);
-
   function ConditionalButtons() {
-
 
     let pages
 
-
-
     //base case 
+
     if (quizcount < 6) {
 
       return null
@@ -104,8 +89,6 @@ export default function Dashboard() {
 
       pages = Math.trunc(quizcount / 6)
     }
-
-
 
     if (currentpage === 0) {
 
@@ -128,18 +111,20 @@ export default function Dashboard() {
 
 
   if (nextpage) {
+
     console.log("lol")
+
     return <DashboardResults searchquery={searchquery}></DashboardResults>
+
   }
 
 
   //This as a buffer check to ensure that data is defined????
+
   if (data) {
 
-
-
-
     //array cleanup has to be done here for some reason and not in async function else bugs
+
     data.forEach(element => {
 
       if (element[3] == null) {
@@ -158,8 +143,18 @@ export default function Dashboard() {
 
           <h1 className="header">Welcome to your dashboard: {name}</h1>
           <h5>Please select a quiz</h5>
+          <label>
+              <p>Search for a quiz</p>
+              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+              <Button onClick={e => SetNextPage(true)}>Submit</Button>
+            </label>
+
+
 
         </Jumbotron>
+
+
+
 
         <table className="table">
           <thead>
@@ -169,12 +164,6 @@ export default function Dashboard() {
               <th scope="col">Best score</th>
               <th scope="col">Begin quiz</th>
             </tr>
-
-            <label>
-              <p>Search for a quiz</p>
-              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-              <Button onClick={e => SetNextPage(true)}>Submit</Button>
-            </label>
 
           </thead>
           <tbody>
