@@ -587,5 +587,63 @@ app.post('/findquiz', (req, res) => {
 
 });
 
+app.post('/retrieveuserquizzes', (req, res) => {
+
+  // error 400 bad request
+  //jwt must be provided
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      const offset = req.body.currentpage * 6;
+
+      console.log(req.body.currentsearchquery)
+
+      connection.query('SELECT id and quizname and difficulty from Quizzes Where created_by_userid = ? LIMIT ?, 6',
+        [tokenResult.data, offset],
+        function (selectUserQuizzesError, selectUserQuizzesResult) {
+
+          if (selectUserQuizzesError) throw res.send({
+            error: selectUserQuizzesError
+
+          });
+
+          connection.query('SELECT COUNT(*) AS quizcount FROM (SELECT quizname and difficulty from Quizzes Where created_by_userid = ?) x',
+            [tokenResult.data],
+            function (selectUserQuizCountError, selectUserQuizCountResult) {
+
+              if (selectUserQuizCountError) throw res.send({
+                error: selectUserQuizCountError
+
+              });
+
+              console.log(selectQuiznameResult);
+              res.send({
+                results: selectQuiznameResult,
+                quizsearchcount: selectQuiznameCountResult
+              });
+
+            });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    }
+
+  });
+
+});
+
+
 
 app.listen(8080)
