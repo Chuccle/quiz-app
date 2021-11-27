@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import useToken from '../App/useToken';
-import Dashboard from '../Dashboard/Dashboard';
+import useToken from '../../App/useToken';
+import Dashboard from '../../Dashboard/Dashboard.js';
 //import ConditionalButtons from '../res/ConditionalButtons';
-import Fetch from '../res/FetchFunc';
+import Fetch from '../../res/FetchFunc.js';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 

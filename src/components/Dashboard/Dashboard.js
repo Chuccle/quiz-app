@@ -6,7 +6,7 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
 import { Button } from 'react-bootstrap';
-import DashboardResults from '../Search/DashboardSearch';
+import DashboardResults from './Search/DashboardSearch';
 //import ConditionalButtons from '../res/ConditionalButtons';
 
 
