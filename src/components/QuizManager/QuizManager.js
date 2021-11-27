@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Link } from 'react';
+import Fetch from '../res/FetchFunc.js';
+import QuizManagerSearch from './Search/QuizManagerSearch';
+import { Button } from 'react-bootstrap'
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import useToken from '../App/useToken';
 
 export default function QuizManager() {
 
     const [data, SetData] = useState();
-    const [name, SetName] = useState();
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [searchquery, SetSearchQuery] = useState(false);
+    const [nextpage, SetNextPage] = useState(false);
 
     const { token } = useToken();
 
@@ -14,24 +19,23 @@ export default function QuizManager() {
     useEffect(() => {
 
         async function SetStatsfunc() {
-
-            const QuizArray = []
+            const QuizArray = [];
 
             try {
 
-                const userQuizzes = await Fetch('http://localhost:8080/retrieveuserquizzes', { token, currentpage });
+                const userStats = await Fetch('http://localhost:8080/retrieveuserquizzes', { token, currentpage });
 
-                if (userQuizzes.error) {
+                if (userStats.error) {
 
                     alert("A server communication error has occurred");
 
                 }
 
-                else if (userQuizzes.results) {
+                else if (userStats.results) {
 
                     //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-                    const objectArray = (userQuizzes.results);
+                    const objectArray = (userStats.results);
 
                     objectArray.forEach(value => {
 
@@ -39,9 +43,11 @@ export default function QuizManager() {
 
                     });
 
+
                     SetData(QuizArray);
-                    SetName(userStats.name[0].username);
-                    SetQuizCount(userStats.quizcount[0].count);
+                    console.log(QuizArray);
+                    SetData(QuizArray);
+                    SetQuizCount(userStats.quizsearchcount[0].quizcount);
 
                 }
 
@@ -55,6 +61,8 @@ export default function QuizManager() {
         SetStatsfunc()
 
     }, [token, currentpage])
+
+
 
     function ConditionalButtons() {
 
@@ -96,21 +104,21 @@ export default function QuizManager() {
 
     }
 
+
+
+    if (nextpage) {
+
+        return <QuizManagerSearch searchquery={searchquery}></QuizManagerSearch>
+
+    }
+
+
+
+
+
     //This as a buffer check to ensure that data is defined????
 
     if (data) {
-
-        //array cleanup has to be done here for some reason and not in async function else bugs
-
-        data.forEach(element => {
-
-            if (element[3] == null) {
-
-                element[3] = 0;
-
-            }
-
-        });
 
         return (
 
@@ -118,8 +126,8 @@ export default function QuizManager() {
 
                 <Jumbotron fluid>
 
-                    <h1 className="header">Welcome to your dashboard: {name}</h1>
-                    <h5>Please select a quiz</h5>
+                    <h1 className="header">Welcome to your Quiz Manager</h1>
+                    <h5>Please select a quiz to edit</h5>
                     <label>
                         <p>Search for a quiz</p>
                         <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
@@ -128,37 +136,35 @@ export default function QuizManager() {
 
                 </Jumbotron>
 
-
-
-
                 <table className="table">
                     <thead>
                         <tr>
                             <th scope="col">Quiz Name</th>
                             <th scope="col">Difficulty</th>
-                            <th scope="col">Best score</th>
-                            <th scope="col">Begin quiz</th>
+                            <th scope="col">Edit Quiz</th>
+                            <th scope="col">Remove</th>
                         </tr>
 
                     </thead>
                     <tbody>
                         {
-                            // much better and scales to the amount of rows sent
+
+                            // scalable
                             data.map(function (rowdata) {
                                 return <tr key={rowdata[0]}>
                                     <td>{rowdata[1]}</td>
                                     <td >{rowdata[2]}</td>
-                                    <td >{rowdata[3]}%</td>
-                                    <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start</Link></td>
+
                                 </tr>
                             })
+
+
                         }
                     </tbody>
                 </table>
                 <ConditionalButtons />
             </div>
         );
-
     }
 
     else {

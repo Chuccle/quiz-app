@@ -602,7 +602,7 @@ app.post('/retrieveuserquizzes', (req, res) => {
 
       console.log(req.body.currentsearchquery)
 
-      connection.query('SELECT id and quizname and difficulty from Quizzes Where created_by_userid = ? LIMIT ?, 6',
+      connection.query('SELECT * from Quizzes Where created_by_userid = ? LIMIT ?, 6',
         [tokenResult.data, offset],
         function (selectUserQuizzesError, selectUserQuizzesResult) {
 
@@ -620,10 +620,10 @@ app.post('/retrieveuserquizzes', (req, res) => {
 
               });
 
-              console.log(selectQuiznameResult);
+              console.log(selectUserQuizCountResult);
               res.send({
-                results: selectQuiznameResult,
-                quizsearchcount: selectQuiznameCountResult
+                results:selectUserQuizzesResult,
+                quizsearchcount: selectUserQuizCountResult
               });
 
             });

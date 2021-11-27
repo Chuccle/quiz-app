@@ -127,7 +127,6 @@ export default function Leaderboards() {
 
 if (data) {
 
-
     return (
       <div>
 
