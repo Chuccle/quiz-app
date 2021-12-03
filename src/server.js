@@ -49,12 +49,12 @@ app.post('/retrievequizzes', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
-    
+
   // asynchronously check if our tokeb is valid and return the user id in data property of result
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
-// offset is how many results the page is designed to display
+    // offset is how many results the page is designed to display
     const offset = req.body.currentpage * 6;
 
     console.log(offset);
@@ -622,7 +622,7 @@ app.post('/retrieveuserquizzes', (req, res) => {
 
               console.log(selectUserQuizCountResult);
               res.send({
-                results:selectUserQuizzesResult,
+                results: selectUserQuizzesResult,
                 quizsearchcount: selectUserQuizCountResult
               });
 
@@ -645,5 +645,51 @@ app.post('/retrieveuserquizzes', (req, res) => {
 });
 
 
+app.post('/removeuserquiz', (req, res) => {
 
-app.listen(8080)
+  // error 400 bad request
+  //jwt must be provided
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+
+      console.log(req.body.currentsearchquery)
+
+
+      connection.query('DELETE FROM Quizzes Where id = ?',
+        [req.body.quizid],
+
+        function (dropUserQuizzesError, dropUserQuizzesResult) {
+
+          if (dropUserQuizzesError) throw res.send({
+            error: dropUserQuizzesError
+
+          });
+
+          res.send({
+            results: dropUserQuizzesResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    }
+
+  });
+
+});
+
+
+
+app.listen(8080);

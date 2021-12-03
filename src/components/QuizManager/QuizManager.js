@@ -106,6 +106,40 @@ export default function QuizManager() {
 
 
 
+    async function RemoveQuiz(quizid) {
+
+        console.log(quizid)
+        try {
+
+            const userStats = await Fetch('http://localhost:8080/removeuserquiz', { token, quizid });
+
+            if (userStats.error) {
+
+                alert("A server error has occurred");
+            }
+
+            else if (userStats.results) {
+
+
+                alert("Quiz Removed")
+                window.location.reload();
+
+
+            }
+
+        } catch {
+
+            alert("A server communication error has occurred");
+        }
+
+
+    }
+
+
+
+
+
+
     if (nextpage) {
 
         return <QuizManagerSearch searchquery={searchquery}></QuizManagerSearch>
@@ -154,6 +188,10 @@ export default function QuizManager() {
                                 return <tr key={rowdata[0]}>
                                     <td>{rowdata[1]}</td>
                                     <td >{rowdata[2]}</td>
+                                    <td> <Button>View</Button> </td>
+                                    <td >
+                                        <Button onClick={e => RemoveQuiz(rowdata[0])}>Remove</Button>
+                                    </td>
 
                                 </tr>
                             })
