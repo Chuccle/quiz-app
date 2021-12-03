@@ -12,6 +12,7 @@ export default function QuizManager() {
     const [quizcount, SetQuizCount] = useState();
     const [searchquery, SetSearchQuery] = useState(false);
     const [nextpage, SetNextPage] = useState(false);
+    const [newquizname, SetNewQuizName] = useState();
 
     const { token } = useToken();
 
@@ -19,6 +20,7 @@ export default function QuizManager() {
     useEffect(() => {
 
         async function SetStatsfunc() {
+
             const QuizArray = [];
 
             try {
@@ -43,9 +45,6 @@ export default function QuizManager() {
 
                     });
 
-
-                    SetData(QuizArray);
-                    console.log(QuizArray);
                     SetData(QuizArray);
                     SetQuizCount(userStats.quizsearchcount[0].quizcount);
 
@@ -56,6 +55,7 @@ export default function QuizManager() {
                 alert("A server error occurred");
 
             }
+
         }
 
         SetStatsfunc()
@@ -63,31 +63,31 @@ export default function QuizManager() {
     }, [token, currentpage])
 
 
-
     function ConditionalButtons() {
 
-        let pages
+        let pages;
 
         //base case 
 
         if (quizcount < 6) {
 
-            return null
+            return null;
 
         }
 
         else if (quizcount % 6 === 0) {
 
-            pages = (quizcount / 6) - 1
+            pages = (quizcount / 6) - 1;
 
         } else {
 
-            pages = Math.trunc(quizcount / 6)
+            pages = Math.trunc(quizcount / 6);
         }
 
         if (currentpage === 0) {
 
             return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+
         }
 
         else if (currentpage < pages) {
@@ -101,54 +101,47 @@ export default function QuizManager() {
 
         }
 
-
     }
 
+    async function QuizOperations(address, quizid, optionalValue) {
 
+        console.log(address);
 
-    async function RemoveQuiz(quizid) {
+        console.log(quizid);
 
-        console.log(quizid)
+        console.log(optionalValue);
+
         try {
 
-            const userStats = await Fetch('http://localhost:8080/removeuserquiz', { token, quizid });
+            const userStats = await Fetch(address, { token, quizid, optionalValue });
 
             if (userStats.error) {
 
                 alert("A server error has occurred");
+
             }
 
             else if (userStats.results) {
 
+                alert("Your quizzes have been updated");
 
-                alert("Quiz Removed")
                 window.location.reload();
 
-
-            }
+            };
 
         } catch {
 
             alert("A server communication error has occurred");
-        }
 
+        };
 
-    }
-
-
-
-
-
+    };
 
     if (nextpage) {
 
         return <QuizManagerSearch searchquery={searchquery}></QuizManagerSearch>
 
     }
-
-
-
-
 
     //This as a buffer check to ensure that data is defined????
 
@@ -161,56 +154,111 @@ export default function QuizManager() {
                 <Jumbotron fluid>
 
                     <h1 className="header">Welcome to your Quiz Manager</h1>
+
                     <h5>Please select a quiz to edit</h5>
+
                     <label>
+
                         <p>Search for a quiz</p>
+
                         <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+
                         <Button onClick={e => SetNextPage(true)}>Submit</Button>
+
                     </label>
 
                 </Jumbotron>
 
                 <table className="table">
                     <thead>
+
                         <tr>
                             <th scope="col">Quiz Name</th>
+
                             <th scope="col">Difficulty</th>
-                            <th scope="col">Edit Quiz</th>
-                            <th scope="col">Remove</th>
+
+                            <th scope="col">Edit Questions</th>
+
+                            <th scope="col"></th>
+
                         </tr>
 
                     </thead>
+
                     <tbody>
+
                         {
 
                             // scalable
                             data.map(function (rowdata) {
                                 return <tr key={rowdata[0]}>
-                                    <td>{rowdata[1]}</td>
-                                    <td >{rowdata[2]}</td>
-                                    <td> <Button>View</Button> </td>
+                                    <td>
+
+                                        <label>{rowdata[1]}</label>
+
+                                        <div />
+
+                                        <input onChange={e => SetNewQuizName(e.target.value)}></input>
+
+                                        <div />
+
+                                        <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', rowdata[0], newquizname)}>Rename</Button>
+
+                                    </td>
+
                                     <td >
-                                        <Button onClick={e => RemoveQuiz(rowdata[0])}>Remove</Button>
+
+                                        <label>{rowdata[2]}</label>
+
+                                        <div />
+
+                                        <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', rowdata[0], e.target.value)}>
+
+                                            <option value="none">Options</option>
+
+                                            <option value="Easy">Easy</option>
+
+                                            <option value="Medium">Medium</option>
+
+                                            <option value="Hard">Hard</option>
+
+                                        </select>
+
+                                    </td>
+
+                                    <td>
+
+                                        <Button>View</Button>
+
+                                    </td>
+
+                                    <td >
+
+                                        <Button onClick={e => QuizOperations('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
+
                                     </td>
 
                                 </tr>
                             })
 
-
                         }
+
                     </tbody>
+
                 </table>
+
                 <ConditionalButtons />
+
             </div>
+
         );
+
     }
 
     else {
-        return (<div>
 
-            <h2>loading...</h2>
+        return (<div> <h2>loading...</h2> </div>)
 
-        </div>)
-    }
+    };
 
-}
+};

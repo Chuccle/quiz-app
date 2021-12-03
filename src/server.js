@@ -690,6 +690,50 @@ app.post('/removeuserquiz', (req, res) => {
 
 });
 
+app.post('/updateuserquizdifficulty', (req, res) => {
+
+  // error 400 bad request
+  //jwt must be provided
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+
+      console.log(req.body.currentsearchquery)
+
+
+      connection.query('UPDATE quizzes SET difficulty = ? WHERE id = ?;',
+        [req.body.optionalValue, req.body.quizid],
+
+        function (updateUserQuizDifficultyError, updateUserQuizDifficultyResult) {
+
+          if (updateUserQuizDifficultyError) throw res.send({
+            error: updateUserQuizDifficultyError
+
+          });
+
+          res.send({
+            results: updateUserQuizDifficultyResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    }
+
+  });
+
+});
 
 
 app.listen(8080);
