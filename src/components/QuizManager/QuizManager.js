@@ -4,6 +4,9 @@ import QuizManagerSearch from './Search/QuizManagerSearch';
 import { Button } from 'react-bootstrap'
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import useToken from '../App/useToken';
+import QuizOperations from './res/QuizOperations.js';
+import QuestionManager from './QuestionManager/QuestionManager.js';
+
 
 export default function QuizManager() {
 
@@ -11,8 +14,11 @@ export default function QuizManager() {
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [searchquery, SetSearchQuery] = useState(false);
-    const [nextpage, SetNextPage] = useState(false);
+    const [searchpage, SetSearchPage] = useState(false);
+    const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
     const [newquizname, SetNewQuizName] = useState();
+
+    
 
     const { token } = useToken();
 
@@ -86,7 +92,7 @@ export default function QuizManager() {
 
         if (currentpage === 0) {
 
-            return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+            return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button>;
 
         }
 
@@ -103,45 +109,22 @@ export default function QuizManager() {
 
     }
 
-    async function QuizOperations(address, quizid, optionalValue) {
 
-        console.log(address);
 
-        console.log(quizid);
-
-        console.log(optionalValue);
-
-        try {
-
-            const userStats = await Fetch(address, { token, quizid, optionalValue });
-
-            if (userStats.error) {
-
-                alert("A server error has occurred");
-
-            }
-
-            else if (userStats.results) {
-
-                alert("Your quizzes have been updated");
-
-                window.location.reload();
-
-            };
-
-        } catch {
-
-            alert("A server communication error has occurred");
-
-        };
-
-    };
-
-    if (nextpage) {
+    if (searchpage) {
 
         return <QuizManagerSearch searchquery={searchquery}></QuizManagerSearch>
 
     }
+
+
+    
+    if (questionmanagerpage) {
+
+       return <QuestionManager quizid={questionmanagerpage[1]}></QuestionManager>
+
+    }
+
 
     //This as a buffer check to ensure that data is defined????
 
@@ -163,7 +146,7 @@ export default function QuizManager() {
 
                         <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
 
-                        <Button onClick={e => SetNextPage(true)}>Submit</Button>
+                        <Button onClick={e => SetSearchPage(true)}>Submit</Button>
 
                     </label>
 
@@ -173,9 +156,9 @@ export default function QuizManager() {
                     <thead>
 
                         <tr>
-                            <th scope="col">Quiz Name</th>
+                            <th scope="col">Change Quiz Name</th>
 
-                            <th scope="col">Difficulty</th>
+                            <th scope="col">Change Difficulty</th>
 
                             <th scope="col">Edit Questions</th>
 
@@ -190,8 +173,11 @@ export default function QuizManager() {
                         {
 
                             // scalable
+
                             data.map(function (rowdata) {
+
                                 return <tr key={rowdata[0]}>
+
                                     <td>
 
                                         <label>{rowdata[1]}</label>
@@ -202,7 +188,7 @@ export default function QuizManager() {
 
                                         <div />
 
-                                        <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', rowdata[0], newquizname)}>Rename</Button>
+                                        <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
 
                                     </td>
 
@@ -212,7 +198,7 @@ export default function QuizManager() {
 
                                         <div />
 
-                                        <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', rowdata[0], e.target.value)}>
+                                        <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
 
                                             <option value="none">Options</option>
 
@@ -228,7 +214,7 @@ export default function QuizManager() {
 
                                     <td>
 
-                                        <Button>View</Button>
+                                        <Button onClick={e => SetQuestionManagerPage([true, rowdata[0]])}>View</Button>
 
                                     </td>
 
@@ -239,6 +225,7 @@ export default function QuizManager() {
                                     </td>
 
                                 </tr>
+
                             })
 
                         }
