@@ -1,18 +1,18 @@
 import Fetch from '../../res/FetchFunc.js';
 
-export default async function QuizOperations(address, token, quizid, optionalValue1, optionalValue2) {
+export default async function QuizOperations(address, token, primaryKeyId, optionalValue1, optionalValue2) {
 
-    console.log(address);
+console.log(primaryKeyId)
+console.log(optionalValue1)
+console.log(optionalValue2)
 
-    console.log(quizid);
-
-    console.log(optionalValue1);
-    
-    console.log(optionalValue2);
 
     try {
 
-        const userStats = await Fetch(address, { token, quizid, optionalValue1, optionalValue2 });
+
+
+
+        const userStats = await Fetch(address, { token, primaryKeyId, optionalValue1, optionalValue2 });
 
         if (userStats.error) {
 
@@ -22,9 +22,10 @@ export default async function QuizOperations(address, token, quizid, optionalVal
 
         else if (userStats.results) {
 
-            alert("Your quizzes have been updated");
+         //   alert("Your quizzes have been updated");
 
-            window.location.reload();
+           // window.location.reload();
+        
 
         };
 

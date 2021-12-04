@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Link } from 'react';
+import React, { useState, useEffect} from 'react';
 import Fetch from '../res/FetchFunc.js';
 import QuizManagerSearch from './Search/QuizManagerSearch';
 import { Button } from 'react-bootstrap'
@@ -21,6 +21,10 @@ export default function QuizManager() {
     
 
     const { token } = useToken();
+
+
+//TODO update component when quiz is updated/modified
+
 
 
     useEffect(() => {
