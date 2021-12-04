@@ -4,7 +4,7 @@ import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
 import { Button } from 'react-bootstrap';
 //import ConditionalButtons from '../res/ConditionalButtons.js'
-import LeaderboardSearch from '../Search/LeaderboardSearch.js';
+import LeaderboardSearch from './Search/LeaderboardSearch.js';
 
 
 export default function Leaderboards() {
@@ -126,7 +126,6 @@ export default function Leaderboards() {
 
 
 if (data) {
-
 
     return (
       <div>

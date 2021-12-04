@@ -6,6 +6,7 @@ import Preferences from '../Leaderboards/Leaderboards.js';
 import useToken from './useToken.js';
 import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
+import QuizManager from '../QuizManager/QuizManager.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import Fetch from '../res/FetchFunc';
 import './App.css';
@@ -81,6 +82,9 @@ function App() {
             <li>
               <Link to="/quizcreator">Create a quiz</Link>
             </li>
+            <li>
+              <Link to="/quizmanager">Manage your quizzes</Link>
+            </li>
           </ul>
         </div>
         <Switch>
@@ -98,6 +102,9 @@ function App() {
           </Route>
           <Route path="/quizcreator">
             <QuizCreator />
+          </Route>
+          <Route path="/quizmanager">
+            <QuizManager />
           </Route>
         </Switch>
       </BrowserRouter>

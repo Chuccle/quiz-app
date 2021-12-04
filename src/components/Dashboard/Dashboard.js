@@ -6,7 +6,7 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
 import { Button } from 'react-bootstrap';
-import DashboardResults from '../Search/DashboardSearch';
+import DashboardResults from './Search/DashboardSearch';
 //import ConditionalButtons from '../res/ConditionalButtons';
 
 
@@ -30,7 +30,7 @@ export default function Dashboard() {
       const StatsArray = []
 
       try {
-
+// For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
         const userStats = await Fetch('http://localhost:8080/retrievequizzes', { token, currentpage });
 
         if (userStats.error) {

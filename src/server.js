@@ -38,7 +38,7 @@ app.post('/auth', (req, res) => {
         error: err
       });
 
-    }
+    };
 
   });
 
@@ -49,12 +49,12 @@ app.post('/retrievequizzes', (req, res) => {
 
   // error 400 bad request
   //jwt must be provided
-    
+
   // asynchronously check if our tokeb is valid and return the user id in data property of result
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
-// offset is how many results the page is designed to display
+    // offset is how many results the page is designed to display
     const offset = req.body.currentpage * 6;
 
     console.log(offset);
@@ -107,7 +107,7 @@ app.post('/retrievequizzes', (req, res) => {
 
       console.log(tokenErr);
 
-    }
+    };
 
   });
 
@@ -157,7 +157,7 @@ app.post('/login', (req, res) => {
                 error: tokenErr
               });
 
-            }
+            };
 
           });
 
@@ -166,11 +166,12 @@ app.post('/login', (req, res) => {
           res.send({
             error: passwordCompareErr
           });
-        }
+
+        };
 
       });
 
-    }
+    };
 
   });
 
@@ -226,7 +227,7 @@ app.post('/register', (req, res) => {
                   error: tokenCreationErr
                 });
 
-              }
+              };
 
             });
 
@@ -248,7 +249,7 @@ app.post('/register', (req, res) => {
         error: "username already exists"
       });
 
-    }
+    };
 
   });
 
@@ -299,7 +300,7 @@ app.post('/insertquiz', (req, res) => {
 
         });
 
-      })
+      });
 
       res.send({
         QuizStatus: "Inserted"
@@ -313,7 +314,7 @@ app.post('/insertquiz', (req, res) => {
         error: tokenErr
       });
 
-    }
+    };
 
   });
 
@@ -321,7 +322,6 @@ app.post('/insertquiz', (req, res) => {
 
 
 app.post('/retrievequestions', (req, res) => {
-
 
   jwt.verify(req.body.token, process.env.JWT_SECRET);
 
@@ -352,9 +352,13 @@ app.post('/retrievequestions', (req, res) => {
             Questionid: selectQuestionRecordsResults[i].id,
             Questiontext: selectQuestionRecordsResults[i].Question,
             Options: {
+              Correctid: CorrectOptionRecordResults[0].id,
               Correct: CorrectOptionRecordResults[0].questionText,
+              Incorrect1id: IncorrectOptionRecordResults[0].id,
               Incorrect1: IncorrectOptionRecordResults[0].questionText,
+              Incorrect2id: IncorrectOptionRecordResults[1].id,
               Incorrect2: IncorrectOptionRecordResults[1].questionText,
+              Incorrect3id: IncorrectOptionRecordResults[2].id,
               Incorrect3: IncorrectOptionRecordResults[2].questionText,
             }
 
@@ -370,16 +374,16 @@ app.post('/retrievequestions', (req, res) => {
               questions: questionqueue
             });
 
-          }
+          };
 
         });
 
       });
 
-    }
+    };
 
     // why does this return an empty array?
-    //console.log(questionqueue?);
+    console.log(questionqueue);
 
   });
 
@@ -420,9 +424,9 @@ app.post('/sendresults', (req, res) => {
 
             });
 
-          }
+          };
 
-        }
+        };
 
       });
 
@@ -437,7 +441,7 @@ app.post('/sendresults', (req, res) => {
 
       });
 
-    }
+    };
 
   });
 
@@ -514,7 +518,6 @@ app.post('/finduserrank', (req, res) => {
 
       });
 
-
     } else {
 
       res.send({
@@ -523,7 +526,7 @@ app.post('/finduserrank', (req, res) => {
 
       console.log(tokenErr);
 
-    }
+    };
 
   });
 
@@ -531,9 +534,6 @@ app.post('/finduserrank', (req, res) => {
 
 
 app.post('/findquiz', (req, res) => {
-
-  // error 400 bad request
-  //jwt must be provided
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
@@ -581,11 +581,278 @@ app.post('/findquiz', (req, res) => {
 
       console.log(tokenErr);
 
-    }
+    };
+
+  });
+
+});
+
+app.post('/retrieveuserquizzes', (req, res) => {
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      const offset = req.body.currentpage * 6;
+
+      console.log(req.body.currentsearchquery)
+
+      connection.query('SELECT * from Quizzes Where created_by_userid = ? LIMIT ?, 6',
+        [tokenResult.data, offset],
+        function (selectUserQuizzesError, selectUserQuizzesResult) {
+
+          if (selectUserQuizzesError) throw res.send({
+            error: selectUserQuizzesError
+
+          });
+
+          connection.query('SELECT COUNT(*) AS quizcount FROM (SELECT quizname and difficulty from Quizzes Where created_by_userid = ?) x',
+            [tokenResult.data],
+            function (selectUserQuizCountError, selectUserQuizCountResult) {
+
+              if (selectUserQuizCountError) throw res.send({
+                error: selectUserQuizCountError
+
+              });
+
+              console.log(selectUserQuizCountResult);
+              res.send({
+                results: selectUserQuizzesResult,
+                quizsearchcount: selectUserQuizCountResult
+              });
+
+            });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
 
   });
 
 });
 
 
-app.listen(8080)
+app.post('/removeuserquiz', (req, res) => {
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      console.log(req.body.currentsearchquery)
+
+      connection.query('DELETE FROM Quizzes Where id = ?',
+        [req.body.primaryKeyId],
+
+        function (dropUserQuizzesError, dropUserQuizzesResult) {
+
+          if (dropUserQuizzesError) throw res.send({
+            error: dropUserQuizzesError
+
+          });
+
+          res.send({
+            results: dropUserQuizzesResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
+
+  });
+
+});
+
+app.post('/updateuserquizdifficulty', (req, res) => {
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      console.log(req.body.currentsearchquery)
+
+      connection.query('UPDATE quizzes SET difficulty = ? WHERE id = ?;',
+        [req.body.optionalValue1, req.body.primaryKeyId],
+
+        function (updateUserQuizDifficultyError, updateUserQuizDifficultyResult) {
+
+          if (updateUserQuizDifficultyError) throw res.send({
+            error: updateUserQuizDifficultyError
+
+          });
+
+          res.send({
+            results: updateUserQuizDifficultyResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
+
+  });
+
+});
+
+
+app.post('/updateuserquizname', (req, res) => {
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+
+      console.log(req.body.currentsearchquery)
+
+
+      connection.query('UPDATE quizzes SET quizname = ? WHERE id = ?;',
+        [req.body.optionalValue1, req.body.primaryKeyId],
+
+        function (updateUserQuizNameError, updateUserQuizNameResult) {
+
+          if (updateUserQuizNameError) throw res.send({
+            error: updateUserQuizNameError
+
+          });
+
+          res.send({
+            results: updateUserQuizNameResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
+
+  });
+
+});
+
+
+
+
+
+app.post('/updateuserquestion', (req, res) => {
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      // realistically the Quizid reference is overkill but it further ensures that the right question is only updated if the question belongs to the corresponding quiz 
+
+      connection.query('UPDATE questions SET Question = ? WHERE id = ? AND Quizid = ?;',
+        [req.body.optionalValue1, req.body.primaryKeyId, req.body.optionalValue2],
+
+        function (updateUserQuestionNameError, updateUserQuestionNameResult) {
+
+          if (updateUserQuestionNameError) throw res.send({
+            error: updateUserQuestionNameError
+
+          });
+
+          res.send({
+            results: updateUserQuestionNameResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
+
+  });
+
+});
+
+
+app.post('/updateuserquestionoption', (req, res) => {
+
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      // realistically the Quizid reference is overkill but it further ensures that the right question is only updated if the question belongs to the corresponding quiz 
+
+      connection.query('UPDATE question_options SET questionText = ? WHERE id = ? AND questionID = ?;',
+        [req.body.optionalValue1, req.body.primaryKeyId, req.body.optionalValue2],
+
+        function (updateUserQuestionOptionError, updateUserQuestionOptionResult) {
+
+          if (updateUserQuestionOptionError) throw res.send({
+            error: updateUserQuestionOptionError
+
+          });
+
+          res.send({
+            results: updateUserQuestionOptionResult
+          });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
+
+  });
+
+});
+
+
+
+
+
+
+app.listen(8080);

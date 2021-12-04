@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import useToken from '../App/useToken';
-import Dashboard from '../Dashboard/Dashboard';
+import useToken from '../../App/useToken';
+import Dashboard from '../../Dashboard/Dashboard';
 //import ConditionalButtons from '../res/ConditionalButtons';
-import Fetch from '../res/FetchFunc';
+import Fetch from '../../res/FetchFunc';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import QuizOperations from '../res/QuizOperations';
 
 export default function DashboardResults({ searchquery }) {
 
@@ -15,9 +16,12 @@ export default function DashboardResults({ searchquery }) {
     const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
     const [newsearch, SetNewSearch] = useState(false);
     const [newsearchquery, SetNewSearchQuery] = useState();
+    const [newquizname, SetNewQuizName] = useState();
 
     const { token } = useToken();
 
+    
+//TODO update component when quiz is updated/modified
 
     useEffect(() => {
 
@@ -176,40 +180,89 @@ export default function DashboardResults({ searchquery }) {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th scope="col">Quiz Name</th>
-                            <th scope="col">Difficulty</th>
+                            <th scope="col">Change Quiz Name</th>
+                            <th scope="col">Change Difficulty</th>
                             <th scope="col">Best score</th>
                             <th scope="col">Begin quiz</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            // much better and scales to the amount of rows sent
-                            data.map(function (rowdata) {
-                                return <tr key={rowdata[0]}>
-                                    <td>{rowdata[1]}</td>
-                                    <td >{rowdata[2]}</td>
-                                    <td >{rowdata[3]}%</td>
-                                    <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start</Link></td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </table>
-                <ConditionalButtons />
-            </div>
-        );
 
-    }
+                    {
 
-    else {
+// scalable
+data.map(function (rowdata) {
+    
+    return <tr key={rowdata[0]}>
 
-        return (<div>
+        <td>
 
-            <h2>loading...</h2>
+            <label>{rowdata[1]}</label>
 
-        </div>)
-    }
+            <div />
+
+            <input onChange={e => SetNewQuizName(e.target.value)}></input>
+
+            <div />
+
+            <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+
+        </td>
+
+        <td >
+
+            <label>{rowdata[2]}</label>
+
+            <div />
+
+            <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+
+                <option value="none">Options</option>
+
+                <option value="Easy">Easy</option>
+
+                <option value="Medium">Medium</option>
+
+                <option value="Hard">Hard</option>
+
+            </select>
+
+        </td>
+
+        <td>
+
+            <Button>View</Button>
+
+        </td>
+
+        <td >
+
+            <Button onClick={e => QuizOperations('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
+
+        </td>
+
+    </tr>
+})
+
+}
+
+</tbody>
+
+</table>
+
+<ConditionalButtons />
+
+</div>
+
+);
+
+}
+
+else {
+
+return (<div> <h2>loading...</h2> </div>)
+
+};
 
 
 
