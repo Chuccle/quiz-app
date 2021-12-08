@@ -114,6 +114,17 @@ export default function QuizManager() {
     }
 
 
+    function QuizUpdateHandler(address, token, key, optionalData) {
+
+        QuizOperations(address, token, key, optionalData)
+        
+        window.location.reload()
+
+
+       }
+
+
+
 
     if (searchpage) {
 
@@ -192,7 +203,7 @@ export default function QuizManager() {
 
                                         <div />
 
-                                        <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+                                        <Button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
 
                                     </td>
 
@@ -202,7 +213,7 @@ export default function QuizManager() {
 
                                         <div />
 
-                                        <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+                                        <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
 
                                             <option value="none">Options</option>
 
@@ -224,7 +235,7 @@ export default function QuizManager() {
 
                                     <td >
 
-                                        <Button onClick={e => QuizOperations('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
+                                        <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
 
                                     </td>
 

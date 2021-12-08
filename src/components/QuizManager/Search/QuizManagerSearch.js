@@ -161,6 +161,15 @@ export default function DashboardResults({ searchquery }) {
 
         });
 
+       function QuizUpdateHandler(address, token, key, optionalData) {
+
+        QuizOperations(address, token, key, optionalData)
+        
+        window.location.reload()
+
+
+       }
+
         return (
 
             <div>
@@ -205,7 +214,7 @@ data.map(function (rowdata) {
 
             <div />
 
-            <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
 
         </td>
 
@@ -215,7 +224,7 @@ data.map(function (rowdata) {
 
             <div />
 
-            <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+            <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
 
                 <option value="none">Options</option>
 
@@ -237,7 +246,7 @@ data.map(function (rowdata) {
 
         <td >
 
-            <Button onClick={e => QuizOperations('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
+            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</Button>
 
         </td>
 
