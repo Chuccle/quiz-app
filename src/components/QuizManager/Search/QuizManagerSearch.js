@@ -4,8 +4,8 @@ import Dashboard from '../../Dashboard/Dashboard';
 //import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import QuizOperations from '../res/QuizOperations';
+import QuizManager from '../QuizManager';
 
 export default function DashboardResults({ searchquery }) {
 
@@ -87,7 +87,7 @@ export default function DashboardResults({ searchquery }) {
 
     if (goback) {
 
-        return <Dashboard />
+        return <QuizManager />
 
     }
 
@@ -161,6 +161,17 @@ export default function DashboardResults({ searchquery }) {
 
         });
 
+      async function QuizUpdateHandler(address, token, key, optionalData) {
+
+       await QuizOperations(address, token, key, optionalData) 
+        
+        
+        
+        window.location.reload()
+
+
+       }
+
         return (
 
             <div>
@@ -205,7 +216,7 @@ data.map(function (rowdata) {
 
             <div />
 
-            <Button onClick={e => QuizOperations('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
 
         </td>
 
@@ -215,9 +226,9 @@ data.map(function (rowdata) {
 
             <div />
 
-            <select onChange={e => QuizOperations('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+            <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
 
-                <option value="none">Options</option>
+                <option value="none">...:</option>
 
                 <option value="Easy">Easy</option>
 
@@ -237,7 +248,7 @@ data.map(function (rowdata) {
 
         <td >
 
-            <Button onClick={e => QuizOperations('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
+            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</Button>
 
         </td>
 
