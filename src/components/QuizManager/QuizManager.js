@@ -114,9 +114,9 @@ export default function QuizManager() {
     }
 
 
-    function QuizUpdateHandler(address, token, key, optionalData) {
+  async  function QuizUpdateHandler(address, token, key, optionalData) {
 
-        QuizOperations(address, token, key, optionalData)
+     await   QuizOperations(address, token, key, optionalData)
         
         window.location.reload()
 
@@ -215,7 +215,7 @@ export default function QuizManager() {
 
                                         <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
 
-                                            <option value="none">Options</option>
+                                            <option value="none">...</option>
 
                                             <option value="Easy">Easy</option>
 
@@ -235,7 +235,7 @@ export default function QuizManager() {
 
                                     <td >
 
-                                        <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', rowdata[0])}>Remove</Button>
+                                        <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</Button>
 
                                     </td>
 

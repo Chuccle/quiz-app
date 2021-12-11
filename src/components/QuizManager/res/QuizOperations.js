@@ -2,9 +2,7 @@ import Fetch from '../../res/FetchFunc.js';
 
 export default async function QuizOperations(address, token, primaryKeyId, optionalValue1, optionalValue2) {
 
-console.log(primaryKeyId)
-console.log(optionalValue1)
-console.log(optionalValue2)
+
 
 
     try {
