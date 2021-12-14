@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
 import Dashboard from '../Dashboard/Dashboard.js';
 import Login from '../Login/Login.js';
 import Preferences from '../Leaderboards/Leaderboards.js';
@@ -9,6 +9,7 @@ import Logout from './Logout.js';
 import QuizManager from '../QuizManager/QuizManager.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import Fetch from '../res/FetchFunc';
+import Home from '../Home/Home.js';
 import './App.css';
 
 
@@ -64,21 +65,18 @@ function App() {
   //console.log(tokenAuthorised)
 
 
-//define our routes
+  //define our routes
   return (
-    
+
     <div className="wrapper">
       <BrowserRouter>
         <div className="boomer">
           <ul>
             <li>
-              <Link to="/leaderboard">Leaderboard</Link>
-            </li>
-            <li>
               <Link to="/dashboard">Dashboard</Link>
             </li>
             <li>
-              <Link to="/logout">Log out</Link>
+              <Link to="/leaderboard">Leaderboard</Link>
             </li>
             <li>
               <Link to="/quizcreator">Create a quiz</Link>
@@ -86,9 +84,15 @@ function App() {
             <li>
               <Link to="/quizmanager">Manage your quizzes</Link>
             </li>
+            <li>
+              <Link to="/logout">Log out</Link>
+            </li>
           </ul>
         </div>
         <Switch>
+          <Route exact path="/">
+            <Redirect to="/dashboard" />
+          </Route>
           <Route path="/dashboard">
             <Dashboard />
           </Route>
