@@ -66,6 +66,7 @@ function App() {
 
 //define our routes
   return (
+    
     <div className="wrapper">
       <BrowserRouter>
         <div className="boomer">
@@ -94,7 +95,7 @@ function App() {
           <Route path="/leaderboard">
             <Preferences />
           </Route>
-          <Route path="/quiz">
+          <Route path="/quiz/:quizid">
             <Quiz />
           </Route>
           <Route path="/logout">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router';
+import { useParams } from 'react-router';
 import './Quiz.css'
 import useToken from '../App/useToken.js';
 import Fetch from '../res/FetchFunc'
@@ -9,13 +9,13 @@ import Fetch from '../res/FetchFunc'
 export default function Quiz() {
 
 
-	const quizdata = useLocation()
-	
-	
+	let { quizid } = useParams();
 
-		const { token } = useToken()
+	console.log(quizid);
+	
+	const { token } = useToken()
 		
-		const quizid = quizdata.state.quizid
+
 		const [currentQuestion, setCurrentQuestion] = useState(0);
 		const [showScore, setShowScore] = useState(false);
 		const [score, setScore] = useState(0);
