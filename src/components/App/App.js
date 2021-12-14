@@ -6,8 +6,9 @@ import Preferences from '../Leaderboards/Leaderboards.js';
 import useToken from './useToken.js';
 import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
+import QuizManager from '../QuizManager/QuizManager.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
-import Fetch from '../res/FetchFunc'
+import Fetch from '../res/FetchFunc';
 import './App.css';
 
 
@@ -24,13 +25,13 @@ function App() {
 
       try {
 
-        const response = await Fetch('http://localhost:8080/auth',{ token });
+        const response = await Fetch('http://localhost:8080/auth', { token });
         //     console.log(response)
 
 
         if (response.error) {
 
-          SetAuthState(false)
+          SetAuthState(false);
 
 
 
@@ -38,23 +39,24 @@ function App() {
         }
         else if (response.message) {
 
-          SetAuthState(true)
-      
+          SetAuthState(true);
+
 
         }
       } catch {
 
-        alert("A server error occurred")
+        alert("A server error occurred");
 
 
       }
     }
 
-    tokenAuthoriser()
+    tokenAuthoriser();
 
   })
 
 
+  // If token is not authorised, redirect to login page as this is parent it will take precedent over the other components
   if (!tokenAuthorised) {
 
     return <Login setToken={setToken} />
@@ -62,8 +64,9 @@ function App() {
   //console.log(tokenAuthorised)
 
 
-
+//define our routes
   return (
+    
     <div className="wrapper">
       <BrowserRouter>
         <div className="boomer">
@@ -80,6 +83,9 @@ function App() {
             <li>
               <Link to="/quizcreator">Create a quiz</Link>
             </li>
+            <li>
+              <Link to="/quizmanager">Manage your quizzes</Link>
+            </li>
           </ul>
         </div>
         <Switch>
@@ -89,7 +95,7 @@ function App() {
           <Route path="/leaderboard">
             <Preferences />
           </Route>
-          <Route path="/quiz">
+          <Route path="/quiz/quizid=:quizid">
             <Quiz />
           </Route>
           <Route path="/logout">
@@ -97,6 +103,9 @@ function App() {
           </Route>
           <Route path="/quizcreator">
             <QuizCreator />
+          </Route>
+          <Route path="/quizmanager">
+            <QuizManager />
           </Route>
         </Switch>
       </BrowserRouter>

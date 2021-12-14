@@ -30,21 +30,21 @@ CREATE TABLE `quiz_user_answers` (
   `quizID` int, 
   `score` int
 
--- much more practical to query this in terms of performance and also allows us to make a single neat insert at the end of a quiz
 
-
---  `questionID` int,
---  `Question_Options` int
 );
 
-ALTER TABLE `Quizzes` ADD FOREIGN KEY (`created_by_userid`) REFERENCES `accounts` (`id`);
+ALTER TABLE `Quizzes` ADD FOREIGN KEY (`created_by_userid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `Questions` ADD FOREIGN KEY (`QuizID`) REFERENCES `Quizzes` (`id`);
+ALTER TABLE `Questions` ADD FOREIGN KEY (`QuizID`) REFERENCES `Quizzes` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `Question_Options` ADD FOREIGN KEY (`questionID`) REFERENCES `Questions` (`id`);
+ALTER TABLE `Question_Options` ADD FOREIGN KEY (`questionID`) REFERENCES `Questions` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`userid`) REFERENCES `accounts` (`id`);
+ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`userid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`quizID`) REFERENCES `Quizzes` (`id`);
+-- This will delete the score record if the quiz is deleted
 
--- ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`Question_Options`) REFERENCES `Question_Options` (`id`);
+ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`quizID`) REFERENCES `Quizzes` (`id`) ON DELETE CASCADE; 
+
+-- Alternatively If we want users to keep scores from deleted quizzes
+
+-- ALTER TABLE `quiz_user_answers` ADD FOREIGN KEY (`quizID`) REFERENCES `Quizzes` (`id`) ON DELETE NO ACTION;
