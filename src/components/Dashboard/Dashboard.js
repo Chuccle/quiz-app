@@ -174,7 +174,7 @@ export default function Dashboard() {
                   <td>{rowdata[1]}</td>
                   <td >{rowdata[2]}</td>
                   <td >{rowdata[3]}%</td>
-                  <td ><Link to={`quiz/${rowdata[0]}`}>Start</Link></td>
+                  <td ><Link to={`quiz/quizid=${rowdata[0]}`}>Start</Link></td>
                 </tr>
               })
             }

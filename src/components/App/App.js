@@ -95,7 +95,7 @@ function App() {
           <Route path="/leaderboard">
             <Preferences />
           </Route>
-          <Route path="/quiz/:quizid">
+          <Route path="/quiz/quizid=:quizid">
             <Quiz />
           </Route>
           <Route path="/logout">
