@@ -79,7 +79,7 @@ export default function QuizManager() {
 
         //base case 
 
-        if (quizcount < 6) {
+        if (quizcount <= 6) {
 
             return null;
 

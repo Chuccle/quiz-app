@@ -77,7 +77,7 @@ export default function Leaderboards() {
 
     let pages;
 
-    if (leaderboardcount < 3) {
+    if (leaderboardcount <= 3) {
 
         return null;
 

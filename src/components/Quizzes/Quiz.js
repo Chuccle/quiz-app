@@ -117,10 +117,10 @@ export default function Quiz() {
 								<div className='answer-section'>
 									{questions.answerOptions.map((answerOption) => (
 										<button className='quizbutton' onClick={() => handleAnswerOptionClick(answerOption.isCorrect)}>{answerOption.answerText}</button>
-									))};
+									))}
 								</div>
 							</>
-						)};
+						)}
 				</div>
 			);
 		} else {

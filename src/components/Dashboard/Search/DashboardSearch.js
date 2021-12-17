@@ -94,11 +94,11 @@ export default function DashboardResults({ searchquery }) {
         let pages
 
         //base case
-        if (quizcount < 6) {
+        if (quizcount <= 6) {
 
             return null
-
-        }
+      
+          }
 
        //if there is no remainder 
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
-import '../assets/bootstrap.min.css';
-import './Dashboard.css';
+//import '../assets/bootstrap.min.css';
+//import './Dashboard.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
@@ -30,7 +30,7 @@ export default function Dashboard() {
       const StatsArray = []
 
       try {
-// For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
+        // For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
         const userStats = await Fetch('http://localhost:8080/retrievequizzes', { token, currentpage });
 
         if (userStats.error) {
@@ -75,7 +75,7 @@ export default function Dashboard() {
 
     //base case 
 
-    if (quizcount < 6) {
+    if (quizcount <= 6) {
 
       return null
 
@@ -136,52 +136,48 @@ export default function Dashboard() {
     });
 
     return (
+      <>
+        <div className='flex flex-col'>
 
-      <div>
+          <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Welcome to your dashboard: {name}</h1>
+          <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz</h5>
+          <label className=' m-5 text-xl flex justify-center'>
+            <p>Search for a quiz:</p>
+            <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
+            <button className='bg-purple-700' onClick={e => SetNextPage(true)}>Submit</button>
+          </label>
 
-        <Jumbotron fluid>
+          <table className="min-w-full text-center">
+            <thead className="border-b bg-purple-600">
+              <tr >
+                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quiz Name</th>
+                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Difficulty</th>
+                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Best score</th>
+                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Begin quiz</th>
+              </tr>
 
-          <h1 className="header">Welcome to your dashboard: {name}</h1>
-          <h5>Please select a quiz</h5>
-          <label>
-              <p>Search for a quiz</p>
-              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-              <Button onClick={e => SetNextPage(true)}>Submit</Button>
-            </label>
+            </thead>
+            <tbody>
+              {
+                // much better and scales to the amount of rows sent
+                data.map(function (rowdata) {
+                  return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[1]}</td>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}%</td>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-bold font-helvetica-neue text-white" >
 
+                      <Link className='rounded-md px-2 py-1  bg-purple-600 hover:bg-white  transition duration-300 hover:text-purple-600 ' to={`quiz/quizid=${rowdata[0]}`}>Start</Link>
 
-
-        </Jumbotron>
-
-
-
-
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Quiz Name</th>
-              <th scope="col">Difficulty</th>
-              <th scope="col">Best score</th>
-              <th scope="col">Begin quiz</th>
-            </tr>
-
-          </thead>
-          <tbody>
-            {
-              // much better and scales to the amount of rows sent
-              data.map(function (rowdata) {
-                return <tr key={rowdata[0]}>
-                  <td>{rowdata[1]}</td>
-                  <td >{rowdata[2]}</td>
-                  <td >{rowdata[3]}%</td>
-                  <td ><Link to={`quiz/quizid=${rowdata[0]}`}>Start</Link></td>
-                </tr>
-              })
-            }
-          </tbody>
-        </table>
-        <ConditionalButtons />
-      </div>
+                    </td>
+                  </tr>
+                })
+              }
+            </tbody>
+          </table>
+          <ConditionalButtons />
+        </div>
+      </>
     );
 
   }
