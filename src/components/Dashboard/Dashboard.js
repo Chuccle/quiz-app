@@ -141,19 +141,21 @@ export default function Dashboard() {
 
           <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Welcome to your dashboard: {name}</h1>
           <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz</h5>
-          <label className=' m-5 text-xl flex justify-center'>
-            <p>Search for a quiz:</p>
-            <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-            <button className='bg-purple-700' onClick={e => SetNextPage(true)}>Submit</button>
+          <div className=' justify-center  border-2 border-black  flex  ' >
+          <label  className=' m-5 text-xl  box-content class justify-center flex'>
+            <p className='m-2'>Search for a quiz:</p>
+            <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
+            <div className='m-1'/>
+            <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNextPage(true)}>Submit</button>
           </label>
-
+          </div>
           <table className="min-w-full text-center">
             <thead className="border-b bg-purple-600">
               <tr >
-                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quiz Name</th>
-                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Difficulty</th>
-                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Best score</th>
-                <th className="px-9 py-8 whitespace-nowrap text-2xl font-bold text-white" scope="col">Begin quiz</th>
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quiz Name</th>
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Difficulty</th>
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Best score</th>
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Begin quiz</th>
               </tr>
 
             </thead>
