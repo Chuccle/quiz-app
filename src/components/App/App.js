@@ -103,7 +103,7 @@ function App() {
   //define our routes
   return (
 
-    <>
+    <div className='h-screen' >
       <BrowserRouter>
         <nav className="bg-purple-600">
 
@@ -179,7 +179,7 @@ function App() {
 
       </BrowserRouter>
 
-    </>
+    </div>
 
   );
 
