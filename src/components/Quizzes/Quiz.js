@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
-import './Quiz.css'
+
 import useToken from '../App/useToken.js';
 import Fetch from '../res/FetchFunc'
 
@@ -105,19 +105,22 @@ export default function Quiz() {
 								</div>
 							</div>
 
-
 						) : (
 							<>
-								<div className='question-section'>
-									<div className='question-count'>
-										<span>Question{currentQuestion + 1}</span>/{questiondata.questions.length}
-									</div>
-									<div className='question-text'>{questions.questionText}</div>
-								</div>
-								<div className='answer-section'>
+								<div className='flex flex-col'>
+									
+										<h1 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.questions.length}</h1>
+									
+									<h1 className=' text-3xl flex  i justify-center items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>{questions.questionText}</h1>
+								
+								<div className="justify-items-center  my-16 grid grid-cols-2 ">
+									
 									{questions.answerOptions.map((answerOption) => (
-										<button className='quizbutton' onClick={() => handleAnswerOptionClick(answerOption.isCorrect)}>{answerOption.answerText}</button>
+									<div className=" bg-gradient-to-br from-purple-700 to-purple-400 w-11/12 h-64  shadow-lg    rounded-lg  justify-center flex flex-col text-white text-3xl font-bold mt-5">
+									<button className='h-full' onClick={() => handleAnswerOptionClick(answerOption.isCorrect)}>{answerOption.answerText}</button>
+									</div>
 									))}
+									</div>
 								</div>
 							</>
 						)}

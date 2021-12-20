@@ -1,8 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import Fetch from '../res/FetchFunc.js';
 import QuizManagerSearch from './Search/QuizManagerSearch';
-import { Button } from 'react-bootstrap'
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import useToken from '../App/useToken';
 import QuizOperations from './res/QuizOperations.js';
 import QuestionManager from './QuestionManager/QuestionManager.js';
@@ -96,18 +94,18 @@ export default function QuizManager() {
 
         if (currentpage === 0) {
 
-            return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button>;
+            return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button>;
 
         }
 
         else if (currentpage < pages) {
 
-            return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-                <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+            return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
+                <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
 
         } else if (currentpage === pages) {
 
-            return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
+            return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
 
         }
 
@@ -147,37 +145,33 @@ export default function QuizManager() {
 
         return (
 
-            <div>
+            <div className='flex flex-col'>
 
-                <Jumbotron fluid>
 
-                    <h1 className="header">Welcome to your Quiz Manager</h1>
+                    <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Welcome to your Quiz Manager</h1>
 
-                    <h5>Please select a quiz to edit</h5>
+                    <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
 
-                    <label>
+                    <div className=' justify-center  border-2 border-black  flex  ' >
+          <label  className=' m-5 text-xl  box-content class justify-center flex'>
+            <p className='m-2'>Search for a quiz:</p>
+            <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
+            <div className='m-1'/>
+            <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetSearchPage(true)}>Submit</button>
+          </label>
+          </div>
 
-                        <p>Search for a quiz</p>
-
-                        <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-
-                        <Button onClick={e => SetSearchPage(true)}>Submit</Button>
-
-                    </label>
-
-                </Jumbotron>
-
-                <table className="table">
-                    <thead>
+                <table className="text-center">
+                    <thead className="border-b bg-purple-600">
 
                         <tr>
-                            <th scope="col">Change Quiz Name</th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Change Quiz Name</th>
 
-                            <th scope="col">Change Difficulty</th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white"scope="col">Change Difficulty</th>
 
-                            <th scope="col">Edit Questions</th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Edit Questions</th>
 
-                            <th scope="col"></th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col"></th>
 
                         </tr>
 
@@ -191,9 +185,9 @@ export default function QuizManager() {
 
                             data.map(function (rowdata) {
 
-                                return <tr key={rowdata[0]}>
+                                return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
 
-                                    <td>
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
                                         <label>{rowdata[1]}</label>
 
@@ -203,11 +197,11 @@ export default function QuizManager() {
 
                                         <div />
 
-                                        <Button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</button>
 
-                                    </td>
+                                    </td  >
 
-                                    <td >
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
                                         <label>{rowdata[2]}</label>
 
@@ -227,15 +221,15 @@ export default function QuizManager() {
 
                                     </td>
 
-                                    <td>
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-                                        <Button onClick={e => SetQuestionManagerPage([true, rowdata[0]])}>View</Button>
+                                        <button onClick={e => SetQuestionManagerPage([true, rowdata[0]])}>View</button>
 
                                     </td>
 
-                                    <td >
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-                                        <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</Button>
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</button>
 
                                     </td>
 

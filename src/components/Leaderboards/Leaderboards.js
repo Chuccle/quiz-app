@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Jumbotron from 'react-bootstrap/Jumbotron';
+
 import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
 import { Button } from 'react-bootstrap';
-//import ConditionalButtons from '../res/ConditionalButtons.js'
+
 import LeaderboardSearch from './Search/LeaderboardSearch.js';
 
 

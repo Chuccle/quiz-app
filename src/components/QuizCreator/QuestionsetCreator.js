@@ -19,10 +19,10 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
     async function insertDataClearForm() {
 
-        if (questionname && incorrect1 && incorrect2 && incorrect3 && correct) {
+        
             if (quizlength > questionnumber) {
 
-
+                if (questionname && incorrect1 && incorrect2 && incorrect3 && correct) {
 
 
                 setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
@@ -44,18 +44,24 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
                 SetQuestionSet(questionset => [...questionset, quizdata])
 
-                document.getElementById("QuestionForm").reset();
+                
               
               // These have to be set to false even when the form is cleared 
                 setCorrect(false);
                 setIncorrect1(false);
                 setIncorrect2(false);
                 setIncorrect3(false);    
-
-
+                setQuestionName(false);
+                document.getElementById("QuestionForm").reset();
 
             }
+            else {
+            
+                alert("Please fill in all fields")
+           
+            }
 
+        }
             else {
 
                 try {
@@ -78,13 +84,9 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
            
             }
         
-        } else {
-            
-            alert("Please fill in all fields")
-       
-        }
+        } 
     
-    }
+    
 
 
 

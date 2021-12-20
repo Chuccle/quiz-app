@@ -10,7 +10,7 @@ import QuizManager from '../QuizManager/QuizManager.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import Fetch from '../res/FetchFunc';
 import NotFound from './NotFound';
-//import './App.css';
+
 
 
 function App() {

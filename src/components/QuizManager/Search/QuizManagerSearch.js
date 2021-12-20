@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../../App/useToken';
-import Dashboard from '../../Dashboard/Dashboard';
+
 //import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
 import { Button } from 'react-bootstrap';
@@ -31,7 +31,7 @@ export default function DashboardResults({ searchquery }) {
 
             try {
 
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, currentsearchquery });
+                const userStats = await Fetch('http://localhost:8080/finduserquiz', { token, currentpage, currentsearchquery });
 
 
                 if (userStats.error) {

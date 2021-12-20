@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom';
 import Fetch from '../../res/FetchFunc.js';
 import useToken from '../../App/useToken';
 import { Card } from 'react-bootstrap';
-import './QuestionManager.css';
 import QuizOperations from '../res/QuizOperations.js';
-
-
-
 
 
 export default function QuestionManager({ quizid }) {
@@ -100,9 +96,9 @@ export default function QuestionManager({ quizid }) {
 
             }
 
-            
+
             document.getElementById("changeAnswer").reset();
-            
+
 
             const nextQuestion = currentQuestion + 1;
 
@@ -169,31 +165,33 @@ export default function QuestionManager({ quizid }) {
                         </div>
 
                     ) : (
-                        <>
-                        <form id='changeAnswer'>
-                            <div className='question-section'>
-                                <div className='question-count'>
-                                    <span>Question{currentQuestion + 1}</span>/{questiondata.questions.length}
-                                </div>
-                                <div className='question-text'>
-                                   
-                                    <Card>{questions.questionText}</Card></div>
-                                    
-                                <input  className='font-sans text-black' onChange={e => SetNewQuestion(e.target.value)} />
-                            </div>
-                            <div className='answer-section' >
-                                {questions.answerOptions.map((answerOption, index) => (
-                                    <label key={index}>{answerOption.answerText}
-                                        <div  />
-                                        <input className='font-sans text-black' onChange={e => QuestionOptionChangeHandler(index, e.target.value)} />
-                        </label>
+                        <div className='flex flex-col'>
+                            <form id='changeAnswer'>
+                                <div className='flex flex-col'>
+                                    <h1 className=' m-10 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.questions.length}</h1>
 
-                                ))}
-                            </div>
+                                    <h1 className=' text-3xl flex justify-center items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>{questions.questionText}</h1>
+
+                                    <input className=' text-xl text-gray-base w-6/12  h-8 mt-5  mx-auto 
+                               p-5 px-4  border-2 border-purple-400 rounded-lg bg-transparent outline-none
+                                mb-2 ' type="text" onChange={e => SetNewQuestion(e.target.value)} />
+                                </div>
+                                <div className="justify-items-center mt-4  grid grid-cols-2 " >
+                                    {questions.answerOptions.map((answerOption, index) => (
+                                        <div className=" bg-gradient-to-br from-purple-700 to-purple-400 w-11/12 h-64 mt-5   shadow-lg  rounded-lg justify-center flex flex-col" >
+                                            <label className="text-white text-center p-10 text-3xl font-bold" key={index}>{answerOption.answerText} </label>
+
+                                            <input className="text-black   w-6/12 mx-auto rounded-lg" onChange={e => QuestionOptionChangeHandler(index, e.target.value)} />
+
+                                        </div>
+                                    ))}
+
+                                </div>
+
                             </form>
-                            <button  onClick={e => handleNextClick()}>Next Question</button>
-                            
-                        </>
+                            <button className='mx-auto bg-purple-500 rounded-md py-1 px-5 my-8 w-60 h-24 text-2xl text-white font-bold ' onClick={e => handleNextClick()}>Next Question</button>
+
+                        </div>
                     )}
             </div>
         );

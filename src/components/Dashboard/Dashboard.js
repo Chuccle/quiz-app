@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
-//import '../assets/bootstrap.min.css';
-//import './Dashboard.css';
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
-import { Button } from 'react-bootstrap';
 import DashboardResults from './Search/DashboardSearch';
-//import ConditionalButtons from '../res/ConditionalButtons';
+
 
 
 
@@ -92,17 +88,17 @@ export default function Dashboard() {
 
     if (currentpage === 0) {
 
-      return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+      return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </button>;
     }
 
     else if (currentpage < pages) {
 
-      return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-        <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+      return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
+        <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
 
     } else if (currentpage === pages) {
 
-      return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
+      return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
 
     }
 
@@ -149,7 +145,7 @@ export default function Dashboard() {
             <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNextPage(true)}>Submit</button>
           </label>
           </div>
-          <table className="min-w-full text-center">
+          <table className="text-center">
             <thead className="border-b bg-purple-600">
               <tr >
                 <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quiz Name</th>
