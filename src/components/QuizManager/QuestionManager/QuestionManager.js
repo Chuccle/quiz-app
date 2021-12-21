@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Fetch from '../../res/FetchFunc.js';
 import useToken from '../../App/useToken';
-import { Card } from 'react-bootstrap';
 import QuizOperations from '../res/QuizOperations.js';
+
 
 
 export default function QuestionManager({ quizid }) {
@@ -51,7 +51,7 @@ export default function QuestionManager({ quizid }) {
 
 
         const questions = {
-
+            
             questionText: questiondata.questions[currentQuestion].Questiontext,
             answerOptions: [
                 { answerText: questiondata.questions[currentQuestion].Options.Correct, isCorrect: true },
@@ -66,7 +66,6 @@ export default function QuestionManager({ quizid }) {
 
             if (newquestion) {
 
-                console.log(questiondata.questions[currentQuestion].Questionid)
 
                 QuizOperations('http://localhost:8080/updateuserquestion', token, questiondata.questions[currentQuestion].Questionid, newquestion, quizid)
 
@@ -92,7 +91,7 @@ export default function QuestionManager({ quizid }) {
 
             if (newquestionoption4) {
 
-                QuizOperations('http://localhost:8080/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect3id, newquestionoption1, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('http://localhost:8080/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect3id, newquestionoption4, questiondata.questions[currentQuestion].Questionid)
 
             }
 
@@ -152,35 +151,40 @@ export default function QuestionManager({ quizid }) {
             // }
 
         }
+        console.log(questiondata.questions[currentQuestion].Questionid)
 
         return (
             <div className='app'>
                 {endofquiz ?
                     (
-                        <div className='score-section'>
-                            <h2>Quiz has been updated</h2>
-                            <div>
-                                <Link to="/dashboard">Back to dashboard</Link>
-                            </div>
+                        <div className='flex flex-col'>
+                            <h2 className=' m-5 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz has been updated</h2>
+                            
+                                <Link className='mx-auto bg-purple-500 rounded-md py-1 px-5 my-8 w-60 h-24 text-2xl text-white font-bold text-center   '  to="/dashboard">Back to dashboard</Link>
+                        
                         </div>
 
                     ) : (
                         <div className='flex flex-col'>
                             <form id='changeAnswer'>
                                 <div className='flex flex-col'>
-                                    <h1 className=' m-10 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.questions.length}</h1>
-
+                                    <h1 className=' m-5 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.questions.length}</h1>
+                                
                                     <h1 className=' text-3xl flex justify-center items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>{questions.questionText}</h1>
 
                                     <input className=' text-xl text-gray-base w-6/12  h-8 mt-5  mx-auto 
                                p-5 px-4  border-2 border-purple-400 rounded-lg bg-transparent outline-none
                                 mb-2 ' type="text" onChange={e => SetNewQuestion(e.target.value)} />
                                 </div>
+                                <div className="border border-black mx-auto w-1/4 rounded-md flex flex-auto" >
+                                <h1 className=' mx-auto text-2xl   text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Input your changes to the question. <br/> The first option is the correct answer   </h1> 
+                                </div>
                                 <div className="justify-items-center mt-4  grid grid-cols-2 " >
                                     {questions.answerOptions.map((answerOption, index) => (
+                                        
                                         <div className=" bg-gradient-to-br from-purple-700 to-purple-400 w-11/12 h-64 mt-5   shadow-lg  rounded-lg justify-center flex flex-col" >
                                             <label className="text-white text-center p-10 text-3xl font-bold" key={index}>{answerOption.answerText} </label>
-
+                                              
                                             <input className="text-black   w-6/12 mx-auto rounded-lg" onChange={e => QuestionOptionChangeHandler(index, e.target.value)} />
 
                                         </div>

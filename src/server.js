@@ -851,7 +851,60 @@ app.post('/updateuserquestionoption', (req, res) => {
 });
 
 
+app.post('/finduserquizzes', (req, res) => {
 
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+      console.log(tokenResult.data);
+
+      const offset = req.body.currentpage * 6;
+
+      console.log(req.body.searchquery)
+
+      connection.query('SELECT * from Quizzes Where created_by_userid = ? AND quizname = ?  LIMIT ?, 6',
+        [tokenResult.data, req.body.searchquery, offset],
+        function (selectUserQuizzesError, selectUserQuizzesResult) {
+
+          if (selectUserQuizzesError) throw res.send({
+            error: selectUserQuizzesError
+
+          });
+
+          connection.query('SELECT COUNT(*) AS quizcount FROM (SELECT quizname and difficulty from Quizzes Where created_by_userid = ? AND quizname = ?) x',
+            [tokenResult.data, req.body.searchquery],
+            function (selectUserQuizCountError, selectUserQuizCountResult) {
+
+              if (selectUserQuizCountError) throw res.send({
+                error: selectUserQuizCountError
+
+              });
+
+              console.log(selectUserQuizCountResult);
+             console.log(selectUserQuizzesResult)
+              res.send({
+                results: selectUserQuizzesResult,
+                quizsearchcount: selectUserQuizCountResult
+              });
+
+            });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+      console.log(tokenErr);
+
+    };
+
+  });
+
+});
 
 
 

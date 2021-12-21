@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useToken from '../..//App/useToken.js';
 import Leaderboards from '../../Leaderboards/Leaderboards.js';
 import Fetch from '../../res/FetchFunc.js';
-import { Button } from 'react-bootstrap';
+
 
 
 
@@ -106,20 +106,20 @@ export default function LeaderboardSearch({ searchquery }) {
   //first page 
   if (currentpage === 0) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+    return <button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </button> + currentpage
   }
 
   //middle pages
   else if (currentpage < pages) {
 
-    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
+    return <><button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </button><div />
+      <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button></> + currentpage
 
 
 //last page
   } else if (currentpage === pages) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
+    return <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button> + currentpage;
 
   }
 

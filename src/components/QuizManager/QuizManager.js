@@ -1,18 +1,16 @@
 import React, { useState, useEffect} from 'react';
 import Fetch from '../res/FetchFunc.js';
-import QuizManagerSearch from './Search/QuizManagerSearch';
 import useToken from '../App/useToken';
 import QuizOperations from './res/QuizOperations.js';
 import QuestionManager from './QuestionManager/QuestionManager.js';
-
+import { Link } from 'react-router-dom';
 
 export default function QuizManager() {
 
     const [data, SetData] = useState();
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
-    const [searchquery, SetSearchQuery] = useState(false);
-    const [searchpage, SetSearchPage] = useState(false);
+    const [searchquery, SetSearchQuery] = useState();
     const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
     const [newquizname, SetNewQuizName] = useState();
 
@@ -22,7 +20,6 @@ export default function QuizManager() {
 
 
 //TODO update component when quiz is updated/modified
-
 
 
     useEffect(() => {
@@ -120,15 +117,7 @@ export default function QuizManager() {
 
 
        }
-
-
-
-
-    if (searchpage) {
-
-        return <QuizManagerSearch searchquery={searchquery}></QuizManagerSearch>
-
-    }
+ 
 
 
     
@@ -157,7 +146,7 @@ export default function QuizManager() {
             <p className='m-2'>Search for a quiz:</p>
             <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
             <div className='m-1'/>
-            <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetSearchPage(true)}>Submit</button>
+            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/quizmanager/userquizsearch=${searchquery}`}>Search</Link>
           </label>
           </div>
 

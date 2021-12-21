@@ -10,7 +10,7 @@ import QuizManager from '../QuizManager/QuizManager.js';
 import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import Fetch from '../res/FetchFunc';
 import NotFound from './NotFound';
-
+import QuizManagerSearch from '../QuizManager/Search/QuizManagerSearch.js';
 
 
 function App() {
@@ -170,11 +170,17 @@ function App() {
           <Route path="/quizcreator">
             <QuizCreator />
           </Route>
+          <Route path="/quizmanager/userquizsearch=:searchquery">
+            <QuizManagerSearch />
+          </Route>
           <Route path="/quizmanager">
             <QuizManager />
-            </Route>
+            </Route>   
+
+        
             <Route component={NotFound}>
-          </Route>
+              </Route>
+
         </Switch>
 
       </BrowserRouter>

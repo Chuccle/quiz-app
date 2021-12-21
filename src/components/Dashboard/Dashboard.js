@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
-import DashboardResults from './Search/DashboardSearch';
-
-
+import DashboardSearch from './Search/DashboardSearch';
 
 
 export default function Dashboard() {
@@ -108,9 +106,9 @@ export default function Dashboard() {
 
   if (nextpage) {
 
-    console.log("lol")
+ 
 
-    return <DashboardResults searchquery={searchquery}></DashboardResults>
+    return <DashboardSearch searchquery={searchquery}></DashboardSearch>
 
   }
 
