@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../..//App/useToken.js';
 import Leaderboards from '../../Leaderboards/Leaderboards.js';
-//import ConditionalButtons from '../res/ConditionalButtons';
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import Fetch from '../../res/FetchFunc.js';
-import { Button } from 'react-bootstrap';
+
 
 
 
@@ -89,7 +87,7 @@ export default function LeaderboardSearch({ searchquery }) {
 
         let pages;
 
-        if (leaderboardcount < 3) {
+        if (leaderboardcount <= 3) {
 
             return null;
 
@@ -108,20 +106,20 @@ export default function LeaderboardSearch({ searchquery }) {
   //first page 
   if (currentpage === 0) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+    return <button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </button> + currentpage
   }
 
   //middle pages
   else if (currentpage < pages) {
 
-    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
+    return <><button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </button><div />
+      <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button></> + currentpage
 
 
 //last page
   } else if (currentpage === pages) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
+    return <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button> + currentpage;
 
   }
 
@@ -146,48 +144,51 @@ export default function LeaderboardSearch({ searchquery }) {
         });
 
         return (
+<>
 
-            <div>
+<div className='flex flex-col'>
 
-                <Jumbotron fluid>
-
-                    <h1 className="header">Results for: {currentsearchquery}</h1>
-                    <Button onClick={e => setGoBack(true)}> Go Back</Button>
-                </Jumbotron>
-
-                <label>
-                    <p>Search for a user</p>
-                    <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
-
-                </label>
-                <Button onClick={e => SetNewSearch(true)}>Submit</Button>
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Rank</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Quizzes completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-
-                            // // much better and scales to the amount of rows sent
-                            data.map(function (rowdata) {
-                                return <tr key={rowdata[0]}>
-                                    <td>{rowdata[0]}</td>
-                                    <td >{rowdata[2]}</td>
-                                    <td >{rowdata[3]}</td>
-                                </tr>
-                            })
-
-
-                        }
-                    </tbody>
-                </table>
-                <ConditionalButtons />
+<h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {currentsearchquery} </h1>
+<button  className='rounded-xl px-2 py-1 w-20 align self-center my-5  bg-purple-600 text-white' onClick={e => setGoBack(true)}> Go Back</button>
+<div className=' justify-center  border-2 border-black  flex  ' >
+<label  className=' m-5 text-xl  box-content class justify-center flex'>
+  <p className='m-2'>Search for another quiz:</p>
+  <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+  <div className='m-1'/>
+  <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNewSearch(true)}>Submit</button>
+</label>
             </div>
+            <table className="min-w-full text-center table-auto">
+              <thead className="border-b bg-purple-600">
+                <tr >
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Rank</th>
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Username</th>
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quizzes completed</th>
+            
+                </tr>
+            
+              </thead>
+              <tbody>
+                {
+                  // much better and scales to the amount of rows sent
+                  data.map(function (rowdata) {
+                    return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[0]}</td>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}</td>
+                    </tr>
+                  })
+                }
+              </tbody>
+            </table>
+            <ConditionalButtons />
+            </div>
+            </>
+                  
+
+
+
+
         );
     }
 

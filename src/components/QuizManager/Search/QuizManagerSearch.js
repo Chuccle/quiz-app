@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../../App/useToken';
-import Dashboard from '../../Dashboard/Dashboard';
+import { useParams} from 'react-router';
+import { Link } from 'react-router-dom';
 //import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
-import { Button } from 'react-bootstrap';
 import QuizOperations from '../res/QuizOperations';
 import QuizManager from '../QuizManager';
+import QuestionManager from '../QuestionManager/QuestionManager.js';
 
-export default function DashboardResults({ searchquery }) {
+export default function DashboardResults() {
 
+    let { searchquery } = useParams();
+   
+    
     const [data, SetData] = useState();
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [goback, setGoBack] = useState(false);
-    const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
-    const [newsearch, SetNewSearch] = useState(false);
+    const [newquizname, SetNewQuizName] = useState(); 
     const [newsearchquery, SetNewSearchQuery] = useState();
-    const [newquizname, SetNewQuizName] = useState();
-
+    const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
     const { token } = useToken();
 
     
@@ -27,11 +29,11 @@ export default function DashboardResults({ searchquery }) {
 
         async function SetStatsfunc() {
 
-            const StatsArray = [];
+            const QuizArray = [];
 
             try {
 
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, currentsearchquery });
+                const userStats = await Fetch('http://localhost:8080/finduserquizzes', { token, currentpage, searchquery });
 
 
                 if (userStats.error) {
@@ -47,15 +49,15 @@ export default function DashboardResults({ searchquery }) {
 
                     objectArray.forEach(value => {
 
-                        StatsArray.push(Object.values(value));
+                        QuizArray.push(Object.values(value));
 
                     });
 
 
-                    console.log(StatsArray);
+                    
 
-                    SetData(StatsArray);
-                    SetQuizCount(userStats.quizsearchcount[0].quizsearchcount);
+                    SetData(QuizArray);
+                    SetQuizCount(userStats.quizsearchcount[0].quizcount);
 
 
                 }
@@ -71,18 +73,15 @@ export default function DashboardResults({ searchquery }) {
         SetStatsfunc();
 
        
-    }, [token, currentpage, currentsearchquery])
-
-    console.log(quizcount)
-   
-    if (newsearch) {
-
-        SetCurrentSearchQuery(newsearchquery);
-       
-        SetNewSearch(false);
+    }, [token, currentpage, searchquery])
 
 
-    }
+    if (questionmanagerpage) {
+
+        return <QuestionManager quizid={questionmanagerpage[1]}></QuestionManager>
+ 
+     }
+
 
 
     if (goback) {
@@ -98,7 +97,7 @@ export default function DashboardResults({ searchquery }) {
         let pages
 
         //base case
-        if (quizcount < 6) {
+        if (quizcount <= 6) {
 
             return null
 
@@ -124,22 +123,22 @@ export default function DashboardResults({ searchquery }) {
   
  if (currentpage === 0) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+    return <button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </button> + currentpage
   }
 
   //middle pages
   
   else if (currentpage < pages) {
 
-    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
+    return <><button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </button><div />
+      <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button></> + currentpage
 
 
 //last page
 
 } else if (currentpage === pages) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
+    return <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button> + currentpage;
 
   }
 
@@ -174,106 +173,118 @@ export default function DashboardResults({ searchquery }) {
 
         return (
 
-            <div>
-                <div className="DashboardResults" >
-                    <h1>Results for: {currentsearchquery}  </h1>
-                    <div />
-                    <Button onClick={e => setGoBack(true)}> Go Back</Button>
+            <div className='flex flex-col'>
 
-                </div>
-                <label>
-                    <p>Search for a quiz</p>
-                    <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
 
-                </label>
-                <Button onClick={e => SetNewSearch(true)}>Submit</Button>
+                    <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {searchquery}</h1>
 
-                <table className="table">
-                    <thead>
+                    <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
+
+                    <div className=' justify-center  border-2 border-black  flex  ' >
+          <label  className=' m-5 text-xl  box-content class justify-center flex'>
+            <p className='m-2'>Search for a quiz:</p>
+            <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/quizmanager/userquizsearch=${newsearchquery}`}>Search</Link>
+            <div className='m-1'/>
+          </label>
+          </div>
+               
+
+                <table className="text-center">
+                    <thead className="border-b bg-purple-600">
+
                         <tr>
-                            <th scope="col">Change Quiz Name</th>
-                            <th scope="col">Change Difficulty</th>
-                            <th scope="col">Best score</th>
-                            <th scope="col">Begin quiz</th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Change Quiz Name</th>
+
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white"scope="col">Change Difficulty</th>
+
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Edit Questions</th>
+
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col"></th>
+
                         </tr>
+
                     </thead>
+
                     <tbody>
 
-                    {
+                        {
 
-// scalable
-data.map(function (rowdata) {
-    
-    return <tr key={rowdata[0]}>
+                            // scalable
 
-        <td>
+                            data.map(function (rowdata) {
 
-            <label>{rowdata[1]}</label>
+                                return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
 
-            <div />
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-            <input onChange={e => SetNewQuizName(e.target.value)}></input>
+                                        <label>{rowdata[1]}</label>
 
-            <div />
+                                        <div />
 
-            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+                                        <input onChange={e => SetNewQuizName(e.target.value)}></input>
 
-        </td>
+                                        <div />
 
-        <td >
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</button>
 
-            <label>{rowdata[2]}</label>
+                                    </td  >
 
-            <div />
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-            <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+                                        <label>{rowdata[2]}</label>
 
-                <option value="none">...:</option>
+                                        <div />
 
-                <option value="Easy">Easy</option>
+                                        <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
 
-                <option value="Medium">Medium</option>
+                                            <option value="none">...</option>
 
-                <option value="Hard">Hard</option>
+                                            <option value="Easy">Easy</option>
 
-            </select>
+                                            <option value="Medium">Medium</option>
 
-        </td>
+                                            <option value="Hard">Hard</option>
 
-        <td>
+                                        </select>
 
-            <Button>View</Button>
+                                    </td>
 
-        </td>
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-        <td >
+                                        <button onClick={e => SetQuestionManagerPage([true, rowdata[0]])}>View</button>
 
-            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</Button>
+                                    </td>
 
-        </td>
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-    </tr>
-})
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</button>
 
-}
+                                    </td>
 
-</tbody>
+                                </tr>
 
-</table>
+                            })
 
-<ConditionalButtons />
+                        }
 
-</div>
+                    </tbody>
 
-);
+                </table>
 
-}
+                <ConditionalButtons />
 
-else {
+            </div>
 
-return (<div> <h2>loading...</h2> </div>)
+        );
 
-};
+    }
+
+    else {
+
+        return (<div> <h2>loading...</h2> </div>)
+
+    };
 
 
 

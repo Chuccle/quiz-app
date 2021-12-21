@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Jumbotron from 'react-bootstrap/Jumbotron';
+
 import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
 import { Button } from 'react-bootstrap';
-//import ConditionalButtons from '../res/ConditionalButtons.js'
+
 import LeaderboardSearch from './Search/LeaderboardSearch.js';
 
 
@@ -77,7 +77,7 @@ export default function Leaderboards() {
 
     let pages;
 
-    if (leaderboardcount < 3) {
+    if (leaderboardcount <= 3) {
 
         return null;
 
@@ -128,45 +128,47 @@ export default function Leaderboards() {
 if (data) {
 
     return (
-      <div>
+      <>
+ <div className='flex flex-col'>
 
-        <Jumbotron fluid>
+<h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Top users</h1>
+<div className=' justify-center  border-2 border-black  flex  ' >
+<label  className=' m-5 text-xl  box-content class justify-center flex'>
+  <p className='m-2'>Search for a user:</p>
+  <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
+  <div className='m-1'/>
+  <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNextPage(true)}>Submit</button>
+</label>
+</div>
+<table className="min-w-full text-center table-auto">
+  <thead className="border-b bg-purple-600">
+    <tr >
+      <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Rank</th>
+      <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Username</th>
+      <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quizzes completed</th>
 
-          <h1 className="header">Top users</h1>
-          <label>
-              <p>Search for a user</p>
-              <input type="text" onChange={e => SetSearchQuery(e.target.value)} />
-            </label>
-            <Button onClick={e => SetNextPage(true)}>Submit</Button>
+    </tr>
 
-        </Jumbotron>
-
-        <table class="table">
-       <thead>
-            <tr>
-              <th scope="col">Rank</th>
-              <th scope="col">Username</th>
-              <th scope="col">Quizzes completed</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-
-              // scalable
-              data.map(function (rowdata) {
-                return <tr key={rowdata[0]}>
-                  <td>{rowdata[0]}</td>
-                  <td >{rowdata[2]}</td>
-                  <td >{rowdata[3]}</td>
-                </tr>
-              })
+  </thead>
+  <tbody>
+    {
+      // much better and scales to the amount of rows sent
+      data.map(function (rowdata) {
+        return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+          <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[0]}</td>
+          <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
+          <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}</td>
+        </tr>
+      })
+    }
+  </tbody>
+</table>
+<ConditionalButtons />
+</div>
+</>
+      
 
 
-            }
-          </tbody>
-        </table>
-        <ConditionalButtons />
-      </div>
     );
 
   }
