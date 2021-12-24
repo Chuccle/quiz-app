@@ -133,6 +133,8 @@ export default function QuestionManager({ quizid }) {
 
             }
 
+            // TODO use lodash here later to make this work because it pains me hard coding a usestate for each option 
+            
             // switch (index) {
 
             //     case 0: SetNewQuestionOptionArray(newquestionoptionarray[0] = newquestionoption);

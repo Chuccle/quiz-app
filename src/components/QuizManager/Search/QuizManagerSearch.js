@@ -11,9 +11,6 @@ import lodashSet from 'lodash.set';
 export default function DashboardResults() {
 
     let { searchquery } = useParams();
-   
-    
-;
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [newquizname, SetNewQuizName] = useState({key: '', value: ''}); 

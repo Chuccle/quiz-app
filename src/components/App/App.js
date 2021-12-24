@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
 import Dashboard from '../Dashboard/Dashboard.js';
+import DashboardSearch from '../Dashboard/Search/DashboardSearch.js';
 import Login from '../Login/Login.js';
-import Preferences from '../Leaderboards/Leaderboards.js';
+import Leaderboard from '../Leaderboards/Leaderboards.js';
 import useToken from './useToken.js';
 import Quiz from '../Quizzes/Quiz.js'
 import Logout from './Logout.js';
@@ -11,7 +12,7 @@ import { QuizCreator } from '../QuizCreator/QuizCreator.js';
 import Fetch from '../res/FetchFunc';
 import NotFound from './NotFound';
 import QuizManagerSearch from '../QuizManager/Search/QuizManagerSearch.js';
-
+import LeaderboardSearch from '../Leaderboards/Search/LeaderboardSearch.js';
 
 function App() {
 
@@ -155,14 +156,22 @@ function App() {
           <Route exact path="/">
             <Redirect to="/dashboard" />
           </Route>
-          <Route path="/dashboard">
-            <Dashboard />
+
+          <Route path="/leaderboard/leaderboardsearch=:searchquery">
+            <LeaderboardSearch />
           </Route>
           <Route path="/leaderboard">
-            <Preferences />
+            <Leaderboard />
           </Route>
           <Route path="/quiz/quizid=:quizid">
             <Quiz />
+          </Route>
+          <Route path="/dashboard/dashboardsearch=:searchquery">
+            <DashboardSearch />
+          </Route>
+          
+          <Route path="/dashboard">
+            <Dashboard />
           </Route>
           <Route path="/logout">
             <Logout />
@@ -170,8 +179,8 @@ function App() {
           <Route path="/quizcreator">
             <QuizCreator />
           </Route>
-          <Route path="/quizmanager/userquizsearch=:searchquery">
-            <QuizManagerSearch />
+          <Route path="/quizmanager/userquizsearch=:searchquery">           
+           <QuizManagerSearch />
           </Route>
           <Route path="/quizmanager">
             <QuizManager />
