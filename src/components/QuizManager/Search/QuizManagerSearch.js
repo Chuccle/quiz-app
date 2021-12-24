@@ -20,7 +20,7 @@ export default function DashboardResults() {
     const [newsearchquery, SetNewSearchQuery] = useState();
     const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
     
-    const [test, dispatch] = useReducer((state, action) => {
+    const [data, dispatch] = useReducer((state, action) => {
         
         switch (action.type) {
             case 'SET_DATA':
@@ -138,62 +138,85 @@ export default function DashboardResults() {
 
 
 
-    function ConditionalButtons() {
+     function CurrentPageHandler(increment) {
 
-        let pages
+        if (increment) {
 
-        //base case
+            SetCurrentPage(currentpage + 1);
+            dispatch(
+
+
+                {
+
+                    type: 'RESET_DATA',
+
+
+                }
+            )
+
+        } else {
+
+            SetCurrentPage(currentpage - 1);
+
+            dispatch(
+
+
+                {
+
+                    type: 'RESET_DATA',
+
+
+                }
+            )
+
+        }
+    }
+
+
+     function ConditionalButtons() {
+
+        let pages;
+
+        //base case 
+
         if (quizcount <= 6) {
 
-            return null
+            return null;
 
         }
 
-       //if there is no remainder 
+        else if (quizcount % 6 === 0) {
 
-  else if (quizcount % 6 === 0) {
+            pages = (quizcount / 6) - 1;
 
-        //-1 because we need to offset the fact that arrays start at 0
-    
-    pages = (quizcount / 6) - 1
+        } else {
 
-} else {
+            pages = Math.trunc(quizcount / 6);
+        }
 
-    //if there is a remainder treat it as a whole number
-    
-    pages = Math.trunc(quizcount / 6)
-  }
+        if (currentpage === 0) {
 
+            return <button onClick={e => CurrentPageHandler(true)}>Page + page:{currentpage + 1} </button>;
 
- //first page 
-  
- if (currentpage === 0) {
+        }
 
-    return <button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </button> + currentpage
-  }
+        else if (currentpage < pages) {
 
-  //middle pages
-  
-  else if (currentpage < pages) {
+            return <><button onClick={e => CurrentPageHandler(true)}>Page + page:{currentpage + 1} </button><div />
+                <button onClick={e => CurrentPageHandler(false)}>Page - page:{currentpage - 1} </button></>
 
-    return <><button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </button><div />
-      <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button></> + currentpage
+        } else if (currentpage === pages) {
 
 
-//last page
+            return <button onClick={e => CurrentPageHandler(false)}>Page - page:{currentpage - 1} </button>;
 
-} else if (currentpage === pages) {
-
-    return <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button> + currentpage;
-
-  }
-
+        }
 
     }
 
 
     //This as a buffer check to ensure that data is defined.
-    if (test) {
+    if (data) {
 
 
 
@@ -295,7 +318,7 @@ export default function DashboardResults() {
 
                             // scalable
 
-                            test.map(function (rowdata, index) {
+                            data.map(function (rowdata, index) {
 
                                 return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata.quizid}>
 

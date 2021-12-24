@@ -13,7 +13,7 @@ export default function QuizManager() {
     const [searchquery, SetSearchQuery] = useState();
     const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
     const [newquizname, SetNewQuizName] = useState({key: '', value: ''});
-    const [test, dispatch] = useReducer((state, action) => {
+    const [data, dispatch] = useReducer((state, action) => {
         
         switch (action.type) {
         
@@ -271,7 +271,7 @@ export default function QuizManager() {
 
     //This as a buffer check to ensure that data is defined????
 
-    if (test) {
+    if (data) {
 
         return (
 
@@ -314,7 +314,7 @@ export default function QuizManager() {
 
                             // scalable
 
-                            test.map(function (rowdata, index) {
+                            data.map(function (rowdata, index) {
 
                                 return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata.quizid}>
 
