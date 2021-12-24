@@ -1,23 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import useToken from '../../App/useToken';
-import Dashboard from '../../Dashboard/Dashboard';
+import { useParams} from 'react-router';
+import { Link } from 'react-router-dom';
 //import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
-import { Button } from 'react-bootstrap';
 import QuizOperations from '../res/QuizOperations';
-import QuizManager from '../QuizManager';
+import QuestionManager from '../QuestionManager/QuestionManager.js';
+import lodashSet from 'lodash.set';
 
-export default function DashboardResults({ searchquery }) {
+export default function DashboardResults() {
 
-    const [data, SetData] = useState();
+    let { searchquery } = useParams();
+   
+    
+;
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
-    const [goback, setGoBack] = useState(false);
-    const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
-    const [newsearch, SetNewSearch] = useState(false);
+    const [newquizname, SetNewQuizName] = useState({key: '', value: ''}); 
     const [newsearchquery, SetNewSearchQuery] = useState();
-    const [newquizname, SetNewQuizName] = useState();
+    const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
+    
+    const [data, dispatch] = useReducer((state, action) => {
+        
+        switch (action.type) {
+            case 'SET_DATA':
+                return [
 
+                    ...state,
+
+                    {
+                        quizid: action.quizid,
+                        quizname: action.quizname,
+                        difficulty: action.difficulty,
+
+                    }
+                ];
+            case 'RESET_DATA':
+                return [];
+            case 'UPDATE_QUIZ_NAME':
+
+                // not fun needs a slice method because it pushes a duplicate element to state array
+
+                return state.slice(0, state.length, lodashSet(state[action.key], 'quizname', action.quizname))
+
+            case 'UPDATE_QUIZ_DIFFICULTY':
+
+                // not fun needs a slice method because it pushes a duplicate element to state array
+
+                return state.slice(0, state.length, lodashSet(state[action.key], 'difficulty', action.difficulty))
+
+            case 'REMOVE_QUIZ':
+                // Will return every element except the one referenced by action.key {redundant} is needed to access second argumanet of .filter method
+                return state.filter((redundant, index) => { return (index !== action.index) })
+
+            default:
+                return state;
+        }
+    }, []);
+   
     const { token } = useToken();
 
     
@@ -27,11 +67,11 @@ export default function DashboardResults({ searchquery }) {
 
         async function SetStatsfunc() {
 
-            const StatsArray = [];
+            const QuizArray = [];
 
             try {
 
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, currentsearchquery });
+                const userStats = await Fetch('http://localhost:8080/finduserquizzes', { token, currentpage, searchquery });
 
 
                 if (userStats.error) {
@@ -47,16 +87,32 @@ export default function DashboardResults({ searchquery }) {
 
                     objectArray.forEach(value => {
 
-                        StatsArray.push(Object.values(value));
+                        QuizArray.push(Object.values(value));
 
                     });
 
 
-                    console.log(StatsArray);
+                    
 
-                    SetData(StatsArray);
-                    SetQuizCount(userStats.quizsearchcount[0].quizsearchcount);
+                    SetQuizCount(userStats.quizsearchcount[0].quizcount);
 
+                    for (var i = 0; i < QuizArray.length; i++) {
+                    
+                        dispatch(
+
+                            {
+
+                                type: 'SET_DATA',
+                                quizid: QuizArray[i][0],
+                                quizname: QuizArray[i][1],
+                                difficulty: QuizArray[i][2],
+
+                            }
+
+
+                        );
+
+                    };
 
                 }
 
@@ -71,78 +127,90 @@ export default function DashboardResults({ searchquery }) {
         SetStatsfunc();
 
        
-    }, [token, currentpage, currentsearchquery])
-
-    console.log(quizcount)
-   
-    if (newsearch) {
-
-        SetCurrentSearchQuery(newsearchquery);
-       
-        SetNewSearch(false);
+    }, [token, currentpage, searchquery])
 
 
+    if (questionmanagerpage) {
+
+        return <QuestionManager quizid={questionmanagerpage[1]}></QuestionManager>
+ 
+     }
+
+
+
+     function CurrentPageHandler(increment) {
+
+        if (increment) {
+
+            SetCurrentPage(currentpage + 1);
+            dispatch(
+
+
+                {
+
+                    type: 'RESET_DATA',
+
+
+                }
+            )
+
+        } else {
+
+            SetCurrentPage(currentpage - 1);
+
+            dispatch(
+
+
+                {
+
+                    type: 'RESET_DATA',
+
+
+                }
+            )
+
+        }
     }
 
 
-    if (goback) {
+     function ConditionalButtons() {
 
-        return <QuizManager />
+        let pages;
 
-    }
+        //base case 
 
+        if (quizcount <= 6) {
 
-
-    function ConditionalButtons() {
-
-        let pages
-
-        //base case
-        if (quizcount < 6) {
-
-            return null
+            return null;
 
         }
 
-       //if there is no remainder 
+        else if (quizcount % 6 === 0) {
 
-  else if (quizcount % 6 === 0) {
+            pages = (quizcount / 6) - 1;
 
-        //-1 because we need to offset the fact that arrays start at 0
-    
-    pages = (quizcount / 6) - 1
+        } else {
 
-} else {
+            pages = Math.trunc(quizcount / 6);
+        }
 
-    //if there is a remainder treat it as a whole number
-    
-    pages = Math.trunc(quizcount / 6)
-  }
+        if (currentpage === 0) {
 
+            return <button onClick={e => CurrentPageHandler(true)}>Page + page:{currentpage + 1} </button>;
 
- //first page 
-  
- if (currentpage === 0) {
+        }
 
-    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
-  }
+        else if (currentpage < pages) {
 
-  //middle pages
-  
-  else if (currentpage < pages) {
+            return <><button onClick={e => CurrentPageHandler(true)}>Page + page:{currentpage + 1} </button><div />
+                <button onClick={e => CurrentPageHandler(false)}>Page - page:{currentpage - 1} </button></>
 
-    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
+        } else if (currentpage === pages) {
 
 
-//last page
+            return <button onClick={e => CurrentPageHandler(false)}>Page - page:{currentpage - 1} </button>;
 
-} else if (currentpage === pages) {
-
-    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
-
-  }
-
+        }
 
     }
 
@@ -150,130 +218,179 @@ export default function DashboardResults({ searchquery }) {
     //This as a buffer check to ensure that data is defined.
     if (data) {
 
-        //array cleanup has to be done here for some reason and not in async function else bugs
-        data.forEach(element => {
 
-            if (element[3] == null) {
 
-                element[3] = 0;
+        async function QuizUpdateHandler(address, token, key, optionalData,  actionType, index, extra) {
 
+            await QuizOperations(address, token, key, optionalData);
+    
+            switch (actionType) {
+    
+                case "quiznameupdate":
+                
+                // Condition needed because newquizname is shared by all quiz elements
+               
+                if (extra === index){ 
+                    
+                    dispatch({
+                      
+                        type: 'UPDATE_QUIZ_NAME',
+                        key: index,
+                        quizname: optionalData
+                    
+                    });
+                }
+                    break;
+    
+                case "quizdifficultyupdate":
+    
+                    dispatch({
+                      
+                        type: 'UPDATE_QUIZ_DIFFICULTY',
+                        key: index,
+                        difficulty: optionalData,
+                    
+                    });
+    
+                    break;
+    
+                case "quizremove":
+                    
+                dispatch({
+                    
+                    type: 'REMOVE_QUIZ',
+                    index: index
+                    
+                });
+                    
+                    break;
+    
+                default:
+                    
+                console.log("error");
+    
             }
-
-        });
-
-      async function QuizUpdateHandler(address, token, key, optionalData) {
-
-       await QuizOperations(address, token, key, optionalData) 
-        
-        
-        
-        window.location.reload()
-
-
-       }
+      
+        }
+    
 
         return (
 
-            <div>
-                <div className="DashboardResults" >
-                    <h1>Results for: {currentsearchquery}  </h1>
-                    <div />
-                    <Button onClick={e => setGoBack(true)}> Go Back</Button>
+            <div className='flex flex-col'>
 
-                </div>
-                <label>
-                    <p>Search for a quiz</p>
-                    <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
 
-                </label>
-                <Button onClick={e => SetNewSearch(true)}>Submit</Button>
+                    <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {searchquery}</h1>
+                    <label  className=' m-5 text-xl  box-content  text-center flex-col'>
+                    <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white  ' to={`/quizmanager`}>Go Back</Link>
+                    </label>
+                    <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
 
-                <table className="table">
-                    <thead>
+                    <div className=' justify-center  border-2 border-black  flex  ' >
+    
+          <label  className=' m-5 text-xl  box-content class justify-center flex'>
+            <p className='m-2'>Search for a quiz:</p>
+            <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/quizmanager/userquizsearch=${newsearchquery}`}>Search</Link>
+            <div className='m-1'/>
+          </label>
+          </div>
+               
+
+          <table className="text-center">
+                    <thead className="border-b bg-purple-600">
+
                         <tr>
-                            <th scope="col">Change Quiz Name</th>
-                            <th scope="col">Change Difficulty</th>
-                            <th scope="col">Best score</th>
-                            <th scope="col">Begin quiz</th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Change Quiz Name</th>
+
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Change Difficulty</th>
+
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Edit Questions</th>
+
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col"></th>
+
                         </tr>
+
                     </thead>
+
                     <tbody>
 
-                    {
+                        {
 
-// scalable
-data.map(function (rowdata) {
-    
-    return <tr key={rowdata[0]}>
+                            // scalable
 
-        <td>
+                            data.map(function (rowdata, index) {
 
-            <label>{rowdata[1]}</label>
+                                return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata.quizid}>
 
-            <div />
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-            <input onChange={e => SetNewQuizName(e.target.value)}></input>
+                                        <label>{rowdata.quizname}</label>
 
-            <div />
+                                        <div />
 
-            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</Button>
+                                        <input onChange={e => SetNewQuizName({key:index,  value:e.target.value})}></input>
 
-        </td>
+                                        <div />
 
-        <td >
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata.quizid, newquizname.value, "quiznameupdate", index, newquizname.key)}>Rename</button>
 
-            <label>{rowdata[2]}</label>
+                                    </td  >
 
-            <div />
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-            <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+                                        <label>{rowdata.difficulty}</label>
 
-                <option value="none">...:</option>
+                                        <div />
 
-                <option value="Easy">Easy</option>
+                                        <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata.quizid, e.target.value, "quizdifficultyupdate", index)}>
 
-                <option value="Medium">Medium</option>
+                                            <option value={rowdata.difficulty}>...</option>
 
-                <option value="Hard">Hard</option>
+                                            <option value="Easy">Easy</option>
 
-            </select>
+                                            <option value="Medium">Medium</option>
 
-        </td>
+                                            <option value="Hard">Hard</option>
 
-        <td>
+                                        </select>
 
-            <Button>View</Button>
+                                    </td>
 
-        </td>
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-        <td >
+                                        <button onClick={e => SetQuestionManagerPage([true, rowdata.quizid])}>View</button>
 
-            <Button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</Button>
+                                    </td>
 
-        </td>
+                                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-    </tr>
-})
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata.quizid, null, "quizremove", index)}>Remove</button>
 
-}
+                                    </td>
 
-</tbody>
+                                </tr>
 
-</table>
+                            })
 
-<ConditionalButtons />
+                        }
 
-</div>
+                    </tbody>
 
-);
+                </table>
 
-}
+                <ConditionalButtons />
 
-else {
+            </div>
 
-return (<div> <h2>loading...</h2> </div>)
+        );
 
-};
+    }
+
+    else {
+
+        return (<div> <h2>loading...</h2> </div>)
+
+    };
 
 
 

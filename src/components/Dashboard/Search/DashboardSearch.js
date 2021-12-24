@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../../App/useToken';
 import Dashboard from '../../Dashboard/Dashboard.js';
-//import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc.js';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -48,7 +47,7 @@ export default function DashboardResults({ searchquery }) {
                     });
 
 
-                    console.log(StatsArray);
+
 
                     SetData(StatsArray);
                     SetQuizCount(userStats.quizsearchcount[0].quizsearchcount);
@@ -69,7 +68,6 @@ export default function DashboardResults({ searchquery }) {
        
     }, [token, currentpage, currentsearchquery])
 
-    console.log(quizcount)
    
     if (newsearch) {
 
@@ -94,11 +92,11 @@ export default function DashboardResults({ searchquery }) {
         let pages
 
         //base case
-        if (quizcount < 6) {
+        if (quizcount <= 6) {
 
             return null
-
-        }
+      
+          }
 
        //if there is no remainder 
 
@@ -157,47 +155,54 @@ export default function DashboardResults({ searchquery }) {
 
         });
 
-        return (
+       
+       return (
+<>
 
-            <div>
-                <div className="DashboardResults" >
-                    <h1>Results for: {currentsearchquery}  </h1>
-                    <div />
-                    <Button onClick={e => setGoBack(true)}> Go Back</Button>
+            <div className='flex flex-col'>
 
-                </div>
-                <label>
-                    <p>Search for a quiz</p>
-                    <input type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
-
-                </label>
-                <Button onClick={e => SetNewSearch(true)}>Submit</Button>
-
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Quiz Name</th>
-                            <th scope="col">Difficulty</th>
-                            <th scope="col">Best score</th>
-                            <th scope="col">Begin quiz</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            // much better and scales to the amount of rows sent
-                            data.map(function (rowdata) {
-                                return <tr key={rowdata[0]}>
-                                    <td>{rowdata[1]}</td>
-                                    <td >{rowdata[2]}</td>
-                                    <td >{rowdata[3]}%</td>
-                                    <td ><Link to={{ pathname: '/quiz', state: { quizid: rowdata[0] } }}>Start</Link></td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </table>
-                <ConditionalButtons />
+            <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {currentsearchquery} </h1>
+            <button  className='rounded-xl px-2 py-1 w-20 align self-center my-5  bg-purple-600 text-white' onClick={e => setGoBack(true)}> Go Back</button>
+            <div className=' justify-center  border-2 border-black  flex  ' >
+            <label  className=' m-5 text-xl  box-content class justify-center flex'>
+              <p className='m-2'>Search for another quiz:</p>
+              <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+              <div className='m-1'/>
+              <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNewSearch(true)}>Submit</button>
+            </label>
             </div>
+            <table className="min-w-full text-center">
+              <thead className="border-b bg-purple-600">
+                <tr >
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quiz Name</th>
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Difficulty</th>
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Best score</th>
+                  <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Begin quiz</th>
+                </tr>
+  
+              </thead>
+              <tbody>
+                {
+                  // much better and scales to the amount of rows sent
+                  data.map(function (rowdata) {
+                    return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[1]}</td>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}%</td>
+                      <td className="px-10 py-6 whitespace-nowrap text-xl font-bold font-helvetica-neue text-white" >
+  
+                        <Link className='rounded-md px-2 py-1  bg-purple-600 hover:bg-white  transition duration-300 hover:text-purple-600 ' to={`quiz/quizid=${rowdata[0]}`}>Start</Link>
+  
+                      </td>
+                    </tr>
+                  })
+                }
+              </tbody>
+            </table>
+            <ConditionalButtons />
+          </div>
+        </>
+
         );
 
     }

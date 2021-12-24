@@ -25,9 +25,6 @@ app.post('/auth', (req, res) => {
     if (result) {
 
 
-      console.log(result.data);
-
-
       res.send({
         message: result
       })
@@ -57,11 +54,9 @@ app.post('/retrievequizzes', (req, res) => {
     // offset is how many results the page is designed to display
     const offset = req.body.currentpage * 6;
 
-    console.log(offset);
 
     if (tokenResult) {
 
-      console.log(tokenResult.data);
 
       connection.query('SELECT username FROM accounts Where id = ?',
         [tokenResult.data],
@@ -85,7 +80,6 @@ app.post('/retrievequizzes', (req, res) => {
                   error: selectQuizCountError
                 });
 
-                console.log(selectUsernameResult);
 
                 res.send({
                   results: selectQuizzesResult,
@@ -105,7 +99,6 @@ app.post('/retrievequizzes', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
 
     };
 
@@ -131,8 +124,6 @@ app.post('/login', (req, res) => {
       bcrypt.compare(req.body.password, selectUserRecordResults[0].password, function (passwordCompareErr, passwordCompareResult) {
 
         if (passwordCompareResult) {
-
-          console.log(selectUserRecordResults[0].id);
 
           //signing our token to send to client
           //we use primary key of our record as it guaranatees a unique identifier of the record
@@ -197,7 +188,6 @@ app.post('/register', (req, res) => {
 
         if (hash) {
 
-          console.log(hash);
 
           connection.query('INSERT INTO accounts (username, password) VALUES (?, ?);', [req.body.username, hash], function (InsertUserError, InsertUserResults) {
 
@@ -215,7 +205,6 @@ app.post('/register', (req, res) => {
 
               if (tokenCreationSuccess) {
 
-                console.log(tokenCreationSuccess.data);
 
                 res.send({
                   token: tokenCreationSuccess
@@ -258,11 +247,9 @@ app.post('/register', (req, res) => {
 
 app.post('/insertquiz', (req, res) => {
 
-  console.log(req.body.questionset[0]);
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenSuccess) {
 
-    console.log(req.body.questionset[0].Quizname, tokenSuccess.data, req.body.questionset[0].Difficulty);
 
     connection.query('INSERT INTO quizzes (quizname, created_by_userid, difficulty) VALUES (?, ?, ?);', [req.body.questionset[0].Quizname, tokenSuccess.data, req.body.questionset[0].Difficulty], function (insertQuizError, insertQuizResults) {
 
@@ -383,7 +370,7 @@ app.post('/retrievequestions', (req, res) => {
     };
 
     // why does this return an empty array?
-    console.log(questionqueue);
+   
 
   });
 
@@ -470,8 +457,6 @@ app.post('/retrieveleaderboard', (req, res) => {
         error: selectTotalLeaderboardCountError
       });
 
-      console.log(selectQuizScoresResults);
-
       res.send({
         results: selectQuizScoresResults,
         leaderboardcount: selectTotalLeaderboardCountResult
@@ -491,11 +476,7 @@ app.post('/finduserrank', (req, res) => {
 
     if (tokenResult) {
 
-      console.log(tokenResult.data);
-
       const offset = req.body.currentpage * 3;
-
-      console.log(req.body.currentsearchquery)
 
       connection.query('SELECT * from (SELECT ROW_NUMBER() OVER ( ORDER BY successfulQuizzes DESC ) AS rank, accounts.id, accounts.username, COUNT(quiz_user_answers.quizID) AS successfulQuizzes FROM accounts INNER JOIN quiz_user_answers ON quiz_user_answers.userid = accounts.id WHERE quiz_user_answers.score>=80 GROUP BY accounts.id order by successfulQuizzes DESC) x WHERE username = ? LIMIT ?, 3', [req.body.currentsearchquery, offset], function (selectUserPositionError, selectUserPositionResults) {
 
@@ -524,8 +505,6 @@ app.post('/finduserrank', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
-
     };
 
   });
@@ -539,11 +518,11 @@ app.post('/findquiz', (req, res) => {
 
     if (tokenResult) {
 
-      console.log(tokenResult.data);
+    
 
       const offset = req.body.currentpage * 6;
 
-      console.log(req.body.currentsearchquery)
+    
 
       connection.query('SELECT Quizzes.id, Quizzes.quizname, Quizzes.difficulty, quiz_user_answers.score FROM Quizzes LEFT JOIN quiz_user_answers ON quiz_user_answers.quizid = Quizzes.id AND quiz_user_answers.userid = ? Where Quizzes.quizname = ? LIMIT ?, 6',
         [tokenResult.data, req.body.currentsearchquery, offset],
@@ -563,10 +542,10 @@ app.post('/findquiz', (req, res) => {
 
               });
 
-              console.log(selectQuiznameResult);
               res.send({
                 results: selectQuiznameResult,
                 quizsearchcount: selectQuiznameCountResult
+             
               });
 
             });
@@ -579,7 +558,6 @@ app.post('/findquiz', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
 
     };
 
@@ -591,13 +569,9 @@ app.post('/retrieveuserquizzes', (req, res) => {
 
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
-    if (tokenResult) {
-
-      console.log(tokenResult.data);
+    if (tokenResult) {  
 
       const offset = req.body.currentpage * 6;
-
-      console.log(req.body.currentsearchquery)
 
       connection.query('SELECT * from Quizzes Where created_by_userid = ? LIMIT ?, 6',
         [tokenResult.data, offset],
@@ -617,7 +591,7 @@ app.post('/retrieveuserquizzes', (req, res) => {
 
               });
 
-              console.log(selectUserQuizCountResult);
+      
               res.send({
                 results: selectUserQuizzesResult,
                 quizsearchcount: selectUserQuizCountResult
@@ -633,7 +607,7 @@ app.post('/retrieveuserquizzes', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
+    
 
     };
 
@@ -647,10 +621,6 @@ app.post('/removeuserquiz', (req, res) => {
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
     if (tokenResult) {
-
-      console.log(tokenResult.data);
-
-      console.log(req.body.currentsearchquery)
 
       connection.query('DELETE FROM Quizzes Where id = ?',
         [req.body.primaryKeyId],
@@ -674,8 +644,6 @@ app.post('/removeuserquiz', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
-
     };
 
   });
@@ -687,10 +655,6 @@ app.post('/updateuserquizdifficulty', (req, res) => {
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
     if (tokenResult) {
-
-      console.log(tokenResult.data);
-
-      console.log(req.body.currentsearchquery)
 
       connection.query('UPDATE quizzes SET difficulty = ? WHERE id = ?;',
         [req.body.optionalValue1, req.body.primaryKeyId],
@@ -714,8 +678,6 @@ app.post('/updateuserquizdifficulty', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
-
     };
 
   });
@@ -728,12 +690,6 @@ app.post('/updateuserquizname', (req, res) => {
   jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
 
     if (tokenResult) {
-
-      console.log(tokenResult.data);
-
-
-      console.log(req.body.currentsearchquery)
-
 
       connection.query('UPDATE quizzes SET quizname = ? WHERE id = ?;',
         [req.body.optionalValue1, req.body.primaryKeyId],
@@ -757,8 +713,6 @@ app.post('/updateuserquizname', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
-
     };
 
   });
@@ -775,7 +729,6 @@ app.post('/updateuserquestion', (req, res) => {
 
     if (tokenResult) {
 
-      console.log(tokenResult.data);
 
       // realistically the Quizid reference is overkill but it further ensures that the right question is only updated if the question belongs to the corresponding quiz 
 
@@ -801,8 +754,6 @@ app.post('/updateuserquestion', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
-
     };
 
   });
@@ -816,7 +767,6 @@ app.post('/updateuserquestionoption', (req, res) => {
 
     if (tokenResult) {
 
-      console.log(tokenResult.data);
 
       // realistically the Quizid reference is overkill but it further ensures that the right question is only updated if the question belongs to the corresponding quiz 
 
@@ -842,8 +792,6 @@ app.post('/updateuserquestionoption', (req, res) => {
         error: tokenErr
       });
 
-      console.log(tokenErr);
-
     };
 
   });
@@ -851,7 +799,54 @@ app.post('/updateuserquestionoption', (req, res) => {
 });
 
 
+app.post('/finduserquizzes', (req, res) => {
 
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function (tokenErr, tokenResult) {
+
+    if (tokenResult) {
+
+
+      const offset = req.body.currentpage * 6;
+
+
+      connection.query('SELECT * from Quizzes Where created_by_userid = ? AND quizname = ?  LIMIT ?, 6',
+        [tokenResult.data, req.body.searchquery, offset],
+        function (selectUserQuizzesError, selectUserQuizzesResult) {
+
+          if (selectUserQuizzesError) throw res.send({
+            error: selectUserQuizzesError
+
+          });
+
+          connection.query('SELECT COUNT(*) AS quizcount FROM (SELECT quizname and difficulty from Quizzes Where created_by_userid = ? AND quizname = ?) x',
+            [tokenResult.data, req.body.searchquery],
+            function (selectUserQuizCountError, selectUserQuizCountResult) {
+
+              if (selectUserQuizCountError) throw res.send({
+                error: selectUserQuizCountError
+
+              });
+
+              res.send({
+                results: selectUserQuizzesResult,
+                quizsearchcount: selectUserQuizCountResult
+              });
+
+            });
+
+        });
+
+    } else {
+
+      res.send({
+        error: tokenErr
+      });
+
+    };
+
+  });
+
+});
 
 
 

@@ -1,28 +1,30 @@
 import { useState } from "react";
 import useToken from '../App/useToken';
 import Fetch from '../res/FetchFunc'
-
+import { Link } from 'react-router-dom';
 
 
 export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
 
-
-    console.log(quizname, quizdifficulty, quizlength)
     const { token } = useToken();
-    const [questionname, setQuestionName] = useState("");
-    const [incorrect1, setIncorrect1] = useState("");
-    const [incorrect2, setIncorrect2] = useState("");
-    const [incorrect3, setIncorrect3] = useState("");
-    const [correct, setCorrect] = useState("");
+    const [questionname, setQuestionName] = useState();
+    const [incorrect1, setIncorrect1] = useState();
+    const [incorrect2, setIncorrect2] = useState();
+    const [incorrect3, setIncorrect3] = useState();
+    const [correct, setCorrect] = useState();
     const [questionset, SetQuestionSet] = useState([])
     const [questionnumber, setQuestionNumber] = useState(0);
 
 
-    async function insertDataClearForm() {
-        if (quizlength > questionnumber) {
+    async function handleSubmit(event) {
+        //needed else the form triggers component rerender
+        event.preventDefault();
+
 
             setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+
+
             const quizdata = {
                 Quizname: quizname,
                 Difficulty: quizdifficulty,
@@ -37,75 +39,97 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
                 }
             }
 
-            SetQuestionSet(questionset => [...questionset, quizdata])
+            SetQuestionSet(questionset => [...questionset, quizdata]);
 
-            // TODO reset all fields
+           document.getElementById("QuestionForm").reset();
+
+
+           // needs to be done here so it doewsn't duplicate question data by rerendering component
+
+           if(questionnumber===quizlength-1) {
+
+           try {
+
+               let response = await Fetch('http://localhost:8080/insertquiz', { questionset, token });
+               
+               if (response.error) {
+
+                  alert("there was an error inserting your quiz")
+
+              } else if (response.QuizStatus === "Inserted") {
+
+               }
+
+          } catch {
+                     alert("A server communication error occurred")
+
+          }
 
         }
-        else {
 
-            try {
-                var response = await Fetch('http://localhost:8080/insertquiz', { questionset, token });
 
-                if (response.error) {
+           }
+    
+    
 
-                    alert("there was an error inserting your quiz")
-
-                } else if (response.QuizStatus === "Inserted") {
-
-                }
-            } catch {
-
-                alert("A server communication error occurred")
-
-            }
-        }
-    }
+        
 
 
 
-    console.log(questionset)
+console.log(questionset)
+    if (quizlength > questionnumber) {
 
-    //TODO presence check validation
-
-    while (quizlength > questionnumber) {
         return (
-            <><div>
-                <p>What will be the name of your questionname</p>
-                <input type="text" onChange={e => setQuestionName(e.target.value)} />
+            <div>
+
+                <form id="QuestionForm" className='flex flex-col' onSubmit={e => handleSubmit(e)} >
+                    <h1 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Question {questionnumber + 1} </h1>
+
+                    <input required className=' text-xl text-gray-base w-6/12  h-8   mx-auto 
+                               p-5 px-4  border-2 border-purple-400 rounded-lg bg-transparent outline-none
+                                mb-2 ' type="text" onChange={e => setQuestionName(e.target.value)} />
+
+                    <div className="justify-items-center  my-16 grid grid-cols-2 ">
+                        <div className=" bg-gradient-to-br from-purple-700 to-purple-400 w-11/12 h-64  shadow-lg    rounded-lg  justify-center flex flex-col">
+                            <p className="text-white text-center p-10 text-3xl font-bold">Incorrect option 1:</p>
+                            <input required className="text-black  w-6/12 mx-auto rounded-lg" type="text" onChange={e => setIncorrect1(e.target.value)} />
+                        </div>
+
+                        <div className=" bg-gradient-to-br from-purple-700 to-purple-400 w-11/12 h-64    shadow-lg  rounded-lg justify-center flex flex-col " >
+                            <p className="text-white text-center p-10 text-3xl font-bold">Incorrect option 2:</p>
+                            <input required className="text-black   w-6/12 mx-auto rounded-lg" type="text" onChange={e => setIncorrect2(e.target.value)} />
+                        </div>
+
+                        <div className=" bg-gradient-to-br from-purple-400 to-purple-700 w-11/12 h-64 mt-5  shadow-lg    rounded-lg justify-center flex flex-col ">
+                            <p className="text-white text-center p-10 text-3xl font-bold">Incorrect option 3:</p>
+                            <input required className="text-black   w-6/12 mx-auto rounded-lg" type="text" onChange={e => setIncorrect3(e.target.value)} />
+                        </div>
+
+                        <div className=" bg-gradient-to-br from-purple-400 to-purple-700 w-11/12 h-64  mt-5 rounded-lg shadow-lg justify-center flex flex-col ">
+                            <p className="text-white text-center p-10 text-3xl font-bold">Correct option:</p>
+                            <input required className="text-black   w-6/12 mx-auto rounded-lg" type="text" onChange={e => setCorrect(e.target.value)} />
+                        </div>
+
+                    </div>
+                    <button type="submit" className='mx-auto bg-purple-500 rounded-md py-1 px-5 w-60 h-24 text-2xl text-white font-bold'>Next Question</button>
+                </form>
+
             </div>
-                <div>
-                    <p>What will be the first incorrect option</p>
-                    <input type="text" onChange={e => setIncorrect1(e.target.value)} />
-                </div>
-                <div>
-                    <p>What will be the second incorrect {quizname}</p>
-                    <input type="text" onChange={e => setIncorrect2(e.target.value)} />
-                </div>
-                <div>
-                    <p>What will be the third incorrect option</p>
-                    <input type="text" onChange={e => setIncorrect3(e.target.value)} />
-                </div>
-                <div>
-                    <p>What will be the correct option</p>
-                    <input type="text" onChange={e => setCorrect(e.target.value)} />
-                </div>
-                <div className="insertQuizdatabutton">
-                    <button onClick={e => insertDataClearForm()} >Submit</button>
-                </div></>
 
 
         )
-    }
+    } 
+    
+    else {
+    
+    
+    return (<div  className='flex flex-col'>
 
-
-    insertDataClearForm()
-
-    return (<><div>
-
-        <h2>WELL DONE</h2>
-    </div></>
+        <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz created</h2>
+        <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View your quiz here</Link>
+    </div>
     )
+}
 }
 
 
