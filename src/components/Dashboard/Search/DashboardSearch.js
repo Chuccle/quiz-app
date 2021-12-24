@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import useToken from '../../App/useToken';
-import Dashboard from '../../Dashboard/Dashboard.js';
 import Fetch from '../../res/FetchFunc.js';
-import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router';
 
-export default function DashboardResults({ searchquery }) {
+export default function DashboardResults() {
+  
+  let { searchquery } = useParams();
 
     const [data, SetData] = useState();
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
-    const [goback, setGoBack] = useState(false);
-    const [currentsearchquery, SetCurrentSearchQuery] = useState(searchquery);
-    const [newsearch, SetNewSearch] = useState(false);
+
     const [newsearchquery, SetNewSearchQuery] = useState();
 
     const { token } = useToken();
@@ -26,7 +25,7 @@ export default function DashboardResults({ searchquery }) {
 
             try {
 
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, currentsearchquery });
+                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, searchquery });
 
 
                 if (userStats.error) {
@@ -66,24 +65,11 @@ export default function DashboardResults({ searchquery }) {
         SetStatsfunc();
 
        
-    }, [token, currentpage, currentsearchquery])
+    }, [token, currentpage, searchquery])
 
-   
-    if (newsearch) {
-
-        SetCurrentSearchQuery(newsearchquery);
-       
-        SetNewSearch(false);
+  
 
 
-    }
-
-
-    if (goback) {
-
-        return <Dashboard />
-
-    }
 
 
 
@@ -118,22 +104,22 @@ export default function DashboardResults({ searchquery }) {
   
  if (currentpage === 0) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+    return <button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </button> + currentpage
   }
 
   //middle pages
   
   else if (currentpage < pages) {
 
-    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
+    return <><button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </button><div />
+      <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button></> + currentpage
 
 
 //last page
 
 } else if (currentpage === pages) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
+    return <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button> + currentpage;
 
   }
 
@@ -161,14 +147,16 @@ export default function DashboardResults({ searchquery }) {
 
             <div className='flex flex-col'>
 
-            <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {currentsearchquery} </h1>
-            <button  className='rounded-xl px-2 py-1 w-20 align self-center my-5  bg-purple-600 text-white' onClick={e => setGoBack(true)}> Go Back</button>
+            <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {searchquery} </h1>
+            <label className=' m-5 text-xl  box-content  text-center flex-col'>
+            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white  ' to={`/dashboard`}>Go Back</Link>
+          </label>
             <div className=' justify-center  border-2 border-black  flex  ' >
             <label  className=' m-5 text-xl  box-content class justify-center flex'>
               <p className='m-2'>Search for another quiz:</p>
               <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
               <div className='m-1'/>
-              <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNewSearch(true)}>Submit</button>
+              <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/dashboard/dashboardsearch=${newsearchquery}`}>Search</Link>
             </label>
             </div>
             <table className="min-w-full text-center">
@@ -191,7 +179,7 @@ export default function DashboardResults({ searchquery }) {
                       <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}%</td>
                       <td className="px-10 py-6 whitespace-nowrap text-xl font-bold font-helvetica-neue text-white" >
   
-                        <Link className='rounded-md px-2 py-1  bg-purple-600 hover:bg-white  transition duration-300 hover:text-purple-600 ' to={`quiz/quizid=${rowdata[0]}`}>Start</Link>
+                        <Link className='rounded-md px-2 py-1  bg-purple-600 hover:bg-white  transition duration-300 hover:text-purple-600 ' to={`/quiz/quizid=${rowdata[0]}`}>Start</Link>
   
                       </td>
                     </tr>

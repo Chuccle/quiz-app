@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import Fetch from '../res/FetchFunc';
 import useToken from '../App/useToken';
-import { Button } from 'react-bootstrap';
 
-import LeaderboardSearch from './Search/LeaderboardSearch.js';
+import { Link } from 'react-router-dom';
 
 
 export default function Leaderboards() {
@@ -13,7 +12,6 @@ export default function Leaderboards() {
   const [data, SetData] = useState();
   const [currentpage, SetCurrentPage] = useState(0);
   const [leaderboardcount, SetLeaderboardCount] = useState();
-  const [nextpage, SetNextPage] = useState(false);
   const [searchquery, SetSearchQuery] = useState(false);
 
   const { token } = useToken();
@@ -96,17 +94,17 @@ export default function Leaderboards() {
 
     if (currentpage === 0) {
 
-        return <Button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </Button>;
+        return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </button>;
     }
 
     else if (currentpage < pages) {
 
-        return <><Button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </Button><div />
-            <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button></>
+        return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
+            <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
 
     } else if (currentpage === pages) {
 
-        return <Button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </Button>;
+        return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
 
     }
 
@@ -114,14 +112,7 @@ export default function Leaderboards() {
 }
 
 
- // ConditionalButtons(3, leaderboardcount, currentpage)
-
- //if Nextpage is true, then pass setToken prop to Leaderboardsearch component
- if (nextpage) {
-
-    return <LeaderboardSearch searchquery={searchquery}></LeaderboardSearch>
-
-  }
+  
 
 
 
@@ -137,7 +128,7 @@ if (data) {
   <p className='m-2'>Search for a user:</p>
   <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
   <div className='m-1'/>
-  <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNextPage(true)}>Submit</button>
+  <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/leaderboard/leaderboardsearch=${searchquery}`}>Search</Link>
 </label>
 </div>
 <table className="min-w-full text-center table-auto">

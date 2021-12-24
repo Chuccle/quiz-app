@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useToken from '../App/useToken';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
-import DashboardSearch from './Search/DashboardSearch';
+
 
 
 export default function Dashboard() {
@@ -11,7 +11,6 @@ export default function Dashboard() {
   const [name, SetName] = useState();
   const [currentpage, SetCurrentPage] = useState(0);
   const [quizcount, SetQuizCount] = useState();
-  const [nextpage, SetNextPage] = useState(false);
   const [searchquery, SetSearchQuery] = useState(false);
 
   const { token } = useToken();
@@ -104,13 +103,7 @@ export default function Dashboard() {
   }
 
 
-  if (nextpage) {
 
- 
-
-    return <DashboardSearch searchquery={searchquery}></DashboardSearch>
-
-  }
 
 
   //This as a buffer check to ensure that data is defined????
@@ -140,7 +133,7 @@ export default function Dashboard() {
             <p className='m-2'>Search for a quiz:</p>
             <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
             <div className='m-1'/>
-            <button className='rounded-xl px-2 py-1  bg-purple-600 text-white' onClick={e => SetNextPage(true)}>Submit</button>
+            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white' to={`/dashboard/dashboardsearch=${searchquery}`}>Search</Link>
           </label>
           </div>
           <table className="text-center">
