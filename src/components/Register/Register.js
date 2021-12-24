@@ -22,11 +22,11 @@ export default function Register({ setToken }) {
 
 
     if (!username && password) {
-      console.log('Please enter Username and Password!');
+      alert('Please enter Username and Password!');
       return false;
     }
     else if (password !== passwordCompare) {
-      console.log('Please reenter passwords!');
+      alert('Please reenter passwords!');
       return false;
     }
     else {

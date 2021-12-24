@@ -1,25 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import useToken from '../../App/useToken';
 import { useParams} from 'react-router';
 import { Link } from 'react-router-dom';
 //import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
 import QuizOperations from '../res/QuizOperations';
-import QuizManager from '../QuizManager';
 import QuestionManager from '../QuestionManager/QuestionManager.js';
+import lodashSet from 'lodash.set';
 
 export default function DashboardResults() {
 
     let { searchquery } = useParams();
    
     
-    const [data, SetData] = useState();
+;
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
-    const [goback, setGoBack] = useState(false);
-    const [newquizname, SetNewQuizName] = useState(); 
+    const [newquizname, SetNewQuizName] = useState({key: '', value: ''}); 
     const [newsearchquery, SetNewSearchQuery] = useState();
     const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
+    
+    const [test, dispatch] = useReducer((state, action) => {
+        
+        switch (action.type) {
+            case 'SET_DATA':
+                return [
+
+                    ...state,
+
+                    {
+                        quizid: action.quizid,
+                        quizname: action.quizname,
+                        difficulty: action.difficulty,
+
+                    }
+                ];
+            case 'RESET_DATA':
+                return [];
+            case 'UPDATE_QUIZ_NAME':
+
+                // not fun needs a slice method because it pushes a duplicate element to state array
+
+                return state.slice(0, state.length, lodashSet(state[action.key], 'quizname', action.quizname))
+
+            case 'UPDATE_QUIZ_DIFFICULTY':
+
+                // not fun needs a slice method because it pushes a duplicate element to state array
+
+                return state.slice(0, state.length, lodashSet(state[action.key], 'difficulty', action.difficulty))
+
+            case 'REMOVE_QUIZ':
+                // Will return every element except the one referenced by action.key {redundant} is needed to access second argumanet of .filter method
+                return state.filter((redundant, index) => { return (index !== action.index) })
+
+            default:
+                return state;
+        }
+    }, []);
+   
     const { token } = useToken();
 
     
@@ -56,9 +94,25 @@ export default function DashboardResults() {
 
                     
 
-                    SetData(QuizArray);
                     SetQuizCount(userStats.quizsearchcount[0].quizcount);
 
+                    for (var i = 0; i < QuizArray.length; i++) {
+                    
+                        dispatch(
+
+                            {
+
+                                type: 'SET_DATA',
+                                quizid: QuizArray[i][0],
+                                quizname: QuizArray[i][1],
+                                difficulty: QuizArray[i][2],
+
+                            }
+
+
+                        );
+
+                    };
 
                 }
 
@@ -81,14 +135,6 @@ export default function DashboardResults() {
         return <QuestionManager quizid={questionmanagerpage[1]}></QuestionManager>
  
      }
-
-
-
-    if (goback) {
-
-        return <QuizManager />
-
-    }
 
 
 
@@ -147,29 +193,63 @@ export default function DashboardResults() {
 
 
     //This as a buffer check to ensure that data is defined.
-    if (data) {
+    if (test) {
 
-        //array cleanup has to be done here for some reason and not in async function else bugs
-        data.forEach(element => {
 
-            if (element[3] == null) {
 
-                element[3] = 0;
+        async function QuizUpdateHandler(address, token, key, optionalData,  actionType, index, extra) {
 
+            await QuizOperations(address, token, key, optionalData);
+    
+            switch (actionType) {
+    
+                case "quiznameupdate":
+                
+                // Condition needed because newquizname is shared by all quiz elements
+               
+                if (extra === index){ 
+                    
+                    dispatch({
+                      
+                        type: 'UPDATE_QUIZ_NAME',
+                        key: index,
+                        quizname: optionalData
+                    
+                    });
+                }
+                    break;
+    
+                case "quizdifficultyupdate":
+    
+                    dispatch({
+                      
+                        type: 'UPDATE_QUIZ_DIFFICULTY',
+                        key: index,
+                        difficulty: optionalData,
+                    
+                    });
+    
+                    break;
+    
+                case "quizremove":
+                    
+                dispatch({
+                    
+                    type: 'REMOVE_QUIZ',
+                    index: index
+                    
+                });
+                    
+                    break;
+    
+                default:
+                    
+                console.log("error");
+    
             }
-
-        });
-
-      async function QuizUpdateHandler(address, token, key, optionalData) {
-
-       await QuizOperations(address, token, key, optionalData) 
-        
-        
-        
-        window.location.reload()
-
-
-       }
+      
+        }
+    
 
         return (
 
@@ -177,10 +257,13 @@ export default function DashboardResults() {
 
 
                     <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {searchquery}</h1>
-
+                    <label  className=' m-5 text-xl  box-content  text-center flex-col'>
+                    <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white  ' to={`/quizmanager`}>Go Back</Link>
+                    </label>
                     <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
 
                     <div className=' justify-center  border-2 border-black  flex  ' >
+    
           <label  className=' m-5 text-xl  box-content class justify-center flex'>
             <p className='m-2'>Search for a quiz:</p>
             <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
@@ -190,13 +273,13 @@ export default function DashboardResults() {
           </div>
                
 
-                <table className="text-center">
+          <table className="text-center">
                     <thead className="border-b bg-purple-600">
 
                         <tr>
                             <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Change Quiz Name</th>
 
-                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white"scope="col">Change Difficulty</th>
+                            <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Change Difficulty</th>
 
                             <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Edit Questions</th>
 
@@ -212,33 +295,33 @@ export default function DashboardResults() {
 
                             // scalable
 
-                            data.map(function (rowdata) {
+                            test.map(function (rowdata, index) {
 
-                                return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+                                return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata.quizid}>
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-                                        <label>{rowdata[1]}</label>
+                                        <label>{rowdata.quizname}</label>
 
                                         <div />
 
-                                        <input onChange={e => SetNewQuizName(e.target.value)}></input>
+                                        <input onChange={e => SetNewQuizName({key:index,  value:e.target.value})}></input>
 
                                         <div />
 
-                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata[0], newquizname)}>Rename</button>
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata.quizid, newquizname.value, "quiznameupdate", index, newquizname.key)}>Rename</button>
 
                                     </td  >
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-                                        <label>{rowdata[2]}</label>
+                                        <label>{rowdata.difficulty}</label>
 
                                         <div />
 
-                                        <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata[0], e.target.value)}>
+                                        <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata.quizid, e.target.value, "quizdifficultyupdate", index)}>
 
-                                            <option value="none">...</option>
+                                            <option value={rowdata.difficulty}>...</option>
 
                                             <option value="Easy">Easy</option>
 
@@ -252,13 +335,13 @@ export default function DashboardResults() {
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">
 
-                                        <button onClick={e => SetQuestionManagerPage([true, rowdata[0]])}>View</button>
+                                        <button onClick={e => SetQuestionManagerPage([true, rowdata.quizid])}>View</button>
 
                                     </td>
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata[0])}>Remove</button>
+                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata.quizid, null, "quizremove", index)}>Remove</button>
 
                                     </td>
 

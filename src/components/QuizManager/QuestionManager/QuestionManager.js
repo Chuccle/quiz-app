@@ -113,8 +113,6 @@ export default function QuestionManager({ quizid }) {
 
         };
 
-        // console.log(quizid)
-
 
         function QuestionOptionChangeHandler(index, newquestionoption) {
 
@@ -151,7 +149,6 @@ export default function QuestionManager({ quizid }) {
             // }
 
         }
-        console.log(questiondata.questions[currentQuestion].Questionid)
 
         return (
             <div className='app'>

@@ -47,7 +47,7 @@ export default function DashboardResults({ searchquery }) {
                     });
 
 
-                    console.log(StatsArray);
+
 
                     SetData(StatsArray);
                     SetQuizCount(userStats.quizsearchcount[0].quizsearchcount);
@@ -68,7 +68,6 @@ export default function DashboardResults({ searchquery }) {
        
     }, [token, currentpage, currentsearchquery])
 
-    console.log(quizcount)
    
     if (newsearch) {
 

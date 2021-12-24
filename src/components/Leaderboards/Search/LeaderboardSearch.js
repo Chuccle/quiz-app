@@ -65,7 +65,6 @@ export default function LeaderboardSearch({ searchquery }) {
 
     }, [token, currentpage, currentsearchquery])
 
-    console.log(leaderboardcount)
 
     if (newsearch) {
 

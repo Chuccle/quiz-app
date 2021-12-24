@@ -97,13 +97,14 @@ export default function Quiz() {
 				<div className='app'>
 					{showScore ?
 						(
+							<div  className='flex flex-col'>
 
-							<div className='score-section'>
-								You scored {results}% ({(score)}/{questiondata.questions.length})
-								<div>
-									<Link to="/dashboard">Back to dashboard</Link>
-								</div>
-							</div>
+        <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>You scored {results}% ({(score)}/{questiondata.questions.length})</h2>
+        <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to="/dashboard">View your quiz here</Link>
+    </div>
+
+							
+								
 
 						) : (
 							<>
