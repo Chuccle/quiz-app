@@ -1,20 +1,27 @@
 const mysql = require('mysql');
 
-//Connection pooling for large scale implementation?
+require('dotenv').config({
+	path: '../src/.env'
+  })
+
+
+  //Connection pooling 
 
 const connection = mysql.createPool({
-	host: 'localhost',
-	user: 'root',
-	password: '',
-	database: 'nodelogin'
+	host: process.env.HOST,
+	user: process.env.USER,
+	password: process.env.PASSWORD,
+	database: process.env.DATABASE,
 });
 
 
+// session pooling
+
 //const connection = mysql.createConnection({
-//	host: 'localhost',
-//	user: 'root',
-//	password: '',
-//	database: 'nodelogin'
+	// host: process.env.HOST,
+	// user: process.env.USER,
+	// password: process.env.PASSWORD,
+	// database: process.env.DATABASE,
 //});
 
 module.exports = connection;
