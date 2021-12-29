@@ -4,7 +4,7 @@
 
 export default async function Fetch(address, Data) {
 
-  return fetch(address, {
+  return fetch('http://localhost:8080'+address, {
     method: 'POST',
 
     headers: {

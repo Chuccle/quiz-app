@@ -32,7 +32,7 @@ export default function QuestionManager({ quizid }) {
         async function getquestiondata() {
 
 
-            const question = await Fetch('http://localhost:8080/retrievequestions', { token, quizid })
+            const question = await Fetch('/retrievequestions', { token, quizid })
 
 
             SetQuestionData(question)
@@ -67,31 +67,31 @@ export default function QuestionManager({ quizid }) {
             if (newquestion) {
 
 
-                QuizOperations('http://localhost:8080/updateuserquestion', token, questiondata.questions[currentQuestion].Questionid, newquestion, quizid)
+                QuizOperations('/updateuserquestion', token, questiondata.questions[currentQuestion].Questionid, newquestion, quizid)
 
             }
 
             if (newquestionoption1) {
 
-                QuizOperations('http://localhost:8080/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Correctid, newquestionoption1, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Correctid, newquestionoption1, questiondata.questions[currentQuestion].Questionid)
 
             }
 
             if (newquestionoption2) {
 
-                QuizOperations('http://localhost:8080/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect1id, newquestionoption2, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect1id, newquestionoption2, questiondata.questions[currentQuestion].Questionid)
 
             }
 
             if (newquestionoption3) {
 
-                QuizOperations('http://localhost:8080/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect2id, newquestionoption3, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect2id, newquestionoption3, questiondata.questions[currentQuestion].Questionid)
 
             }
 
             if (newquestionoption4) {
 
-                QuizOperations('http://localhost:8080/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect3id, newquestionoption4, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect3id, newquestionoption4, questiondata.questions[currentQuestion].Questionid)
 
             }
 

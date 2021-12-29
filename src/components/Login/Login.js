@@ -25,7 +25,7 @@ export default function Login({ setToken }) {
     if (username && password) {
 
       try {
-        const token = await Fetch('http://localhost:8080/login', {
+        const token = await Fetch('/login', {
           username,
           password
         });

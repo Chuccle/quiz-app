@@ -50,7 +50,7 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
            try {
 
-               let response = await Fetch('http://localhost:8080/insertquiz', { questionset, token });
+               let response = await Fetch('/insertquiz', { questionset, token });
                
                if (response.error) {
 
