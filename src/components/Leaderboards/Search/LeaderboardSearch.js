@@ -28,7 +28,7 @@ export default function LeaderboardSearch() {
 
       try {
 
-        const userStats = await Fetch('http://localhost:8080/finduserrank', { token, currentpage, searchquery });
+        const userStats = await Fetch('/finduserrank', { token, currentpage, searchquery });
 
         if (userStats.error) {
 

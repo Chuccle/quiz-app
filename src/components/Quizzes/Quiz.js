@@ -28,7 +28,7 @@ export default function Quiz() {
 			async function getquestiondata() {
 
 
-				const question = await Fetch('http://localhost:8080/retrievequestions', { token, quizid });
+				const question = await Fetch('/retrievequestions', { token, quizid });
 
 
 
@@ -88,7 +88,7 @@ export default function Quiz() {
 			if (showScore) {
 
 				results = (score / questiondata.questions.length) * 100
-				Fetch('http://localhost:8080/sendresults', { token, results, quizid })
+				Fetch('/sendresults', { token, results, quizid })
 
 			};
 

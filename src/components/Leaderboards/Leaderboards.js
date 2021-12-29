@@ -25,7 +25,7 @@ export default function Leaderboards() {
 
 
       try {
-        const userStats = await Fetch('http://localhost:8080/retrieveleaderboard', { token, currentpage });
+        const userStats = await Fetch('/retrieveleaderboard', { token, currentpage });
 
 
         if (userStats.error) {

@@ -30,7 +30,7 @@ export default function Register({ setToken }) {
       return false;
     }
     else {
-      const token = await Fetch('http://localhost:8080/register', {
+      const token = await Fetch('/register', {
         username,
         password
       });

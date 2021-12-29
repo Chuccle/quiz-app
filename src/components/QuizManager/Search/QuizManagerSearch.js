@@ -68,7 +68,7 @@ export default function DashboardResults() {
 
             try {
 
-                const userStats = await Fetch('http://localhost:8080/finduserquizzes', { token, currentpage, searchquery });
+                const userStats = await Fetch('/finduserquizzes', { token, currentpage, searchquery });
 
 
                 if (userStats.error) {
@@ -329,7 +329,7 @@ export default function DashboardResults() {
 
                                         <div />
 
-                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/updateuserquizname', token, rowdata.quizid, newquizname.value, "quiznameupdate", index, newquizname.key)}>Rename</button>
+                                        <button onClick={e => QuizUpdateHandler('/updateuserquizname', token, rowdata.quizid, newquizname.value, "quiznameupdate", index, newquizname.key)}>Rename</button>
 
                                     </td  >
 
@@ -339,7 +339,7 @@ export default function DashboardResults() {
 
                                         <div />
 
-                                        <select onChange={e => QuizUpdateHandler('http://localhost:8080/updateuserquizdifficulty', token, rowdata.quizid, e.target.value, "quizdifficultyupdate", index)}>
+                                        <select onChange={e => QuizUpdateHandler('/updateuserquizdifficulty', token, rowdata.quizid, e.target.value, "quizdifficultyupdate", index)}>
 
                                             <option value={rowdata.difficulty}>...</option>
 
@@ -361,7 +361,7 @@ export default function DashboardResults() {
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-                                        <button onClick={e => QuizUpdateHandler('http://localhost:8080/removeuserquiz', token, rowdata.quizid, null, "quizremove", index)}>Remove</button>
+                                        <button onClick={e => QuizUpdateHandler('/removeuserquiz', token, rowdata.quizid, null, "quizremove", index)}>Remove</button>
 
                                     </td>
 

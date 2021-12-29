@@ -28,7 +28,7 @@ function App() {
 
       try {
 
-        const response = await Fetch('http://localhost:8080/auth', { token });
+        const response = await Fetch('/auth', { token });
         
         //     console.log(response)
 

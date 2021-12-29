@@ -25,7 +25,7 @@ export default function DashboardResults() {
 
             try {
 
-                const userStats = await Fetch('http://localhost:8080/findquiz', { token, currentpage, searchquery });
+                const userStats = await Fetch('/findquiz', { token, currentpage, searchquery });
 
 
                 if (userStats.error) {
