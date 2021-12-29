@@ -5,11 +5,18 @@ const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const app = express();
+const rateLimit = require('express-rate-limit').default //.default is needed to get this to work
 
+const limiter = new rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minutes
+	max: 50, // Limit each IP to 50 requests per `window` (here, per 1 minutes)
+});
 
 require('dotenv').config({
-  path: '../src/.env'
+  path: '../../src/.env'
 })
+
+app.use(limiter);
 
 app.use(cors());
 

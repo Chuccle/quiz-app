@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 
 require('dotenv').config({
-	path: '../src/.env'
+	path: '../../src/.env'
   })
 
 
