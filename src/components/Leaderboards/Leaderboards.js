@@ -21,10 +21,13 @@ export default function Leaderboards() {
 
 
     async function SetStatsfunc() {
+
+
       const StatsArray = [];
 
 
       try {
+
         const userStats = await Fetch('/retrieveleaderboard', { token, currentpage });
 
 
@@ -50,7 +53,7 @@ export default function Leaderboards() {
 
 
           SetData(StatsArray);
-        
+
           SetLeaderboardCount(userStats.leaderboardcount[0].count)
 
 
@@ -70,94 +73,94 @@ export default function Leaderboards() {
 
   }, [token, currentpage]);
 
-  
+
   function ConditionalButtons() {
 
     let pages;
 
     if (leaderboardcount <= 3) {
 
-        return null;
+      return null;
 
     }
 
     else if (leaderboardcount % 3 === 0) {
 
-        pages = (leaderboardcount / 3) - 1;
+      pages = (leaderboardcount / 3) - 1;
 
     } else {
 
-        pages = Math.trunc(leaderboardcount / 3);
+      pages = Math.trunc(leaderboardcount / 3);
     }
 
 
 
     if (currentpage === 0) {
 
-        return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </button>;
+      return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button>;
     }
 
     else if (currentpage < pages) {
 
-        return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
-            <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
+      return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
+        <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
 
     } else if (currentpage === pages) {
 
-        return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
+      return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
 
     }
 
 
-}
-
-
-  
+  }
 
 
 
-if (data) {
+
+
+
+  if (data) {
 
     return (
       <>
- <div className='flex flex-col'>
+        <div className='flex flex-col'>
 
-<h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Top users</h1>
-<div className=' justify-center  border-2 border-black  flex  ' >
-<label  className=' m-5 text-xl  box-content class justify-center flex'>
-  <p className='m-2'>Search for a user:</p>
-  <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
-  <div className='m-1'/>
-  <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/leaderboard/leaderboardsearch=${searchquery}`}>Search</Link>
-</label>
-</div>
-<table className="min-w-full text-center table-auto">
-  <thead className="border-b bg-purple-600">
-    <tr >
-      <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Rank</th>
-      <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Username</th>
-      <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quizzes completed</th>
+          <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Top users</h1>
+          <div className=' justify-center  border-2 border-black  flex  ' >
+            <label className=' m-5 text-xl  box-content class justify-center flex'>
+              <p className='m-2'>Search for a user:</p>
+              <input className='border-2 border-black rounded-md' type="text" onChange={e => SetSearchQuery(e.target.value)} />
+              <div className='m-1' />
+              <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/leaderboard/leaderboardsearch=${searchquery}`}>Search</Link>
+            </label>
+          </div>
+          <table className="min-w-full text-center table-auto">
+            <thead className="border-b bg-purple-600">
+              <tr >
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Rank</th>
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Username</th>
+                <th className="px-10 py-6 whitespace-nowrap text-2xl font-bold text-white" scope="col">Quizzes completed</th>
 
-    </tr>
+              </tr>
 
-  </thead>
-  <tbody>
-    {
-      // much better and scales to the amount of rows sent
-      data.map(function (rowdata) {
-        return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
-          <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[0]}</td>
-          <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
-          <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}</td>
-        </tr>
-      })
-    }
-  </tbody>
-</table>
-<ConditionalButtons />
-</div>
-</>
-      
+            </thead>
+            <tbody>
+              {
+                // much better and scales to the amount of rows sent
+                data.map(function (rowdata) {
+                  return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" > {rowdata[0]}</td>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
+                    <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}</td>
+                  </tr>
+                })
+              }
+            </tbody>
+          </table>
+          <ConditionalButtons />
+        </div>
+      </>
+
 
 
     );

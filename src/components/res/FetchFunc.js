@@ -4,7 +4,8 @@
 
 export default async function Fetch(address, Data) {
 
-  return fetch('https://chuccle-quizapp-backend.herokuapp.com'+address, {
+  return fetch('https://chuccle-quizapp-backend.herokuapp.com' + address, {
+
     method: 'POST',
 
     headers: {
@@ -14,4 +15,5 @@ export default async function Fetch(address, Data) {
     body: JSON.stringify(Data)
   })
     .then(data => data.json())
+    .catch(err => console.log(err))
 }
