@@ -45,6 +45,7 @@ export default function Dashboard() {
           });
 
           SetData(StatsArray);
+
           SetName(userStats.name[0].username);
           SetQuizCount(userStats.quizcount[0].count);
 
@@ -61,6 +62,7 @@ export default function Dashboard() {
 
   }, [token, currentpage])
 
+  console.log(data)
 
   function ConditionalButtons() {
 
@@ -129,12 +131,12 @@ export default function Dashboard() {
           <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Welcome to your dashboard: {name}</h1>
           <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz</h5>
           <div className=' justify-center  border-2 border-black  flex  ' >
-          <label  className=' m-5 text-xl  box-content class justify-center flex'>
-            <p className='m-2'>Search for a quiz:</p>
-            <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetSearchQuery(e.target.value)} />
-            <div className='m-1'/>
-            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white' to={`/dashboard/dashboardsearch=${searchquery}`}>Search</Link>
-          </label>
+            <label className=' m-5 text-xl  box-content class justify-center flex'>
+              <p className='m-2'>Search for a quiz:</p>
+              <input className='border-2 border-black rounded-md' type="text" onChange={e => SetSearchQuery(e.target.value)} />
+              <div className='m-1' />
+              <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white' to={`/dashboard/dashboardsearch=${searchquery}`}>Search</Link>
+            </label>
           </div>
           <table className="text-center">
             <thead className="border-b bg-purple-600">
@@ -149,8 +151,8 @@ export default function Dashboard() {
             <tbody>
               {
                 // much better and scales to the amount of rows sent
-                data.map(function (rowdata) {
-                  return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={rowdata[0]}>
+                data.map(function (rowdata, index) {
+                  return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-purple-200" key={index}>
                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[1]}</td>
                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >{rowdata[2]}</td>
                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}%</td>

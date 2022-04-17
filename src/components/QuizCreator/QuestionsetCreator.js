@@ -17,66 +17,69 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     const [questionnumber, setQuestionNumber] = useState(0);
 
 
-    async function handleSubmit(event) {
+    async function postQuestionset() {
+
+
+
+
+        try {
+
+            let response = await Fetch('/insertquiz', { questionset, token });
+
+            if (response.error) {
+
+                alert("there was an error inserting your quiz")
+
+            } else if (response.QuizStatus === "Inserted") {
+
+            }
+
+        } catch {
+            alert("A server communication error occurred")
+
+        }
+
+    }
+
+
+
+    function handleSubmit(event) {
         //needed else the form triggers component rerender
         event.preventDefault();
 
 
-            setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
+        setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1)
 
 
-            const quizdata = {
-                Quizname: quizname,
-                Difficulty: quizdifficulty,
-                Questionset: {
-                    Questionname: questionname,
-                    Options: {
-                        Incorrect1: incorrect1,
-                        Incorrect2: incorrect2,
-                        Incorrect3: incorrect3,
-                        Correct: correct
-                    }
+        const quizdata = {
+            Quizname: quizname,
+            Difficulty: quizdifficulty,
+            Questionset: {
+                Questionname: questionname,
+                Options: {
+                    Incorrect1: incorrect1,
+                    Incorrect2: incorrect2,
+                    Incorrect3: incorrect3,
+                    Correct: correct
                 }
             }
-
-            SetQuestionSet(questionset => [...questionset, quizdata]);
-
-           document.getElementById("QuestionForm").reset();
-
-
-           // needs to be done here so it doewsn't duplicate question data by rerendering component
-
-           if(questionnumber===quizlength-1) {
-
-           try {
-
-               let response = await Fetch('/insertquiz', { questionset, token });
-               
-               if (response.error) {
-
-                  alert("there was an error inserting your quiz")
-
-              } else if (response.QuizStatus === "Inserted") {
-
-               }
-
-          } catch {
-                     alert("A server communication error occurred")
-
-          }
-
         }
 
+        SetQuestionSet(questionset => [...questionset, quizdata]);
 
-           }
-    
-    
-
-        
+        document.getElementById("QuestionForm").reset();
 
 
+        // needs to be done here so it doewsn't duplicate question data by rerendering component
 
-console.log(questionset)
+        console.log(quizlength)
+        console.log(questionset.length)
+    }
+
+
+
+
+    console.log(questionset)
     if (quizlength > questionnumber) {
 
         return (
@@ -118,18 +121,19 @@ console.log(questionset)
 
 
         )
-    } 
-    
-    else {
-    
-    
-    return (<div  className='flex flex-col'>
+    }
 
-        <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz created</h2>
-        <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View your quiz here</Link>
-    </div>
-    )
-}
+    else {
+
+        postQuestionset()
+
+        return (<div className='flex flex-col'>
+
+            <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz created</h2>
+            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View your quiz here</Link>
+        </div>
+        )
+    }
 }
 
 
