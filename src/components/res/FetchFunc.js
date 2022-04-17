@@ -4,7 +4,7 @@
 
 export default async function Fetch(address, Data) {
 
-  return fetch('http://localhost:8080' + address, {
+  return fetch('https://chuccle-quizapp-backend.herokuapp.com' + address, {
 
     method: 'POST',
 
