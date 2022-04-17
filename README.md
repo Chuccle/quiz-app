@@ -32,18 +32,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Deploying backend
 
-This repository contains a SQL schema (db.js) and a backend nodejs server (server.js) 
-
-1. You are going to want to run the SQL schema in a database and it will construct all the fields you need. 
-
-IMPORTANT: You are also going to need to modify the .env to have a much more secure (ideally hashed) JWT secret
-
-2. You will need to reconfigure the .env file in the /src directory to your database configuration details.
-
-3. Inside src\components\res\FetchFunc.js replace 'http://localhost:8080' with the URL of your backend.
-
-4. Inside src\server\server.js customise the limiter constant to include the desired values 
-
-5. Deploy server.js by going \quiz-app\src\server and run 'node server.js'
+This repository is the front-end of a quizapp application, to change it to your backend you can simply change the domain inside the FetchFunc.js component
 
 
