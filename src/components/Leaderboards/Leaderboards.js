@@ -97,7 +97,7 @@ export default function Leaderboards() {
 
     if (currentpage === 0) {
 
-      return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </button>;
+      return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button>;
     }
 
     else if (currentpage < pages) {

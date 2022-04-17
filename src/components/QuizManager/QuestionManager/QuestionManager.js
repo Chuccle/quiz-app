@@ -52,12 +52,12 @@ export default function QuestionManager({ quizid }) {
 
         const questions = {
             
-            questionText: questiondata.questions[currentQuestion].Questiontext,
+            questionText: questiondata.Questions[currentQuestion].Questiontext,
             answerOptions: [
-                { answerText: questiondata.questions[currentQuestion].Options.Correct, isCorrect: true },
-                { answerText: questiondata.questions[currentQuestion].Options.Incorrect1, isCorrect: false },
-                { answerText: questiondata.questions[currentQuestion].Options.Incorrect2, isCorrect: false },
-                { answerText: questiondata.questions[currentQuestion].Options.Incorrect3, isCorrect: false },
+                { answerText: questiondata.Questions[currentQuestion].Options.Correct, isCorrect: true },
+                { answerText: questiondata.Questions[currentQuestion].Options.Incorrect1, isCorrect: false },
+                { answerText: questiondata.Questions[currentQuestion].Options.Incorrect2, isCorrect: false },
+                { answerText: questiondata.Questions[currentQuestion].Options.Incorrect3, isCorrect: false },
             ],
         }
 
@@ -67,31 +67,31 @@ export default function QuestionManager({ quizid }) {
             if (newquestion) {
 
 
-                QuizOperations('/updateuserquestion', token, questiondata.questions[currentQuestion].Questionid, newquestion, quizid)
+                QuizOperations('/updateuserquestion', token, questiondata.Questions[currentQuestion].Questionid, newquestion, quizid)
 
             }
 
             if (newquestionoption1) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Correctid, newquestionoption1, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Correctid, newquestionoption1, questiondata.Questions[currentQuestion].Questionid)
 
             }
 
             if (newquestionoption2) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect1id, newquestionoption2, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Incorrect1id, newquestionoption2, questiondata.Questions[currentQuestion].Questionid)
 
             }
 
             if (newquestionoption3) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect2id, newquestionoption3, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Incorrect2id, newquestionoption3, questiondata.Questions[currentQuestion].Questionid)
 
             }
 
             if (newquestionoption4) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.questions[currentQuestion].Options.Incorrect3id, newquestionoption4, questiondata.questions[currentQuestion].Questionid)
+                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Incorrect3id, newquestionoption4, questiondata.Questions[currentQuestion].Questionid)
 
             }
 
@@ -101,7 +101,7 @@ export default function QuestionManager({ quizid }) {
 
             const nextQuestion = currentQuestion + 1;
 
-            if (nextQuestion < questiondata.questions.length) {
+            if (nextQuestion < questiondata.Questions.length) {
 
                 SetCurrentQuestion(nextQuestion);
 
@@ -167,7 +167,7 @@ export default function QuestionManager({ quizid }) {
                         <div className='flex flex-col'>
                             <form id='changeAnswer'>
                                 <div className='flex flex-col'>
-                                    <h1 className=' m-5 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.questions.length}</h1>
+                                    <h1 className=' m-5 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.Questions.length}</h1>
                                 
                                     <h1 className=' text-3xl flex justify-center items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>{questions.questionText}</h1>
 

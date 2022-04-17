@@ -55,6 +55,7 @@ export default function Quiz() {
 
 			const question = await Fetch('/retrievequestions', { token, quizid });
 
+			
 
 
 			setQuestionData(question);
@@ -67,18 +68,17 @@ export default function Quiz() {
 	}, [token, quizid]);
 
 
-
 	if (questiondata) {
 
 
 		const questions =
 		{
-			questionText: questiondata.questions[currentQuestion].Questiontext,
+			questionText: questiondata.Questions[currentQuestion].Questiontext,
 			answerOptions: [
-				{ answerText: questiondata.questions[currentQuestion].Options.Correct, isCorrect: true },
-				{ answerText: questiondata.questions[currentQuestion].Options.Incorrect1, isCorrect: false },
-				{ answerText: questiondata.questions[currentQuestion].Options.Incorrect2, isCorrect: false },
-				{ answerText: questiondata.questions[currentQuestion].Options.Incorrect3, isCorrect: false },
+				{ answerText: questiondata.Questions[currentQuestion].Options.Correct, isCorrect: true },
+				{ answerText: questiondata.Questions[currentQuestion].Options.Incorrect1, isCorrect: false },
+				{ answerText: questiondata.Questions[currentQuestion].Options.Incorrect2, isCorrect: false },
+				{ answerText: questiondata.Questions[currentQuestion].Options.Incorrect3, isCorrect: false },
 			],
 		};
 
@@ -94,7 +94,7 @@ export default function Quiz() {
 
 			const nextQuestion = currentQuestion + 1;
 
-			if (nextQuestion < questiondata.questions.length) {
+			if (nextQuestion < questiondata.Questions.length) {
 
 				setCurrentQuestion(nextQuestion);
 
@@ -109,7 +109,7 @@ export default function Quiz() {
 		};
 
 
-		results = (score / questiondata.questions.length) * 100
+		results = (score / questiondata.Questions.length) * 100
 		// assign results after quiz is finished and send it off to our backend 
 
 		return (
@@ -119,7 +119,7 @@ export default function Quiz() {
 
 						<div className='flex flex-col'>
 
-							<h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>You scored {results}% ({(score)}/{questiondata.questions.length})</h2>
+							<h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>You scored {results}% ({(score)}/{questiondata.Questions.length})</h2>
 							<Link onClick={() => postResults()} className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to="/dashboard">To Dashboard</Link>
 						</div>
 
@@ -128,7 +128,7 @@ export default function Quiz() {
 						<>
 							<div className='flex flex-col'>
 
-								<h1 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.questions.length}</h1>
+								<h1 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.Questions.length}</h1>
 
 								<h1 className=' text-3xl flex  i justify-center items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>{questions.questionText}</h1>
 

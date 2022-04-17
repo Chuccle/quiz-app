@@ -69,17 +69,10 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
         document.getElementById("QuestionForm").reset();
 
-
-        // needs to be done here so it doewsn't duplicate question data by rerendering component
-
-        console.log(quizlength)
-        console.log(questionset.length)
     }
 
 
 
-
-    console.log(questionset)
     if (quizlength > questionnumber) {
 
         return (
@@ -125,12 +118,13 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
     else {
 
-        postQuestionset()
+
 
         return (<div className='flex flex-col'>
 
             <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz created</h2>
-            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View your quiz here</Link>
+           
+            <Link onClick={()=>postQuestionset() } className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View and save your quiz here</Link>
         </div>
         )
     }

@@ -4,8 +4,6 @@
 
 export default async function Fetch(address, Data) {
 
-  console.log(address, Data)
-
   return fetch('http://localhost:8080' + address, {
 
     method: 'POST',
@@ -17,4 +15,5 @@ export default async function Fetch(address, Data) {
     body: JSON.stringify(Data)
   })
     .then(data => data.json())
+    .catch(err => console.log(err))
 }
