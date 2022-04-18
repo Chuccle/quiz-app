@@ -30,7 +30,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-## Deploying backend
+## Connecting Back-end
 
 This repository is the front-end of a quizapp application, to change it to your backend you can simply change the domain inside `src\components\res\FetchFunc.js` (replace: `http://localhost:8080` with the URL of your backend).
 
