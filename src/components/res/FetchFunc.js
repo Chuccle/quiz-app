@@ -10,7 +10,7 @@ async function SilentRefresh() {
 
     const userToken = JSON.parse(tokenString);
 
-    const data = await fetch(`http://localhost:8080/silentrefresh`, {
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com/silentrefresh`, {
       credentials: 'include',
 
       method: 'POST',
@@ -60,7 +60,7 @@ export default async function AuthFetch(address, Data) {
   }
 
   try {
-    const data = await fetch(`http://localhost:8080${address}`, {
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
       credentials: 'include',
 
       method: 'POST',
