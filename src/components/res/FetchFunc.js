@@ -10,13 +10,13 @@ async function SilentRefresh() {
 
     const userToken = JSON.parse(tokenString);
 
-    const data = await fetch(`http://localhost:8080/auth`, {
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com/auth`, {
       credentials: 'include',
 
       method: 'POST',
 
       headers: {
-
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(userToken)
@@ -29,6 +29,7 @@ async function SilentRefresh() {
       sessionStorage.setItem('token', JSON.stringify(data))
 
       console.log(data)
+    
 
       return data.token
 
@@ -55,12 +56,14 @@ export default async function AuthFetch(address, Data) {
   }
 
   try {
-    const data = await fetch(`http://localhost:8080${address}`, {
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
       credentials: 'include',
 
       method: 'POST',
 
       headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+        'Vary': 'Origin',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(Data)
