@@ -10,7 +10,7 @@ async function SilentRefresh() {
 
     const userToken = JSON.parse(tokenString);
 
-    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com/auth`, {
+    const data = await fetch(`http://localhost:8080/auth`, {
       credentials: 'include',
 
       method: 'POST',
@@ -56,13 +56,13 @@ export default async function AuthFetch(address, Data) {
   }
 
   try {
-    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
+    const data = await fetch(`http://localhost:8080${address}`, {
       credentials: 'include',
 
       method: 'POST',
 
       headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
+        'Access-Control-Allow-Origin': 'https://quiz-app-git-refreshtokentest-chuccle.vercel.app/',
         'Vary': 'Origin',
         'Content-Type': 'application/json'
       },
