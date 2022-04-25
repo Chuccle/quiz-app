@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import useToken from '../../App/useToken';
-import { useParams} from 'react-router';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 //import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
@@ -8,17 +7,17 @@ import QuizOperations from '../res/QuizOperations';
 import QuestionManager from '../QuestionManager/QuestionManager.js';
 import lodashSet from 'lodash.set';
 
-export default function DashboardResults() {
+export default function QuizManagerSearch({ token }) {
 
     let { searchquery } = useParams();
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
-    const [newquizname, SetNewQuizName] = useState({key: '', value: ''}); 
+    const [newquizname, SetNewQuizName] = useState({ key: '', value: '' });
     const [newsearchquery, SetNewSearchQuery] = useState();
     const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
-    
+
     const [data, dispatch] = useReducer((state, action) => {
-        
+
         switch (action.type) {
             case 'SET_DATA':
                 return [
@@ -47,18 +46,16 @@ export default function DashboardResults() {
                 return state.slice(0, state.length, lodashSet(state[action.key], 'difficulty', action.difficulty))
 
             case 'REMOVE_QUIZ':
-                // Will return every element except the one referenced by action.key {redundant} is needed to access second argumanet of .filter method
+                // Will return every element except the one referenced by action.key {redundant} is needed to access second argument of .filter method
                 return state.filter((redundant, index) => { return (index !== action.index) })
 
             default:
                 return state;
         }
     }, []);
-   
-    const { token } = useToken();
 
-    
-//TODO update component when quiz is updated/modified
+
+    //TODO update component when quiz is updated/modified
 
     useEffect(() => {
 
@@ -89,12 +86,12 @@ export default function DashboardResults() {
                     });
 
 
-                    
+
 
                     SetQuizCount(userStats.quizsearchcount[0].quizcount);
 
                     for (var i = 0; i < QuizArray.length; i++) {
-                    
+
                         dispatch(
 
                             {
@@ -123,19 +120,19 @@ export default function DashboardResults() {
 
         SetStatsfunc();
 
-       
+
     }, [token, currentpage, searchquery])
 
 
     if (questionmanagerpage) {
 
         return <QuestionManager quizid={questionmanagerpage[1]}></QuestionManager>
- 
-     }
+
+    }
 
 
 
-     function CurrentPageHandler(increment) {
+    function CurrentPageHandler(increment) {
 
         if (increment) {
 
@@ -170,7 +167,7 @@ export default function DashboardResults() {
     }
 
 
-     function ConditionalButtons() {
+    function ConditionalButtons() {
 
         let pages;
 
@@ -217,83 +214,83 @@ export default function DashboardResults() {
 
 
 
-        async function QuizUpdateHandler(address, token, key, optionalData,  actionType, index, extra) {
+        async function QuizUpdateHandler(address, token, key, optionalData, actionType, index, extra) {
 
             await QuizOperations(address, token, key, optionalData);
-    
+
             switch (actionType) {
-    
+
                 case "quiznameupdate":
-                
-                // Condition needed because newquizname is shared by all quiz elements
-               
-                if (extra === index){ 
-                    
-                    dispatch({
-                      
-                        type: 'UPDATE_QUIZ_NAME',
-                        key: index,
-                        quizname: optionalData
-                    
-                    });
-                }
+
+                    // Condition needed because newquizname is shared by all quiz elements
+
+                    if (extra === index) {
+
+                        dispatch({
+
+                            type: 'UPDATE_QUIZ_NAME',
+                            key: index,
+                            quizname: optionalData
+
+                        });
+                    }
                     break;
-    
+
                 case "quizdifficultyupdate":
-    
+
                     dispatch({
-                      
+
                         type: 'UPDATE_QUIZ_DIFFICULTY',
                         key: index,
                         difficulty: optionalData,
-                    
+
                     });
-    
+
                     break;
-    
+
                 case "quizremove":
-                    
-                dispatch({
-                    
-                    type: 'REMOVE_QUIZ',
-                    index: index
-                    
-                });
-                    
+
+                    dispatch({
+
+                        type: 'REMOVE_QUIZ',
+                        index: index
+
+                    });
+
                     break;
-    
+
                 default:
-                    
-                console.log("error");
-    
+
+                    console.log("error");
+
             }
-      
+
         }
-    
+
 
         return (
 
             <div className='flex flex-col'>
 
 
-                    <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {searchquery}</h1>
-                    <label  className=' m-5 text-xl  box-content  text-center flex-col'>
+                <h1 className="m-10 text-4xl font-bold  flex justify-center align-middle">Results for: {searchquery}</h1>
+                <label className=' m-5 text-xl  box-content  text-center flex-col'>
                     <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white  ' to={`/quizmanager`}>Go Back</Link>
+                </label>
+                <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
+
+                <div className=' justify-center  border-2 border-black  flex  ' >
+
+                    <label className=' m-5 text-xl  box-content class justify-center flex'>
+                        <p className='m-2'>Search for a quiz:</p>
+                        <input className='border-2 border-black rounded-md' type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
+                        <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/quizmanager/userquizsearch=${newsearchquery}`}>Search</Link>
+                        <div className='m-1' />
                     </label>
-                    <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
+                </div>
 
-                    <div className=' justify-center  border-2 border-black  flex  ' >
-    
-          <label  className=' m-5 text-xl  box-content class justify-center flex'>
-            <p className='m-2'>Search for a quiz:</p>
-            <input className='border-2 border-black rounded-md'  type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
-            <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/quizmanager/userquizsearch=${newsearchquery}`}>Search</Link>
-            <div className='m-1'/>
-          </label>
-          </div>
-               
 
-          <table className="text-center">
+                <table className="text-center">
                     <thead className="border-b bg-purple-600">
 
                         <tr>
@@ -325,7 +322,7 @@ export default function DashboardResults() {
 
                                         <div />
 
-                                        <input onChange={e => SetNewQuizName({key:index,  value:e.target.value})}></input>
+                                        <input onChange={e => SetNewQuizName({ key: index, value: e.target.value })}></input>
 
                                         <div />
 

@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import useToken from '../App/useToken';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
 
 
 
-export default function Dashboard() {
+export default function Dashboard({ token }) {
 
   const [data, SetData] = useState();
+
   const [name, SetName] = useState();
   const [currentpage, SetCurrentPage] = useState(0);
   const [quizcount, SetQuizCount] = useState();
   const [searchquery, SetSearchQuery] = useState(false);
 
-  const { token } = useToken();
 
 
   useEffect(() => {
@@ -22,9 +21,12 @@ export default function Dashboard() {
 
       const StatsArray = []
 
+
+
+
       try {
         // For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
-        const userStats = await Fetch('/retrievequizzes', { token, currentpage });
+        const userStats = await Fetch('/retrievequizzes', { currentpage });
 
         if (userStats.error) {
 
@@ -60,7 +62,7 @@ export default function Dashboard() {
 
     SetStatsfunc()
 
-  }, [token, currentpage])
+  }, [currentpage, token]);
 
 
 

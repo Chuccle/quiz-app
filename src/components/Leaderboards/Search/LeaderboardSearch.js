@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import useToken from '../..//App/useToken.js';
 import Fetch from '../../res/FetchFunc.js';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 
-export default function LeaderboardSearch() {
+export default function LeaderboardSearch({ token }) {
 
   let { searchquery } = useParams();
 
@@ -15,7 +14,7 @@ export default function LeaderboardSearch() {
 
   const [newsearchquery, SetNewSearchQuery] = useState();
 
-  const { token } = useToken();
+
 
 
   console.log(searchquery);
@@ -129,7 +128,7 @@ export default function LeaderboardSearch() {
             <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white  ' to={`/leaderboard`}>Go Back</Link>
           </label>
 
-         <div className=' justify-center  border-2 border-black  flex  ' >
+          <div className=' justify-center  border-2 border-black  flex  ' >
             <label className=' m-5 text-xl  box-content class justify-center flex'>
               <p className='m-2'>Search for another quiz:</p>
               <input className='border-2 border-black rounded-md' type="text" onChange={e => SetNewSearchQuery(e.target.value)} />

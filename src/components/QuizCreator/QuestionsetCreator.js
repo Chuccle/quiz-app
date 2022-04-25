@@ -20,22 +20,13 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
     async function postQuestionset() {
 
 
+        let response = await Fetch('/insertquiz', { questionset, token });
 
+        if (response.error) {
 
-        try {
+            alert("there was an error inserting your quiz")
 
-            let response = await Fetch('/insertquiz', { questionset, token });
-
-            if (response.error) {
-
-                alert("there was an error inserting your quiz")
-
-            } else if (response.QuizStatus === "Inserted") {
-
-            }
-
-        } catch {
-            alert("A server communication error occurred")
+        } else if (response.QuizStatus === "Inserted") {
 
         }
 
@@ -123,8 +114,8 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
         return (<div className='flex flex-col'>
 
             <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz created</h2>
-           
-            <Link onClick={()=>postQuestionset() } className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View and save your quiz here</Link>
+
+            <Link onClick={() => postQuestionset()} className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View and save your quiz here</Link>
         </div>
         )
     }

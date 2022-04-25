@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 import Fetch from '../res/FetchFunc';
-import useToken from '../App/useToken';
+
 
 import { Link } from 'react-router-dom';
 
 
-export default function Leaderboards() {
+export default function Leaderboards({ token }) {
 
 
   const [data, SetData] = useState();
@@ -14,7 +14,7 @@ export default function Leaderboards() {
   const [leaderboardcount, SetLeaderboardCount] = useState();
   const [searchquery, SetSearchQuery] = useState(false);
 
-  const { token } = useToken();
+
 
 
   useEffect(() => {
