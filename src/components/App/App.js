@@ -26,7 +26,7 @@ function App() {
 
     async function tokenAuthoriser() {
 
-      const response = await AuthFetch('/auth', { token });
+      const response = await AuthFetch('/auth', {});
       if (response.error) {
 
         SetAuthState(false);
@@ -37,10 +37,6 @@ function App() {
 
         SetAuthState(true);
 
-
-      } else if (response.token) {
-
-        SetAuthState(true);
 
       }
 

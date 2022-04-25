@@ -10,7 +10,7 @@ async function SilentRefresh() {
 
     const userToken = JSON.parse(tokenString);
 
-    const data = await fetch(`http://localhost:8080/auth`, {
+    const data = await fetch(`http://localhost:8080/silentrefresh`, {
       credentials: 'include',
 
       method: 'POST',
