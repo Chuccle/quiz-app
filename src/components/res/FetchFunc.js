@@ -24,11 +24,15 @@ async function SilentRefresh() {
       .then(data => data.json())
       .catch(err => console.log(err))
 
-    if (data.token) {
+
+      console.log(data)
+    
+    
+      if (data.token) {
 
       sessionStorage.setItem('token', JSON.stringify(data))
 
-      console.log(data)
+      
     
 
       return data.token
