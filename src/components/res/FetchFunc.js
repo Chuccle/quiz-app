@@ -16,7 +16,7 @@ async function SilentRefresh() {
       method: 'POST',
 
       headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
+        'Access-Control-Allow-Origin': 'https://quiz-app-git-refreshtokentest-chuccle.vercel.app',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(userToken)
@@ -62,8 +62,7 @@ export default async function AuthFetch(address, Data) {
       method: 'POST',
 
       headers: {
-        'Access-Control-Allow-Origin': 'https://quiz-app-git-refreshtokentest-chuccle.vercel.app/',
-        'Vary': 'Origin',
+        'Access-Control-Allow-Origin': 'https://quiz-app-git-refreshtokentest-chuccle.vercel.app',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(Data)
