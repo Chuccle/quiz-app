@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export default function useToken() {
 
-// get token from local storage and return if it exists
+  // get token from local storage and return if it exists
   const getToken = () => {
     const tokenString = sessionStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
@@ -14,7 +14,9 @@ export default function useToken() {
 
   // set token in local storage with usertoken value and token value set as stringified usertoken value
   const saveToken = userToken => {
+
     sessionStorage.setItem('token', JSON.stringify(userToken));
+
     setToken(userToken.token);
   };
 

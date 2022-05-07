@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import lodashSet from 'lodash.set';
 import Fetch from '../res/FetchFunc.js';
-import useToken from '../App/useToken';
 import QuizOperations from './res/QuizOperations.js';
 import QuestionManager from './QuestionManager/QuestionManager.js';
 import { Link } from 'react-router-dom';
 
-export default function QuizManager() {
+export default function QuizManager({ token }) {
 
     const [currentpage, SetCurrentPage] = useState(0);
     const [quizcount, SetQuizCount] = useState();
     const [searchquery, SetSearchQuery] = useState();
     const [questionmanagerpage, SetQuestionManagerPage] = useState(false);
-    const [newquizname, SetNewQuizName] = useState({key: '', value: ''});
+    const [newquizname, SetNewQuizName] = useState({ key: '', value: '' });
     const [data, dispatch] = useReducer((state, action) => {
-        
+
         switch (action.type) {
-        
+
             case 'SET_DATA':
-            
-            return [
+
+                return [
 
                     ...state,
 
@@ -30,12 +29,12 @@ export default function QuizManager() {
 
                     }
                 ];
-            
+
             case 'RESET_DATA':
-            
-            return [];
-            
-            
+
+                return [];
+
+
             case 'UPDATE_QUIZ_NAME':
 
                 // not fun needs a slice method because it pushes a duplicate element to state array
@@ -50,17 +49,16 @@ export default function QuizManager() {
 
             case 'REMOVE_QUIZ':
                 // Will return every element except the one referenced by action.key {redundant} is needed to access second argumanet of .filter method
-               
+
                 return state.filter((redundant, index) => { return (index !== action.index) })
 
             default:
-               
-            return state;
+
+                return state;
         }
-    
+
     }, []);
 
-    const { token } = useToken();
 
 
     //TODO update component when quiz is updated/modified
@@ -72,65 +70,56 @@ export default function QuizManager() {
 
             const QuizArray = [];
 
-            try {
+            const response = await Fetch('/retrieveuserquizzes', { token, currentpage });
 
-                const userStats = await Fetch('/retrieveuserquizzes', { token, currentpage });
+            if (response.results) {
 
-                if (userStats.error) {
+                //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-                    alert("A server communication error has occurred");
+                const objectArray = (response.results);
 
-                }
+                objectArray.forEach(value => {
 
-                else if (userStats.results) {
+                    QuizArray.push(Object.values(value));
 
-                    //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
-
-                    const objectArray = (userStats.results);
-
-                    objectArray.forEach(value => {
-
-                        QuizArray.push(Object.values(value));
-
-                    });
-                   
-
-                    SetQuizCount(userStats.quizsearchcount[0].quizcount);
+                });
 
 
-                    for (let i = 0; i < QuizArray.length; i++) {
-                    
-                        dispatch(
 
-                            {
+                SetQuizCount(response.quizsearchcount[0].quizcount);
 
-                                type: 'SET_DATA',
-                                quizid: QuizArray[i][0],
-                                quizname: QuizArray[i][1],
-                                difficulty: QuizArray[i][2],
+                for (var i = 0; i < QuizArray.length; i++) {
 
-                            }
+                    dispatch(
+
+                        {
+
+                            type: 'SET_DATA',
+                            quizid: QuizArray[i][0],
+                            quizname: QuizArray[i][1],
+                            difficulty: QuizArray[i][2],
+
+                        }
 
 
-                        );
-
-                    };
+                    );
 
                 };
 
+            } else {
 
-
-            } catch {
-
-                alert("A server error occurred");
-
+                alert("A server error has occurred");
             }
 
         }
 
-        SetStatsfunc()
 
-    }, [token, currentpage]);
+        SetStatsfunc();
+
+
+    }, [token, currentpage])
+
+
 
 
     function CurrentPageHandler(increment) {
@@ -209,57 +198,57 @@ export default function QuizManager() {
 
     }
 
-    async function QuizUpdateHandler(address, token, key, optionalData,  actionType, index, extra) {
+    async function QuizUpdateHandler(address, token, key, optionalData, actionType, index, extra) {
 
         await QuizOperations(address, token, key, optionalData);
 
         switch (actionType) {
 
             case "quiznameupdate":
-            
-            // Condition needed because newquizname is shared by all quiz elements
-           
-            if (extra === index){ 
-                
-                dispatch({
-                  
-                    type: 'UPDATE_QUIZ_NAME',
-                    key: index,
-                    quizname: optionalData
-                
-                });
-            }
+
+                // Condition needed because newquizname is shared by all quiz elements
+
+                if (extra === index) {
+
+                    dispatch({
+
+                        type: 'UPDATE_QUIZ_NAME',
+                        key: index,
+                        quizname: optionalData
+
+                    });
+                }
                 break;
 
             case "quizdifficultyupdate":
 
                 dispatch({
-                  
+
                     type: 'UPDATE_QUIZ_DIFFICULTY',
                     key: index,
                     difficulty: optionalData,
-                
+
                 });
 
                 break;
 
             case "quizremove":
-                
-            dispatch({
-                
-                type: 'REMOVE_QUIZ',
-                index: index
-                
-            });
-                
+
+                dispatch({
+
+                    type: 'REMOVE_QUIZ',
+                    index: index
+
+                });
+
                 break;
 
             default:
-                
-            console.log("error");
+
+                console.log("error");
 
         }
-  
+
     }
 
     if (questionmanagerpage) {
@@ -282,14 +271,14 @@ export default function QuizManager() {
                 <h5 className=' m-5 text-2xl flex justify-center'>Please select a quiz to edit</h5>
 
                 <div className=' justify-center  border-2 border-black  flex  ' >
-                   
+
                     <label className=' m-5 text-xl  box-content justify-center flex'>
                         <p className='m-2'>Search for a quiz:</p>
                         <input id="newquiznameinput" className='border-2 border-black rounded-md' type="text" onChange={e => SetSearchQuery(e.target.value)} />
                         <div className='m-1' />
                         <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white ' to={`/quizmanager/userquizsearch=${searchquery}`}>Search</Link>
                     </label>
-               
+
                 </div>
 
                 <table className="text-center">
@@ -324,7 +313,7 @@ export default function QuizManager() {
 
                                         <div />
 
-                                        <input onChange={e => SetNewQuizName({key:index,  value:e.target.value})}></input>
+                                        <input onChange={e => SetNewQuizName({ key: index, value: e.target.value })}></input>
 
                                         <div />
 

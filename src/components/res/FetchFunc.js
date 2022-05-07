@@ -1,19 +1,79 @@
 
 
+
+async function SilentRefresh() {
+
+
+  const tokenString = sessionStorage.getItem('token');
+
+  if (tokenString) {
+
+    const userToken = JSON.parse(tokenString);
+
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com/silentrefresh`, {
+      credentials: 'include',
+
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userToken)
+    })
+      .then(data => data.json())
+      .catch(err => console.log(err))
+
+
+      console.log(data)
+    
+    
+      if (data.token) {
+
+      sessionStorage.setItem('token', JSON.stringify(data))
+
+      
+    
+
+      return data.token
+
+    }
+
+  } else return
+
+}
+
+
+
+
 //Send a post request to server.js with an address and data and have the return value be parsed into a JSON object.
 
-export default async function Fetch(address, Data) {
+export default async function AuthFetch(address, Data) {
 
-  return fetch('https://chuccle-quizapp-backend.herokuapp.com' + address, {
 
-    method: 'POST',
+  await SilentRefresh()
 
-    headers: {
+  if (sessionStorage.getItem('token')) {
 
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(Data)
-  })
-    .then(data => data.json())
-    .catch(err => console.log(err))
+    Data.token = (JSON.parse(sessionStorage.getItem('token')).token);
+
+  }
+
+  try {
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
+      credentials: 'include',
+
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(Data)
+    });
+    return await data.json();
+  } catch (err) {
+    return console.log(err);
+  }
+
+
+
 }

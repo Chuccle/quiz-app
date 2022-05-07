@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import useToken from '../..//App/useToken.js';
 import Fetch from '../../res/FetchFunc.js';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import { ConditionalButtons } from '../../res/ConditionalButtons';
 
 
-export default function LeaderboardSearch() {
+export default function LeaderboardSearch({ token }) {
 
   let { searchquery } = useParams();
 
   const [data, SetData] = useState();
   const [currentpage, SetCurrentPage] = useState(0);
   const [leaderboardcount, SetLeaderboardCount] = useState();
-
   const [newsearchquery, SetNewSearchQuery] = useState();
 
-  const { token } = useToken();
-
-
-  console.log(searchquery);
 
   useEffect(() => {
 
@@ -26,90 +21,36 @@ export default function LeaderboardSearch() {
 
       const StatsArray = [];
 
-      try {
+        const response = await Fetch('/finduserrank', { token, currentpage, searchquery });
 
-        const userStats = await Fetch('/finduserrank', { token, currentpage, searchquery });
-
-        if (userStats.error) {
-
-          alert("A server error has occurred");
-
-        }
-
-        else if (userStats.results) {
+        if (response.results) {
 
           //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-          const objectArray = (userStats.results);
+          const objectArray = (response.results);
 
           objectArray.forEach(value => {
 
             StatsArray.push(Object.values(value));
 
-            console.log(userStats.results)
-
           });
+
 
           SetData(StatsArray);
 
-          SetLeaderboardCount(userStats.leaderboardcount[0].usersearchcount);
+          SetLeaderboardCount(response.leaderboardcount[0].count)
 
-        }
+      } else {
 
-      } catch {
-
-        alert("A server communication error occurred");
-
-      }
-
+        alert("A server communication error has occurred");
     }
+  }
+
 
     SetStatsfunc();
 
-  }, [token, currentpage, searchquery])
 
-
-
-  function ConditionalButtons() {
-
-    let pages;
-
-    if (leaderboardcount <= 3) {
-
-      return null;
-
-    }
-
-    else if (leaderboardcount % 3 === 0) {
-
-      pages = (leaderboardcount / 3) - 1;
-
-    } else {
-
-      pages = Math.trunc(leaderboardcount / 3);
-    }
-
-
-
-    if (currentpage === 0) {
-
-      return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </button>;
-    }
-
-    else if (currentpage < pages) {
-
-      return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
-        <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
-
-    } else if (currentpage === pages) {
-
-      return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
-
-    }
-
-
-  }
-
+  }, [token, currentpage, searchquery]);
 
 
   // ConditionalButtons(3, leaderboardcount, currentpage, SetCurrentPage());
@@ -129,7 +70,7 @@ export default function LeaderboardSearch() {
             <Link className='rounded-xl px-2 py-1  bg-purple-600 text-white  ' to={`/leaderboard`}>Go Back</Link>
           </label>
 
-         <div className=' justify-center  border-2 border-black  flex  ' >
+          <div className=' justify-center  border-2 border-black  flex  ' >
             <label className=' m-5 text-xl  box-content class justify-center flex'>
               <p className='m-2'>Search for another quiz:</p>
               <input className='border-2 border-black rounded-md' type="text" onChange={e => SetNewSearchQuery(e.target.value)} />
@@ -161,14 +102,9 @@ export default function LeaderboardSearch() {
               }
             </tbody>
           </table>
-          <ConditionalButtons />
+          <ConditionalButtons maxRows={6} totalCount={leaderboardcount} currentPage={currentpage} SetCurrentPage={SetCurrentPage} />
         </div>
       </>
-
-
-
-
-
     );
   }
 

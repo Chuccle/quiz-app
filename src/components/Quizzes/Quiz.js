@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
-import useToken from '../App/useToken.js';
 import Fetch from '../res/FetchFunc'
 
 
-export default function Quiz() {
+export default function Quiz({token}) {
 
 
 	async function postResults() {
 
-
-		try {
 
 			let response = await Fetch('/sendresults', { token, results, quizid })
 
@@ -23,20 +20,13 @@ export default function Quiz() {
 
 			}
 
-		} catch {
-
-			alert("A server communication error occurred")
-
 		}
-
-	}
 
 
 
 
 	let { quizid } = useParams();
 
-	const { token } = useToken();
 
 
 	const [currentQuestion, setCurrentQuestion] = useState(0);

@@ -15,7 +15,6 @@ export default function QuestionManager({ quizid }) {
     const [currentQuestion, SetCurrentQuestion] = useState(0);
     const [questiondata, SetQuestionData] = useState()
     const [endofquiz, SetEndOfQuiz] = useState(false);
-    //  const [newquestionoptionarray, SetNewQuestionOptionArray] = useState([false, false, false, false]);
     const [newquestion, SetNewQuestion] = useState();
     const [newquestionoption1, SetNewQuestionOption1] = useState();
     const [newquestionoption2, SetNewQuestionOption2] = useState();
@@ -26,18 +25,23 @@ export default function QuestionManager({ quizid }) {
 
     // We need to declare results here in the outermost scope so we can reference it in the inner and outer scopes later on
 
-
     useEffect(() => {
 
         async function getquestiondata() {
 
 
-            const question = await Fetch('/retrievequestions', { token, quizid })
+            const response = await Fetch('/retrievequestions', { token, quizid })
 
 
-            SetQuestionData(question)
+            if (response.Questions) {
 
+                SetQuestionData(response)
 
+            } else {
+
+                alert("A server error has occurred");
+
+            }
         }
 
         getquestiondata()
@@ -48,10 +52,8 @@ export default function QuestionManager({ quizid }) {
 
     if (questiondata) {
 
-
-
         const questions = {
-            
+
             questionText: questiondata.Questions[currentQuestion].Questiontext,
             answerOptions: [
                 { answerText: questiondata.Questions[currentQuestion].Options.Correct, isCorrect: true },
@@ -132,24 +134,6 @@ export default function QuestionManager({ quizid }) {
                     console.log("default")
 
             }
-
-            // TODO use lodash here later to make this work because it pains me hard coding a usestate for each option 
-            
-            // switch (index) {
-
-            //     case 0: SetNewQuestionOptionArray(newquestionoptionarray[0] = newquestionoption);
-            //         break;
-            //     case 1: SetNewQuestionOptionArray(newquestionoptionarray[1] = newquestionoption);
-            //         break;
-            //     case 2: SetNewQuestionOptionArray(newquestionoption);
-            //         break;
-            //     case 3: SetNewQuestionOptionArray(newquestionoption);
-            //         break;
-            //     default:
-            //         console.log("default")
-
-            // }
-
         }
 
         return (
@@ -158,9 +142,9 @@ export default function QuestionManager({ quizid }) {
                     (
                         <div className='flex flex-col'>
                             <h2 className=' m-5 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz has been updated</h2>
-                            
-                                <Link className='mx-auto bg-purple-500 rounded-md py-1 px-5 my-8 w-60 h-24 text-2xl text-white font-bold text-center   '  to="/dashboard">Back to dashboard</Link>
-                        
+
+                            <Link className='mx-auto bg-purple-500 rounded-md py-1 px-5 my-8 w-60 h-24 text-2xl text-white font-bold text-center   ' to="/dashboard">Back to dashboard</Link>
+
                         </div>
 
                     ) : (
@@ -168,7 +152,7 @@ export default function QuestionManager({ quizid }) {
                             <form id='changeAnswer'>
                                 <div className='flex flex-col'>
                                     <h1 className=' m-5 text-5xl flex justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '> Question {currentQuestion + 1}/{questiondata.Questions.length}</h1>
-                                
+
                                     <h1 className=' text-3xl flex justify-center items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>{questions.questionText}</h1>
 
                                     <input className=' text-xl text-gray-base w-6/12  h-8 mt-5  mx-auto 
@@ -176,14 +160,14 @@ export default function QuestionManager({ quizid }) {
                                 mb-2 ' type="text" onChange={e => SetNewQuestion(e.target.value)} />
                                 </div>
                                 <div className="border border-black mx-auto w-1/4 rounded-md flex flex-auto" >
-                                <h1 className=' mx-auto text-2xl   text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Input your changes to the question. <br/> The first option is the correct answer   </h1> 
+                                    <h1 className=' mx-auto text-2xl   text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Input your changes to the response. <br /> The first option is the correct answer   </h1>
                                 </div>
                                 <div className="justify-items-center mt-4  grid grid-cols-2 " >
                                     {questions.answerOptions.map((answerOption, index) => (
-                                        
+
                                         <div className=" bg-gradient-to-br from-purple-700 to-purple-400 w-11/12 h-64 mt-5   shadow-lg  rounded-lg justify-center flex flex-col" >
                                             <label className="text-white text-center p-10 text-3xl font-bold" key={index}>{answerOption.answerText} </label>
-                                              
+
                                             <input className="text-black   w-6/12 mx-auto rounded-lg" onChange={e => QuestionOptionChangeHandler(index, e.target.value)} />
 
                                         </div>
@@ -203,8 +187,5 @@ export default function QuestionManager({ quizid }) {
         return (
             <div>Loading..</div>
         )
-
-
-
     }
 }

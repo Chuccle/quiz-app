@@ -1,56 +1,59 @@
-import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 
+export const ConditionalButtons = ({ maxRows, totalCount, currentPage, SetCurrentPage }) => {
 
-export default function ConditionalButtons(maxRows, quizcount, currentpage) {
-
-  //may need quizcount and currentpage as args
+  //may need totalCount and currentPage as args
 
   let pages
-  const [currentpage, SetCurrentPage] = useState(currentpage);
-
 
   //base case 
-  if (quizcount / maxRows) {
+  if (totalCount <= maxRows) {
 
     return null
 
   }
-//if there is no remainder 
 
-  else if (quizcount % maxRows === 0) {
+  //if there is no remainder 
 
-    pages = (quizcount / maxRows) - 1
+  else if (totalCount % maxRows === 0) {
+
+    //-1 because we need to offset the fact that arrays start at 0
+
+    pages = (totalCount / maxRows) - 1
 
   } else {
 
     //if there is a remainder treat it as a whole number
-    pages = Math.trunc(quizcount / maxRows)
+
+    pages = Math.trunc(totalCount / maxRows)
   }
 
 
-//first page 
-  if (currentpage === 0) {
+  //first page 
+  if (currentPage === 0) {
 
-    return <Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </Button> + currentpage
+    return <button onClick={e => SetCurrentPage(currentPage + 1)}>Page +   page:{currentPage + 1} </button>;
   }
 
   //middle pages
-  else if (currentpage < pages) {
 
-    return <><Button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </Button><div />
-      <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button></> + currentpage
+  else if (currentPage < pages) {
 
+    return <><button onClick={e => SetCurrentPage(currentPage + 1)}>Page + page:{currentPage + 1} </button><div />
+      <button onClick={e => SetCurrentPage(currentPage - 1)}>Page - page:{currentPage - 1} </button></>
 
-//last page
-  } else if (currentpage === pages) {
+    //last page
 
-    return <Button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </Button> + currentpage;
+  } else if (currentPage === pages) {
+
+    return <button onClick={e => SetCurrentPage(currentPage - 1)}>Page - page:{currentPage - 1} </button>;
 
   }
 
-
 }
 
-
+ConditionalButtons.propTypes = {
+  SetCurrentPage: PropTypes.func.isRequired
+};

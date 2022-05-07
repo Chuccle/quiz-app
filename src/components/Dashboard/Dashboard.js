@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import useToken from '../App/useToken';
+import React, { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import Fetch from '../res/FetchFunc';
+import { ConditionalButtons } from '../res/ConditionalButtons';
 
 
+export default function Dashboard({ token }) {
 
-export default function Dashboard() {
-
-  const [data, SetData] = useState();
+  const [data, SetData] = useState(false);
   const [name, SetName] = useState();
   const [currentpage, SetCurrentPage] = useState(0);
   const [quizcount, SetQuizCount] = useState();
   const [searchquery, SetSearchQuery] = useState(false);
-
-  const { token } = useToken();
-
 
   useEffect(() => {
 
@@ -22,91 +18,37 @@ export default function Dashboard() {
 
       const StatsArray = []
 
-      try {
-        // For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
-        const userStats = await Fetch('/retrievequizzes', { token, currentpage });
+      // For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
+      const response = await Fetch('/retrievequizzes', { currentpage });
 
-        if (userStats.error) {
+      if (response.results) {
 
-          alert("A server communication error has occurred");
+        //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-        }
+        const objectArray = (response.results);
 
-        else if (userStats.results) {
+        objectArray.forEach(value => {
 
-          //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
+          StatsArray.push(Object.values(value));
 
-          const objectArray = (userStats.results);
+        });
 
-          objectArray.forEach(value => {
+        SetData(StatsArray);
 
-            StatsArray.push(Object.values(value));
+        SetName(response.name[0].username);
+        SetQuizCount(response.quizcount[0].count);
 
-          });
+      } else {
 
-          SetData(StatsArray);
-
-          SetName(userStats.name[0].username);
-          SetQuizCount(userStats.quizcount[0].count);
-
-        }
-
-      } catch {
-
-        alert("A server error occurred");
+        alert("A server communication error has occurred");
 
       }
+    
     }
 
     SetStatsfunc()
 
-  }, [token, currentpage])
-
-
-
-  function ConditionalButtons() {
-
-    let pages
-
-    //base case 
-
-    if (quizcount <= 6) {
-
-      return null
-
-    }
-
-    else if (quizcount % 6 === 0) {
-
-      pages = (quizcount / 6) - 1
-
-    } else {
-
-      pages = Math.trunc(quizcount / 6)
-    }
-
-    if (currentpage === 0) {
-
-      return <button onClick={e => SetCurrentPage(currentpage + 1)}>Page +   page:{currentpage + 1} </button>;
-    }
-
-    else if (currentpage < pages) {
-
-      return <><button onClick={e => SetCurrentPage(currentpage + 1)}>Page + page:{currentpage + 1} </button><div />
-        <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button></>
-
-    } else if (currentpage === pages) {
-
-      return <button onClick={e => SetCurrentPage(currentpage - 1)}>Page - page:{currentpage - 1} </button>;
-
-    }
-
-
-  }
-
-
-
-
+  }, [currentpage, token]);
 
   //This as a buffer check to ensure that data is defined????
 
@@ -166,7 +108,7 @@ export default function Dashboard() {
               }
             </tbody>
           </table>
-          <ConditionalButtons />
+          <ConditionalButtons maxRows={6} totalCount={quizcount} currentPage={currentpage} SetCurrentPage={SetCurrentPage} />
         </div>
       </>
     );
@@ -180,5 +122,8 @@ export default function Dashboard() {
 
     </div>)
   }
-
 }
+
+
+
+
