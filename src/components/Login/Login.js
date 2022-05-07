@@ -24,19 +24,23 @@ export default function Login({ setToken }) {
 
     if (username && password) {
 
-      try {
-        const token = await Fetch('/login', {
-          username,
-          password
+      const response = await Fetch('/login', {
+        username,
+        password
 
-        });
-        setToken(token);
-      }
-      catch
-      {
-        alert("A server error occurred")
+      });
+
+      if (response.token) {
+
+        setToken(response);
+
+      } else {
+
+        alert("A server error has occurred");
+
       }
     }
+
     else {
       alert('Please enter Username and Password!');
       return false;

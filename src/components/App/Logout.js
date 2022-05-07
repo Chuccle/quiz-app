@@ -8,33 +8,32 @@ export default function Logout() {
     useEffect(() => {
 
         async function LogoutRequest() {
-    
-                const userStats = await Fetch('/logout');
-    
-    
-                if (userStats.error) {
-    
-                    alert("A server error has occurred");
-    
-                }
+
+            const response = await Fetch('/logout');
+
+            if (response.error) {
+
+                alert("A server error has occurred");
+
+            }
 
         }
-    
-    LogoutRequest()
-           
-    } )
+
+        LogoutRequest()
+
+    })
 
 
 
 
-// remove token form local storage and redirect to default path
+    // remove token form local storage and redirect to default path
     window.sessionStorage.clear()
     window.location.replace('/')
 
 
-    
+
     return (<>
-       
+
         <div>
             <h1>successful logout</h1>
         </div>

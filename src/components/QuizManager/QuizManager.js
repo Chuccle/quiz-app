@@ -70,65 +70,56 @@ export default function QuizManager({ token }) {
 
             const QuizArray = [];
 
-            try {
+            const response = await Fetch('/retrieveuserquizzes', { token, currentpage });
 
-                const userStats = await Fetch('/retrieveuserquizzes', { token, currentpage });
+            if (response.results) {
 
-                if (userStats.error) {
+                //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-                    alert("A server communication error has occurred");
+                const objectArray = (response.results);
 
-                }
+                objectArray.forEach(value => {
 
-                else if (userStats.results) {
+                    QuizArray.push(Object.values(value));
 
-                    //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
-
-                    const objectArray = (userStats.results);
-
-                    objectArray.forEach(value => {
-
-                        QuizArray.push(Object.values(value));
-
-                    });
+                });
 
 
-                    SetQuizCount(userStats.quizsearchcount[0].quizcount);
+
+                SetQuizCount(response.quizsearchcount[0].quizcount);
+
+                for (var i = 0; i < QuizArray.length; i++) {
+
+                    dispatch(
+
+                        {
+
+                            type: 'SET_DATA',
+                            quizid: QuizArray[i][0],
+                            quizname: QuizArray[i][1],
+                            difficulty: QuizArray[i][2],
+
+                        }
 
 
-                    for (let i = 0; i < QuizArray.length; i++) {
-
-                        dispatch(
-
-                            {
-
-                                type: 'SET_DATA',
-                                quizid: QuizArray[i][0],
-                                quizname: QuizArray[i][1],
-                                difficulty: QuizArray[i][2],
-
-                            }
-
-
-                        );
-
-                    };
+                    );
 
                 };
 
+            } else {
 
-
-            } catch {
-
-                alert("A server error occurred");
-
+                alert("A server error has occurred");
             }
 
         }
 
-        SetStatsfunc()
 
-    }, [token, currentpage]);
+        SetStatsfunc();
+
+
+    }, [token, currentpage])
+
+
 
 
     function CurrentPageHandler(increment) {

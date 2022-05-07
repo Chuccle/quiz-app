@@ -16,11 +16,9 @@ import LeaderboardSearch from '../Leaderboards/Search/LeaderboardSearch.js';
 
 function App() {
 
-
   const [tokenAuthorised, SetAuthState] = useState(false);
   const [dropdown, SetDropDown] = useState(false);
   const { token, setToken } = useToken();
-
 
   useEffect(() => {
 
@@ -36,7 +34,6 @@ function App() {
       else if (response.message) {
 
         SetAuthState(true);
-
 
       }
 

@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
-
     const { token } = useToken();
     const [questionname, setQuestionName] = useState();
     const [incorrect1, setIncorrect1] = useState();
@@ -19,19 +18,15 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
     async function postQuestionset() {
 
-
-        let response = await Fetch('/insertquiz', { questionset, token });
+        const response = await Fetch('/insertquiz', { questionset, token });
 
         if (response.error) {
-
+           
             alert("there was an error inserting your quiz")
-
-        } else if (response.QuizStatus === "Inserted") {
-
+        
         }
 
     }
-
 
 
     function handleSubmit(event) {
@@ -61,7 +56,6 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
         document.getElementById("QuestionForm").reset();
 
     }
-
 
 
     if (quizlength > questionnumber) {
@@ -109,12 +103,9 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
     else {
 
-
-
         return (<div className='flex flex-col'>
 
             <h2 className=' m-10 text-5xl flex  i justify-around items-center text-transparent bg-clip-text font-bold  bg-gradient-to-br from-purple-700 to-purple-400 '>Quiz created</h2>
-
             <Link onClick={() => postQuestionset()} className='rounded-xl px-2 py-1  bg-purple-600 text-white mx-auto  ' to={`/quizmanager/userquizsearch=${quizname}`}>View and save your quiz here</Link>
         </div>
         )

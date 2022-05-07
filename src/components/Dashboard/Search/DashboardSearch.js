@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Fetch from '../../res/FetchFunc.js';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
+import { ConditionalButtons } from '../../res/ConditionalButtons';
 
 export default function DashboardResults({ token }) {
 
@@ -20,103 +21,34 @@ export default function DashboardResults({ token }) {
 
       const StatsArray = [];
 
-      try {
+      const response = await Fetch('/findquiz', { token, currentpage, searchquery });
+      
+      if (response.results) {
 
-        const userStats = await Fetch('/findquiz', { token, currentpage, searchquery });
+        //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
+        const objectArray = (response.results);
 
-        if (userStats.error) {
+        objectArray.forEach(value => {
 
-          alert("A server communication error has occurred");
+          StatsArray.push(Object.values(value));
 
-        }
-        else if (userStats.results) {
+        });
 
-          //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
+        SetData(StatsArray);
+        SetQuizCount(response.quizsearchcount[0].quizsearchcount);
+      
+    } else {
 
-          const objectArray = (userStats.results);
-
-          objectArray.forEach(value => {
-
-            StatsArray.push(Object.values(value));
-
-          });
-
-          SetData(StatsArray);
-          SetQuizCount(userStats.quizsearchcount[0].quizsearchcount);
-        }
-
-      } catch {
-
-        alert("A server error occurred");
+        alert("A server error has occurred");
 
       }
-    }
 
+    }
 
     SetStatsfunc();
 
-
   }, [token, currentpage, searchquery])
-
-
-
-
-
-
-
-  function ConditionalButtons() {
-
-    let pages
-
-    //base case
-    if (quizcount <= 6) {
-
-      return null
-
-    }
-
-    //if there is no remainder 
-
-    else if (quizcount % 6 === 0) {
-
-      //-1 because we need to offset the fact that arrays start at 0
-
-      pages = (quizcount / 6) - 1
-
-    } else {
-
-      //if there is a remainder treat it as a whole number
-
-      pages = Math.trunc(quizcount / 6)
-    }
-
-
-    //first page 
-
-    if (currentpage === 0) {
-
-      return <button onClick={e => (SetCurrentPage(currentpage + 1))}>Page +   page:{currentpage + 1} </button> + currentpage
-    }
-
-    //middle pages
-
-    else if (currentpage < pages) {
-
-      return <><button onClick={e => (SetCurrentPage(currentpage + 1))}>Page + page:{currentpage + 1} </button><div />
-        <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button></> + currentpage
-
-
-      //last page
-
-    } else if (currentpage === pages) {
-
-      return <button onClick={e => (SetCurrentPage(currentpage - 1))}>Page - page:{currentpage - 1} </button> + currentpage;
-
-    }
-
-
-  }
 
 
   //This as a buffer check to ensure that data is defined.
@@ -179,7 +111,7 @@ export default function DashboardResults({ token }) {
               }
             </tbody>
           </table>
-          <ConditionalButtons />
+          <ConditionalButtons maxRows={6} totalCount={quizcount} currentPage={currentpage} SetCurrentPage={SetCurrentPage} />
         </div>
       </>
 

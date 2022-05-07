@@ -63,58 +63,45 @@ export default function QuizManagerSearch({ token }) {
 
             const QuizArray = [];
 
-            try {
+            const response = await Fetch('/finduserquizzes', { token, currentpage, searchquery });
 
-                const userStats = await Fetch('/finduserquizzes', { token, currentpage, searchquery });
+            if (response.results) {
 
+                //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-                if (userStats.error) {
+                const objectArray = (response.results);
 
-                    alert("A server communication error has occurred");
+                objectArray.forEach(value => {
 
-                }
-                else if (userStats.results) {
+                    QuizArray.push(Object.values(value));
 
-                    //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
+                });
 
-                    const objectArray = (userStats.results);
+                SetQuizCount(response.quizsearchcount[0].quizcount);
 
-                    objectArray.forEach(value => {
+                for (var i = 0; i < QuizArray.length; i++) {
 
-                        QuizArray.push(Object.values(value));
+                    dispatch(
 
-                    });
+                        {
 
+                            type: 'SET_DATA',
+                            quizid: QuizArray[i][0],
+                            quizname: QuizArray[i][1],
+                            difficulty: QuizArray[i][2],
 
-
-
-                    SetQuizCount(userStats.quizsearchcount[0].quizcount);
-
-                    for (var i = 0; i < QuizArray.length; i++) {
-
-                        dispatch(
-
-                            {
-
-                                type: 'SET_DATA',
-                                quizid: QuizArray[i][0],
-                                quizname: QuizArray[i][1],
-                                difficulty: QuizArray[i][2],
-
-                            }
+                        }
 
 
-                        );
+                    );
 
-                    };
+                };
 
-                }
+            } else {
 
-            } catch {
-
-                alert("A server error occurred");
-
+                alert("A server error has occurred");
             }
+
         }
 
 

@@ -29,12 +29,20 @@ export default function Register({ setToken }) {
       alert('Please reenter passwords!');
       return false;
     }
-    else {
-      const token = await Fetch('/register', {
-        username,
-        password
-      });
-      setToken(token);
+
+    const response = await Fetch('/register', {
+      username,
+      password
+    });
+
+    if (response.token) {
+
+      setToken(response);
+
+    } else {
+
+      alert("A server error has occurred");
+
     }
   }
 
