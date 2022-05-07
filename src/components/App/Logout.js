@@ -28,7 +28,8 @@ export default function Logout() {
 
     // remove token form local storage and redirect to default path
     window.sessionStorage.clear()
-    //window.location.replace('/')
+    
+    window.location.replace('/')
 
 
 
