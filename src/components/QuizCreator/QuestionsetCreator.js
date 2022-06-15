@@ -1,12 +1,11 @@
 import { useState } from "react";
-import useToken from '../App/useToken';
 import Fetch from '../res/FetchFunc'
 import { Link } from 'react-router-dom';
 
 
 export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
-    const { token } = useToken();
+
     const [questionname, setQuestionName] = useState();
     const [incorrect1, setIncorrect1] = useState();
     const [incorrect2, setIncorrect2] = useState();
@@ -18,12 +17,12 @@ export function QuestionsetCreator({ quizname, quizdifficulty, quizlength }) {
 
     async function postQuestionset() {
 
-        const response = await Fetch('/insertquiz', { questionset, token });
+        const response = await Fetch('/insertquiz', { questionset }, 'POST');
 
         if (response.error) {
-           
+
             alert("there was an error inserting your quiz")
-        
+
         }
 
     }

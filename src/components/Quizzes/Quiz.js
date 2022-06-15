@@ -4,30 +4,25 @@ import { useParams } from 'react-router';
 import Fetch from '../res/FetchFunc'
 
 
-export default function Quiz({token}) {
+export default function Quiz({ token }) {
 
 
 	async function postResults() {
 
 
-			let response = await Fetch('/sendresults', { token, results, quizid })
+		let response = await Fetch('/sendresults', { results, quizid }, 'POST');
 
-			if (response.error) {
+		if (response.error) {
 
-				alert("there was an error inserting your quiz")
+			alert("there was an error inserting your quiz")
 
-			} else if (response.status === "ok") {
-
-			}
+		} else if (response.status === "ok") {
 
 		}
 
-
-
+	}
 
 	let { quizid } = useParams();
-
-
 
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);
@@ -43,10 +38,7 @@ export default function Quiz({token}) {
 		async function getquestiondata() {
 
 
-			const question = await Fetch('/retrievequestions', { token, quizid });
-
-			
-
+			const question = await Fetch(`/retrievequestions/quizid=${quizid}`, {}, 'GET');
 
 			setQuestionData(question);
 

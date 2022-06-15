@@ -19,7 +19,7 @@ export default function Dashboard({ token }) {
       const StatsArray = []
 
       // For the quiz filters we should make the server address a variable and then update the variable by an event i.e: dropdown or button click. failing that create a filter directory and keep everything but the server path. 
-      const response = await Fetch('/retrievequizzes', { currentpage });
+      const response = await Fetch(`/retrievequizzes/page=${currentpage}`, { }, 'GET');
 
       if (response.results) {
 

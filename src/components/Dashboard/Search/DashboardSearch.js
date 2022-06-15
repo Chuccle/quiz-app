@@ -21,7 +21,7 @@ export default function DashboardResults({ token }) {
 
       const StatsArray = [];
 
-      const response = await Fetch('/findquiz', { token, currentpage, searchquery });
+      const response = await Fetch(`/findquiz/search=${searchquery}&page=${currentpage}`, {token}, 'GET');
       
       if (response.results) {
 

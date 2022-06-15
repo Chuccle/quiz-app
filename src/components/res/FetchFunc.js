@@ -10,29 +10,21 @@ async function SilentRefresh() {
 
     const userToken = JSON.parse(tokenString);
 
-    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com/silentrefresh`, {
+    const data = await fetch(`http://localhost:8080/silentrefresh`, {
       credentials: 'include',
-
-      method: 'POST',
-
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + (userToken.token)
       },
-      body: JSON.stringify(userToken)
     })
       .then(data => data.json())
       .catch(err => console.log(err))
 
 
-      console.log(data)
-    
-    
-      if (data.token) {
+    if (data.token) {
 
       sessionStorage.setItem('token', JSON.stringify(data))
-
-      
-    
 
       return data.token
 
@@ -47,33 +39,91 @@ async function SilentRefresh() {
 
 //Send a post request to server.js with an address and data and have the return value be parsed into a JSON object.
 
-export default async function AuthFetch(address, Data) {
+export default async function AuthFetch(address, p_data, operation) {
 
+  if (!sessionStorage.getItem('token')) {
+    sessionStorage.setItem('token', JSON.stringify({ token: '' }))
+  }
 
   await SilentRefresh()
 
-  if (sessionStorage.getItem('token')) {
+  switch (operation) {
 
-    Data.token = (JSON.parse(sessionStorage.getItem('token')).token);
+    case 'GET':
 
+      try {
+        const data = await fetch(`http://localhost:8080${address}`, {
+          credentials: 'include',
+
+          method: operation,
+
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (JSON.parse(sessionStorage.getItem('token')).token)
+          },
+        });
+        return await data.json();
+      } catch (err) {
+        return console.log(err);
+      }
+
+    case 'POST':
+
+      try {
+        const data = await fetch(`http://localhost:8080${address}`, {
+          credentials: 'include',
+
+          method: operation,
+
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (JSON.parse(sessionStorage.getItem('token')).token)
+          },
+          body: JSON.stringify(p_data)
+        });
+        return await data.json();
+      } catch (err) {
+        return console.log(err);
+      }
+
+    case 'PUT':
+      try {
+        const data = await fetch(`http://localhost:8080${address}`, {
+          credentials: 'include',
+
+          method: operation,
+
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (JSON.parse(sessionStorage.getItem('token')).token)
+          },
+          body: JSON.stringify(p_data)
+        });
+        return await data.json();
+      } catch (err) {
+        return console.log(err);
+      }
+
+    case 'DELETE':
+
+      try {
+        const data = await fetch(`http://localhost:8080${address}`, {
+          credentials: 'include',
+
+          method: operation,
+
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (JSON.parse(sessionStorage.getItem('token')).token)
+          },
+        });
+        return await data.json();
+      } catch (err) {
+        return console.log(err);
+      }
+
+    default:
+      return console.log('operation not supported')
   }
-
-  try {
-    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
-      credentials: 'include',
-
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(Data)
-    });
-    return await data.json();
-  } catch (err) {
-    return console.log(err);
-  }
-
-
 
 }

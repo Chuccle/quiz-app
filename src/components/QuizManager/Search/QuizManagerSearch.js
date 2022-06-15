@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-//import ConditionalButtons from '../res/ConditionalButtons';
 import Fetch from '../../res/FetchFunc';
-import QuizOperations from '../res/QuizOperations';
 import QuestionManager from '../QuestionManager/QuestionManager.js';
 import lodashSet from 'lodash.set';
 
@@ -63,7 +61,7 @@ export default function QuizManagerSearch({ token }) {
 
             const QuizArray = [];
 
-            const response = await Fetch('/finduserquizzes', { token, currentpage, searchquery });
+            const response = await Fetch(`/finduserquizzes/search=${searchquery}&page=${currentpage}`, {}, 'GET');
 
             if (response.results) {
 
@@ -201,9 +199,9 @@ export default function QuizManagerSearch({ token }) {
 
 
 
-        async function QuizUpdateHandler(address, token, key, optionalData, actionType, index, extra) {
+        async function QuizUpdateHandler(address, key, optionalData, actionType, index, extra) {
 
-            await QuizOperations(address, token, key, optionalData);
+            await Fetch(address, { key, optionalData }, 'PUT');
 
             switch (actionType) {
 
@@ -313,7 +311,7 @@ export default function QuizManagerSearch({ token }) {
 
                                         <div />
 
-                                        <button onClick={e => QuizUpdateHandler('/updateuserquizname', token, rowdata.quizid, newquizname.value, "quiznameupdate", index, newquizname.key)}>Rename</button>
+                                        <button onClick={e => QuizUpdateHandler('/updateuserquizname', rowdata.quizid, newquizname.value, "quiznameupdate", index, newquizname.key)}>Rename</button>
 
                                     </td  >
 
@@ -323,7 +321,7 @@ export default function QuizManagerSearch({ token }) {
 
                                         <div />
 
-                                        <select onChange={e => QuizUpdateHandler('/updateuserquizdifficulty', token, rowdata.quizid, e.target.value, "quizdifficultyupdate", index)}>
+                                        <select onChange={e => QuizUpdateHandler('/updateuserquizdifficulty', rowdata.quizid, e.target.value, "quizdifficultyupdate", index)}>
 
                                             <option value={rowdata.difficulty}>...</option>
 
@@ -345,7 +343,7 @@ export default function QuizManagerSearch({ token }) {
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-                                        <button onClick={e => QuizUpdateHandler('/removeuserquiz', token, rowdata.quizid, null, "quizremove", index)}>Remove</button>
+                                        <button onClick={e => QuizUpdateHandler('/removeuserquiz', rowdata.quizid, null, "quizremove", index)}>Remove</button>
 
                                     </td>
 

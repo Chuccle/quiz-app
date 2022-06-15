@@ -14,37 +14,35 @@ export default function LeaderboardSearch({ token }) {
   const [leaderboardcount, SetLeaderboardCount] = useState();
   const [newsearchquery, SetNewSearchQuery] = useState();
 
-
   useEffect(() => {
 
     async function SetStatsfunc() {
 
       const StatsArray = [];
 
-        const response = await Fetch('/finduserrank', { token, currentpage, searchquery });
+      const response = await Fetch(`/finduserrank/search=${searchquery}&page=${currentpage}`, {}, 'GET');
 
-        if (response.results) {
+      if (response.results) {
 
-          //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
+        //We destructure our array of objects into an 2d arraylist of values to be acceptable for a usestate hook
 
-          const objectArray = (response.results);
+        const objectArray = (response.results);
 
-          objectArray.forEach(value => {
+        objectArray.forEach(value => {
 
-            StatsArray.push(Object.values(value));
+          StatsArray.push(Object.values(value));
 
-          });
+        });
 
 
-          SetData(StatsArray);
-
-          SetLeaderboardCount(response.leaderboardcount[0].count)
+        SetData(StatsArray);
+        SetLeaderboardCount(response.leaderboardcount[0].usersearchcount)
 
       } else {
 
         alert("A server communication error has occurred");
+      }
     }
-  }
 
 
     SetStatsfunc();
@@ -57,8 +55,6 @@ export default function LeaderboardSearch({ token }) {
 
   //This as a buffer check to ensure that data is defined????
   if (data) {
-
-    console.log(data)
 
     return (
       <>

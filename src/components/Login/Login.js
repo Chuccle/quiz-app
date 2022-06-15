@@ -28,7 +28,7 @@ export default function Login({ setToken }) {
         username,
         password
 
-      });
+      }, 'POST');
 
       if (response.token) {
 

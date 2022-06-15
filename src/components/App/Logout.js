@@ -1,53 +1,32 @@
 import React, { useEffect } from 'react';
-//import Fetch from '../res/FetchFunc';
+import Fetch from '../res/FetchFunc';
 
 
 export default function Logout() {
 
 
-    useEffect(() => {
+  useEffect(() => {
 
-        async function LogoutRequest() {
-           
-            try {
-                await fetch(`https://chuccle-quizapp-backend.herokuapp.com/logout`, {
-                  credentials: 'include',
-                  mode: 'no-cors',
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                });
+    async function LogoutRequest() {
 
-                window.sessionStorage.clear()
-                window.location.replace('/')
+      await Fetch('/logout', {}, 'DELETE')
 
-              } catch (err) {
-                return console.log(err);
-              }
+      window.sessionStorage.clear()
+      window.location.replace('/')
 
-        }
+    }
 
-        LogoutRequest()
+    LogoutRequest()
 
-    })
+  }, [])
 
 
+  return (<>
 
+    <div>
+      <h1>successful logout</h1>
+    </div>
 
-    // remove token form local storage and redirect to default path
-  
-    
-    //window.location.replace('/')
-
-
-
-    return (<>
-
-        <div>
-            <h1>successful logout</h1>
-        </div>
-
-    </>)
+  </>)
 
 }

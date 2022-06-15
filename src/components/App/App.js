@@ -24,7 +24,7 @@ function App() {
 
     async function tokenAuthoriser() {
 
-      const response = await AuthFetch('/auth', {});
+      const response = await AuthFetch('/auth', {}, 'GET');
       if (response.error) {
 
         SetAuthState(false);

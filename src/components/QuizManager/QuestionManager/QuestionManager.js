@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Fetch from '../../res/FetchFunc.js';
 import useToken from '../../App/useToken';
-import QuizOperations from '../res/QuizOperations.js';
+
 
 
 
@@ -30,7 +30,7 @@ export default function QuestionManager({ quizid }) {
         async function getquestiondata() {
 
 
-            const response = await Fetch('/retrievequestions', { token, quizid })
+            const response = await Fetch(`/retrievequestions/quiz=${quizid}`, {}, 'GET')
 
 
             if (response.Questions) {
@@ -63,37 +63,54 @@ export default function QuestionManager({ quizid }) {
             ],
         }
 
-
         function handleNextClick() {
 
             if (newquestion) {
 
-
-                QuizOperations('/updateuserquestion', token, questiondata.Questions[currentQuestion].Questionid, newquestion, quizid)
-
+                Fetch('/updateuserquestion',
+                    {
+                        id: questiondata.Questions[currentQuestion].Questionid,
+                        question: newquestion, quizid
+                    }, 'PUT')
             }
 
             if (newquestionoption1) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Correctid, newquestionoption1, questiondata.Questions[currentQuestion].Questionid)
+                Fetch('/updateuserquestionoption', {
+                    questiontext: newquestionoption1,
+                    id: questiondata.Questions[currentQuestion].Options.Correctid,
+                    questionid: questiondata.Questions[currentQuestion].Questionid
+                }, 'PUT')
 
             }
 
             if (newquestionoption2) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Incorrect1id, newquestionoption2, questiondata.Questions[currentQuestion].Questionid)
+                Fetch('/updateuserquestionoption', {
+                    questiontext: newquestionoption2,
+                    id: questiondata.Questions[currentQuestion].Options.Incorrect1id,
+                    questionid: questiondata.Questions[currentQuestion].Questionid
+                }, 'PUT')
 
             }
 
             if (newquestionoption3) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Incorrect2id, newquestionoption3, questiondata.Questions[currentQuestion].Questionid)
+                Fetch('/updateuserquestionoption', {
+                    questiontext: newquestionoption3,
+                    id: questiondata.Questions[currentQuestion].Options.Incorrect2id,
+                    questionid: questiondata.Questions[currentQuestion].Questionid
+                }, 'PUT')
 
             }
 
             if (newquestionoption4) {
 
-                QuizOperations('/updateuserquestionoption', token, questiondata.Questions[currentQuestion].Options.Incorrect3id, newquestionoption4, questiondata.Questions[currentQuestion].Questionid)
+                Fetch('/updateuserquestionoption', {
+                    questiontext: newquestionoption4,
+                    id: questiondata.Questions[currentQuestion].Options.Incorrect3id,
+                    questionid: questiondata.Questions[currentQuestion].Questionid
+                }, 'PUT')
 
             }
 

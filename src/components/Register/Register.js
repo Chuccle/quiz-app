@@ -33,7 +33,7 @@ export default function Register({ setToken }) {
     const response = await Fetch('/register', {
       username,
       password
-    });
+    }, 'POST');
 
     if (response.token) {
 

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
 import Fetch from '../res/FetchFunc';
-
 import { ConditionalButtons } from '../res/ConditionalButtons';
-
 import { Link } from 'react-router-dom';
 
 
@@ -16,8 +13,6 @@ export default function Leaderboards({ token }) {
   const [searchquery, SetSearchQuery] = useState(false);
 
 
-
-
   useEffect(() => {
 
 
@@ -26,7 +21,7 @@ export default function Leaderboards({ token }) {
 
       const StatsArray = [];
 
-      const response = await Fetch('/retrieveleaderboard', { token, currentpage });
+      const response = await Fetch(`/retrieveleaderboard/page=${currentpage}`, {}, 'GET');
 
       if (response.results) {
 
