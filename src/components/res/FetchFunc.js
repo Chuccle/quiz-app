@@ -10,7 +10,7 @@ async function SilentRefresh() {
 
     const userToken = JSON.parse(tokenString);
 
-    const data = await fetch(`http://localhost:8080/silentrefresh`, {
+    const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com/silentrefresh`, {
       credentials: 'include',
       method: 'GET',
       headers: {
@@ -52,7 +52,7 @@ export default async function AuthFetch(address, p_data, operation) {
     case 'GET':
 
       try {
-        const data = await fetch(`http://localhost:8080${address}`, {
+        const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
           credentials: 'include',
 
           method: operation,
@@ -70,7 +70,7 @@ export default async function AuthFetch(address, p_data, operation) {
     case 'POST':
 
       try {
-        const data = await fetch(`http://localhost:8080${address}`, {
+        const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
           credentials: 'include',
 
           method: operation,
@@ -88,7 +88,7 @@ export default async function AuthFetch(address, p_data, operation) {
 
     case 'PUT':
       try {
-        const data = await fetch(`http://localhost:8080${address}`, {
+        const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
           credentials: 'include',
 
           method: operation,
@@ -107,7 +107,7 @@ export default async function AuthFetch(address, p_data, operation) {
     case 'DELETE':
 
       try {
-        const data = await fetch(`http://localhost:8080${address}`, {
+        const data = await fetch(`https://chuccle-quizapp-backend.herokuapp.com${address}`, {
           credentials: 'include',
 
           method: operation,
