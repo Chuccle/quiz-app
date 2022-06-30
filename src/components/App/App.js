@@ -107,8 +107,8 @@ function App() {
               </div>
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
-                  <img className="block lg:hidden h-10 w-auto" src="https://snipstock.com/assets/cdn/png/b867b18ad35e2c000a81a89b192f85f1.png" alt="Workflow" />
-                  <img className="hidden lg:block h-10 w-auto" src="https://snipstock.com/assets/cdn/png/b867b18ad35e2c000a81a89b192f85f1.png" alt="Workflow" />
+                  <img className="block lg:hidden h-10 w-auto" src="https://ronaldmottram.co.nz/wp-content/uploads/2019/01/default-user-icon-8-300x300.jpg" alt="Workflow" />
+                  <img className="hidden lg:block h-10 w-auto" src="https://ronaldmottram.co.nz/wp-content/uploads/2019/01/default-user-icon-8-300x300.jpg" alt="Workflow" />
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
@@ -127,7 +127,7 @@ function App() {
                   <div>
                     <button onClick={e => DropdownToggle()} type="button" className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                       <span className="sr-only">Open user menu</span>
-                      <img className="h-8 w-8 rounded-full" src="https://snipstock.com/assets/cdn/png/b867b18ad35e2c000a81a89b192f85f1.png" alt="" />
+                      <img className="h-8 w-8 rounded-full" src="https://ronaldmottram.co.nz/wp-content/uploads/2019/01/default-user-icon-8-300x300.jpg" alt="" />
                     </button>
                   </div>
                   <Dropdown />
