@@ -199,15 +199,17 @@ export default function QuizManager({ token }) {
 
     async function QuizUpdateHandler(address, key, optionalData, actionType, index, extra) {
 
-        Fetch(address, { key, optionalData }, 'PUT');
+
 
         switch (actionType) {
 
             case "quiznameupdate":
 
-                // Condition needed because newquizname is shared by all quiz elements
+            // Condition needed because newquizname is shared by all quiz elements
 
                 if (extra === index) {
+                    
+                    Fetch(address, { key, optionalData }, 'PUT');
 
                     dispatch({
 
@@ -217,10 +219,13 @@ export default function QuizManager({ token }) {
 
                     });
                 }
+               
                 break;
 
             case "quizdifficultyupdate":
 
+                Fetch(address, { key, optionalData }, 'PUT');
+                
                 dispatch({
 
                     type: 'UPDATE_QUIZ_DIFFICULTY',
@@ -232,6 +237,8 @@ export default function QuizManager({ token }) {
                 break;
 
             case "quizremove":
+
+                Fetch(address, null, 'DELETE');
 
                 dispatch({
 
@@ -348,7 +355,7 @@ export default function QuizManager({ token }) {
 
                                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900" >
 
-                                        <button onClick={e => QuizUpdateHandler('/removeuserquiz', rowdata.quizid, null, "quizremove", index)}>Remove</button>
+                                        <button onClick={e => QuizUpdateHandler(`/removeuserquiz/quizid=${rowdata.quizid}`, rowdata.quizid, null, "quizremove", index)}>Remove</button>
 
                                     </td>
 
