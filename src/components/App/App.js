@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link, Navigate } from 'react-router-dom';
 import Dashboard from '../Dashboard/Dashboard.js';
 import DashboardSearch from '../Dashboard/Search/DashboardSearch.js';
 import Login from '../Login/Login.js';
@@ -19,6 +19,7 @@ function App() {
   const [tokenAuthorised, SetAuthState] = useState(false);
   const [dropdown, SetDropDown] = useState(false);
   const { token, setToken } = useToken();
+
 
   useEffect(() => {
 
@@ -139,45 +140,25 @@ function App() {
           </div>
         </nav>
 
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/dashboard" />
+
+        <Routes>
+          <Route exact path="/"
+          element={<Navigate to="/dashboard" />}>
           </Route>
 
-          <Route path="/leaderboard/leaderboardsearch=:searchquery">
-            <LeaderboardSearch token={token} />
-          </Route>
-          <Route path="/leaderboard">
-            <Leaderboard token={token} />
-          </Route>
-          <Route path="/quiz/quizid=:quizid">
-            <Quiz token={token} />
-          </Route>
-          <Route path="/dashboard/dashboardsearch=:searchquery">
-            <DashboardSearch token={token} />
-          </Route>
-
-          <Route path="/dashboard">
-            <Dashboard token={token} />
-          </Route>
-          <Route path="/logout">
-            <Logout />
-          </Route>
-          <Route path="/quizcreator">
-            <QuizCreator token={token} />
-          </Route>
-          <Route path="/quizmanager/userquizsearch=:searchquery">
-            <QuizManagerSearch token={token} />
-          </Route>
-          <Route path="/quizmanager">
-            <QuizManager token={token} />
+          <Route path="leaderboard/leaderboardsearch=:searchquery" element={ <LeaderboardSearch token={token} />}/>
+          <Route path="leaderboard" element={<Leaderboard token={token} />}/>
+          <Route path="quiz/quizid=:quizid" element={<Quiz token={token} />}/>
+          <Route path="dashboard/dashboardsearch=:searchquery" element={<DashboardSearch token={token} />}/>
+          <Route path="dashboard"  element={<Dashboard token={token} />}/>
+          <Route path="logout" element={<Logout />}/>
+          <Route path="quizcreator" element={<QuizCreator token={token} />}/>
+          <Route path="quizmanager/userquizsearch=:searchquery" element={<QuizManagerSearch token={token} />}/>
+          <Route path="quizmanager" element={<QuizManager token={token} />}/>
+          <Route path="*" element={<NotFound/>}>
           </Route>
 
-
-          <Route component={NotFound}>
-          </Route>
-
-        </Switch>
+        </Routes>
 
       </BrowserRouter>
 
