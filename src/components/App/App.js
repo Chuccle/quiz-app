@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Link, Routes, Navigate} from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
 import Dashboard from '../Dashboard/Dashboard.js';
 import DashboardSearch from '../Dashboard/Search/DashboardSearch.js';
 import Login from '../Login/Login.js';
@@ -139,9 +139,9 @@ function App() {
           </div>
         </nav>
 
-        <Routes>
+        <Switch>
           <Route exact path="/">
-            <Navigate to="/dashboard" />
+            <Redirect to="/dashboard" />
           </Route>
 
           <Route path="/leaderboard/leaderboardsearch=:searchquery">
@@ -177,7 +177,7 @@ function App() {
           <Route component={NotFound}>
           </Route>
 
-        </Routes>
+        </Switch>
 
       </BrowserRouter>
 
