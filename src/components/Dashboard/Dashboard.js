@@ -100,7 +100,7 @@ export default function Dashboard({ token }) {
                     <td className="px-10 py-6 whitespace-nowrap text-xl font-medium text-gray-900">{rowdata[3]}%</td>
                     <td className="px-10 py-6 whitespace-nowrap text-xl font-bold font-helvetica-neue text-white" >
 
-                      <Link className='rounded-md px-2 py-1  bg-purple-600 hover:bg-white  transition duration-300 hover:text-purple-600 ' to={`quiz/quizid=${rowdata[0]}`}>Start</Link>
+                      <Link className='rounded-md px-2 py-1  bg-purple-600 hover:bg-white  transition duration-300 hover:text-purple-600 ' to={`/quiz/quizid=${rowdata[0]}`}>Start</Link>
 
                     </td>
                   </tr>

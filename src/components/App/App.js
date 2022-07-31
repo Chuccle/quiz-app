@@ -146,15 +146,15 @@ function App() {
           element={<Navigate to="/dashboard" />}>
           </Route>
 
-          <Route path="leaderboard/leaderboardsearch=:searchquery" element={ <LeaderboardSearch token={token} />}/>
-          <Route path="leaderboard" element={<Leaderboard token={token} />}/>
-          <Route path="quiz/quizid=:quizid" element={<Quiz token={token} />}/>
-          <Route path="dashboard/dashboardsearch=:searchquery" element={<DashboardSearch token={token} />}/>
-          <Route path="dashboard"  element={<Dashboard token={token} />}/>
-          <Route path="logout" element={<Logout />}/>
-          <Route path="quizcreator" element={<QuizCreator token={token} />}/>
-          <Route path="quizmanager/userquizsearch=:searchquery" element={<QuizManagerSearch token={token} />}/>
-          <Route path="quizmanager" element={<QuizManager token={token} />}/>
+          <Route path="/leaderboard/leaderboardsearch=:searchquery" element={ <LeaderboardSearch token={token} />}/>
+          <Route path="/leaderboard" element={<Leaderboard token={token} />}/>
+          <Route path="/quiz/quizid=:quizid" element={<Quiz token={token} />}/>
+          <Route path="/dashboard/dashboardsearch=:searchquery" element={<DashboardSearch token={token} />}/>
+          <Route path="/dashboard"  element={<Dashboard token={token} />}/>
+          <Route path="/logout" element={<Logout />}/>
+          <Route path="/quizcreator" element={<QuizCreator token={token} />}/>
+          <Route path="/quizmanager/userquizsearch=:searchquery" element={<QuizManagerSearch token={token} />}/>
+          <Route path="/quizmanager" element={<QuizManager token={token} />}/>
           <Route path="*" element={<NotFound/>}>
           </Route>
 
